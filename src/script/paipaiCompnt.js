@@ -24,5 +24,33 @@ Paipai.prototype = {
                 '</div>'
 
         return html;
+    },
+
+    mainNav: function(index){
+        var html;
+        html =  '<div id="mainNav">'+
+                    '<div class="nav_wrap">'+
+                        '<button class="home">'+
+                            '<i></i><br><span>商城</span>'+
+                        '</button>'+
+                        '<button class="collection">'+
+                            '<i></i><br><span>收藏</span>'+
+                        '</button>'+
+                        '<button class="order">'+
+                            '<i></i><br><span>订单</span>'+
+                        '</button>'+
+                        '<button class="personal">'+
+                            '<i></i><br><span>会员</span>'+
+                        '</button>'+
+                    '</div>'+
+                '</div>'
+
+
+        $('body').append(html);
+        $('#mainNav button')
+        $('#mainNav').on('click','button',function(){
+            //$('#mainNav button').removeClass('active');
+            //$(this).addClass('active');
+        })
     }
 }

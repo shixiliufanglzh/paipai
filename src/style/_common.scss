@@ -1,0 +1,87 @@
+
+#bottomBtn {
+  display: flex;
+  flex-wrap: nowrap;
+  button {
+    border: none;
+    outline: none;
+    background-color: $paiRed;
+    height: 0.9rem;
+    color: #fff;
+    font-size: 0.3rem;
+    flex-grow: 1;
+  }
+  .like {
+    background-color: $paiYellow;
+  }
+}
+
+#mainNav {
+  position: fixed;
+  border-top: 1px solid #2f2f2f;
+  width: 100%;
+  bottom: 0;
+  background-color: #fff;
+  .nav_wrap {
+    display: flex;
+    flex-wrap: nowrap;
+    button {
+      border: none;
+      outline: none;
+      background-color: #fff;
+      height: 0.98rem;
+      color: #858585;
+      font-size: 0rem;
+      flex-grow: 1;
+      span {
+        font-size: 0.24rem;
+      }
+      &.active {
+        span {
+          color: $paiRed;
+        }
+      }
+
+      &.home {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_home_normal.png"));
+        }
+      }
+      &.home.active {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_home.png"));
+        }
+      }
+      &.collection {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_hearts_normal.png"));
+        }
+      }
+      &.collection.active {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_hearts.png"));
+        }
+      }
+      &.order {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_list_normal.png"));
+        }
+      }
+      &.order.active {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_list.png"));
+        }
+      }
+      &.personal {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_user_normal.png"));
+        }
+      }
+      &.personal.active {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_user.png"));
+        }
+      }
+    }
+  }
+}
