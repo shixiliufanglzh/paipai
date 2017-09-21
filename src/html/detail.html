@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/detail.css">
+</head>
+<body>
+<div id="goodDetail">
+    <div class="swiper-container-detail">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide"></div>
+        </div>
+    </div>
+
+    <section id="summary">
+        <p class="desc">某低级搜集冬季加大技术敖东瓶塞哦思技术敖东瓶塞哦思考pop、 哦外婆fsasjdiiss似懂非懂</p>
+        <div class="price_now">
+            <span class="cur_price">￥3999.23</span>
+            <span class="rate">减价频率：1次/S&nbsp;&nbsp;&nbsp;&nbsp;减价幅度：0.01元/次</span>
+        </div>
+        <div class="relevant_price clearfix">
+            <span class="primary">起拍价：<span>￥859599.23-859599.23</span></span>
+            <span class="market">市场价：<span>￥859599.23-859599.23</span></span>
+        </div>
+        <div class="relevant_count clearfix">
+            <span class="store">库存：<span>1000件（每次限拍3件）</span></span>
+            <span class="sold">已拍：<span>12456635件</span></span>
+        </div>
+    </section>
+
+    <section id="features" class="clearfix">
+        <div><i></i><span>正品保证</span></div>
+        <div><i></i><span>公正公开</span></div>
+        <div><i></i><span>七天退换</span></div>
+        <div><i></i><span>闪电发货</span></div>
+    </section>
+
+    <section id="production">
+        <div class="sorts_sel"><span>选择颜色分类</span><i></i></div>
+        <div class="rule">
+            <h5>活动规则</h5>
+        </div>
+    </section>
+
+    <div id="action">
+        <div class="action_wrap">
+            <button class="chat"><i></i></button>
+            <button class="like"><i></i><span>加入收藏</span></button>
+            <button class="purchase"><i></i><span>我要拍</span></button>
+        </div>
+    </div>
+</div>
+
+<div id="sortsList">
+    <div class="sorts_wrap">
+        <i class="close"></i>
+        <div class="good_img"></div>
+        <div class="basic_para">
+            <div class="cur_price">当前价：<span>￥39990.00</span></div>
+            <div class="start_price">起拍价：<span>￥39990.00</span></div>
+            <div class="left_price">库&nbsp;&nbsp;&nbsp;存：<span>154564件</span></div>
+        </div>
+
+        <div class="sorts_para">
+            <h6>请选择颜色 尺寸 分类</h6>
+            <div class="single_para_container">
+                <h4>尺寸</h4>
+                <div class="sorts">
+                    <span>20寸</span>
+                    <span>22寸</span>
+                    <span class="active">24寸</span>
+                    <span>26寸</span>
+                    <span>28寸</span>
+                    <span>30寸</span>
+                    <span>32寸</span>
+                </div>
+            </div>
+            <div class="single_para_container">
+                <h4>尺寸</h4>
+                <div class="sorts">
+                    <span>20寸</span>
+                    <span>22寸</span>
+                    <span>24寸</span>
+                    <span>26寸</span>
+                    <span>28寸</span>
+                    <span>30寸</span>
+                    <span>32寸</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="count_sel clearfix">
+            <div class="limit">购买数量（限购三件）</div>
+            <div class="count">
+                <i class="minus"></i>
+                <span>0</span>
+                <i class="plus"></i>
+            </div>
+        </div>
+
+        <div class="consume">
+            <h4>消耗</h4>
+            <p>1拍币（剩余23拍币）</p>
+        </div>
+
+        <div class="behavior">
+            <button class="like">加入收藏</button>
+            <button class="purchase">立即竞拍</button>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script>
+
+    $(function(){
+        (function(){
+            var imgList = ["detail_01.jpg","detail_02.jpg","detail_03.jpg"];
+            var imgsCount = imgList.length;
+            $('.swiper-container-detail .swiper-wrapper').html('');
+            for(var i=0; i<imgsCount; i++){
+                $('.swiper-container-detail .swiper-wrapper').append('<div class="swiper-slide" style="background:url(../imgs/'+ imgList[i] +') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></div>')
+            }
+        })()
+
+        var mySwiper = new Swiper ('.swiper-container-detail', {
+            direction: 'horizontal',
+            loop: true,
+            autoplay: 3000
+        })
+
+    })
+
+    $('.action_wrap .like,.action_wrap .purchase,#production .sorts_sel').click(function(){
+        $('#sortsList').fadeIn(300);
+    })
+    $('.close').click(function(){
+        $('#sortsList').fadeOut(300);
+    })
+
+    $('.single_para_container .sorts').on('click', 'span', function(){
+        //$(this).
+    })
+
+
+</script>
+</html>

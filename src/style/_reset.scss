@@ -1,0 +1,60 @@
+$paiRed: #e02532;
+$paiYellow: #ffcd44;
+
+@mixin smallBlock($width,$height) {
+  display: inline-block;
+  width: $width;
+  height: $height;
+}
+
+@mixin smallIcon($width,$height,$pic) {
+  display: inline-block;
+  width: $width;
+  height: $height;
+  background: $pic center center no-repeat;
+  -webkit-background-size: contain;
+  background-size: contain;
+}
+
+*{
+  box-sizing: border-box;
+  outline: none;
+}
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td {
+  margin:0; padding:0;
+}
+ul,ol{
+  list-style-type:none;
+}
+select,input,img,select{
+  vertical-align:middle;
+}
+a{
+  text-decoration:none;
+}
+a,button,input,textarea{
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+  color:    #666;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #666;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #666;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color:    #666;
+}
+
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+.clearfix{*zoom:1;}

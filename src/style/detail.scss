@@ -1,0 +1,346 @@
+@import "_reset.scss";
+
+#goodDetail {
+  padding-bottom: 0.98rem;
+  .swiper-container-detail {
+    width: 100%;
+    height: 7.5rem;
+    overflow: hidden;
+    .swiper-slide {
+      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+    }
+  }
+
+  #summary {
+    padding: 0.24rem;
+    border-bottom: 0.2rem solid #f0f0f0;
+    .desc {
+      font-size: 0.24rem;
+      color: #2f2f2f;
+    }
+    .price_now {
+      font-size: 0.3rem;
+      color: $paiRed;
+      margin-top: 0.06rem;
+      .rate {
+        float: right;
+        font-size: 0.2rem;
+        color: #858585;
+        margin-top: 0.08rem;
+      }
+
+    }
+    .relevant_price {
+      font-size: 0.22rem;
+      color: #2f2f2f;
+      margin-top: 0.08rem;
+      .primary {
+        float: left;
+        span {
+          color:#858585;
+        }
+      }
+      .market {
+        float: right;
+        span {
+          color:#858585;
+        }
+      }
+    }
+    .relevant_count {
+      margin-top: 0.08rem;
+      font-size: 0.22rem;
+      color: #2f2f2f;
+      .store {
+        float: left;
+        span {
+          color:#858585;
+        }
+      }
+      .sold {
+        float: right;
+        span {
+          color:#858585;
+        }
+      }
+    }
+  }
+
+  #features {
+    margin-top: 0.3rem;
+    border-bottom: 0.2rem solid #f0f0f0;
+    padding-bottom: 0.3rem;
+    div {
+      width: 25%;
+      float: left;
+      font-size: 0.24rem;
+      color: #4b4b4b;
+      text-align: center;
+      i {
+        @include smallBlock(0.32rem,0.32rem);
+        vertical-align: middle;
+      }
+      &:nth-of-type(1) i {
+        background: url("../imgs/guarantee.png") center center no-repeat;
+        -webkit-background-size: contain;
+        background-size: contain;
+      }
+      &:nth-of-type(2) i {
+        background: url("../imgs/true.png") center center no-repeat;
+        -webkit-background-size: contain;
+        background-size: contain;
+      }
+      &:nth-of-type(3) i {
+        background: url("../imgs/return.png") center center no-repeat;
+        -webkit-background-size: contain;
+        background-size: contain;
+      }
+      &:nth-of-type(4) i {
+        background: url("../imgs/speed.png") center center no-repeat;
+        -webkit-background-size: contain;
+        background-size: contain;
+      }
+      span {
+        vertical-align: middle;
+        margin-left: 0.08rem;
+      }
+    }
+  }
+
+  #action {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    .action_wrap {
+      display: flex;
+      flex-wrap: nowrap;
+      button {
+        border: none;
+        outline: none;
+        background-color: $paiRed;
+        height: 0.98rem;
+        span {
+          vertical-align: middle;
+          color: #fff;
+          font-size: 0.3rem;
+        }
+        i {
+          vertical-align: middle;
+          margin-right: 0.08rem;
+        }
+      }
+      .chat {
+        flex-grow: 164;
+        order: 1;
+        background-color: #fff;
+        border-top: 1px solid #f0f0f0;
+        i {
+          @include smallBlock(0.57rem,0.56rem);
+          background: url("../imgs/icon_online.png") center center no-repeat;
+          -webkit-background-size: contain;
+          background-size: contain;
+        }
+      }
+      .like {
+        flex-grow: 293;
+        order: 2;
+        background-color: $paiYellow;
+        i {
+          @include smallBlock(0.36rem,0.36rem);
+          background: url("../imgs/heart.png") center center no-repeat;
+          -webkit-background-size: contain;
+          background-size: contain;
+        }
+      }
+      .purchase {
+        flex-grow: 293;
+        order: 3;
+        i {
+          @include smallBlock(0.36rem,0.36rem);
+          background: url("../imgs/icon_hammer.png") center center no-repeat;
+          -webkit-background-size: contain;
+          background-size: contain;
+        }
+      }
+    }
+  }
+
+  #production {
+    .sorts_sel {
+      font-size: 0.3rem;
+      color: #2f2f2f;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0.24rem;
+      i {
+        @include smallIcon(0.14rem,0.22rem,url("../imgs/icon_arrow.png"));
+        float: right;
+        margin-top: 0.12rem;
+      }
+    }
+    .rule {
+      h5 {
+        font-size: 0.3rem;
+        color: #2f2f2f;
+        padding: 0.24rem;
+        font-weight: 500;
+      }
+    }
+
+  }
+}
+
+#sortsList {
+  display: none;
+  position: fixed;
+  background-color: rgba(0,0,0,0.8);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9;
+  .sorts_wrap {
+    width: 100%;
+    //height: 9.54rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #fff;
+    .close {
+      @include smallIcon(0.4rem,0.4rem,url("../imgs/close.png"));
+      position: absolute;
+      right: 0.27rem;
+      top: 0.19rem;
+    }
+    .good_img {
+      width: 2.2rem;
+      height: 2.2rem;
+      border: 3px solid #fff;
+      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      position: absolute;
+      left: 0.24rem;
+      top: -0.36rem;
+    }
+    .basic_para {
+      padding-left: 2.66rem;
+      margin-top: 0.32rem;
+      &>div {
+        color: #2f2f2f;
+        font-size: 0.3rem;
+        margin-bottom: 0.12rem;
+      }
+      .cur_price {
+        span {
+          color: $paiRed;
+        }
+      }
+      .start_price {
+        span {
+          font-size: 0.26rem;
+          color: #858585;
+        }
+      }
+      .left_price {
+        span {
+          font-size: 0.26rem;
+          color: #858585;
+        }
+      }
+
+    }
+    .sorts_para {
+      padding: 0.24rem;
+      h6 {
+        font-size: 0.24rem;
+        color: #858585;
+        font-weight: 500;
+      }
+      .single_para_container {
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 0.12rem;
+        h4 {
+          font-size: 0.3rem;
+          color: #2f2f2f;
+          font-weight: 500;
+          margin: 0.32rem 0 0.1rem;
+        }
+        .sorts {
+          font-size: 0;
+          span {
+            font-size: 0.24rem;
+            @include smallBlock(0.77rem,0.4rem);
+            background-color: #f0f0f0;
+            text-align: center;
+            line-height: 0.4rem;
+            -webkit-border-radius: 0.1rem;
+            -moz-border-radius: 0.1rem;
+            border-radius: 0.1rem;
+            margin: 0.1rem 0.18rem;
+          }
+        }
+      }
+    }
+    .count_sel {
+      padding: 0 0.24rem 0.24rem;
+      border-bottom: 1px solid #f0f0f0;
+      .limit {
+        float: left;
+        font-size: 0.3rem;
+        color: #2f2f2f;
+      }
+      .count {
+        float: right;
+        font-size: 0;
+        margin-top: 0.04rem;
+        span {
+          font-size: 0.3rem;
+          color: #2f2f2f;
+          vertical-align: middle;
+          margin: 0 0.251rem;
+        }
+        .minus {
+          @include smallIcon(0.4rem,0.4rem,url("../imgs/minus.png"));
+          vertical-align: middle;
+        }
+        .plus {
+          @include smallIcon(0.4rem,0.4rem,url("../imgs/plus.png"));
+          vertical-align: middle;
+        }
+      }
+    }
+
+    .consume {
+      padding: 0.24rem;
+      h4 {
+        font-size: 0.3rem;
+        color: #2f2f2f;
+        font-weight: 500;
+
+      }
+      p {
+        font-size: 0.24rem;
+        margin-top: 0.24rem;
+      }
+    }
+
+    .behavior {
+      display: flex;
+      flex-wrap: nowrap;
+      button {
+        border: none;
+        outline: none;
+        background-color: $paiRed;
+        height: 0.9rem;
+        color: #fff;
+        font-size: 0.3rem;
+        flex-grow: 1;
+      }
+      .like {
+        background-color: $paiYellow;
+      }
+    }
+  }
+}
