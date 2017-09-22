@@ -55,7 +55,7 @@ Paipai.prototype = {
         })
     },
 
-    //待支付订单的计时器
+    //待支付订单的计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
         timer = setInterval(function(){
