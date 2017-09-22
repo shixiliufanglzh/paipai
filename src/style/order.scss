@@ -18,7 +18,7 @@ body {
         font-size: 0.3rem;
         color: #858585;
         text-align: center;
-        &.current {
+        &.current a {
           color: $paiRed;
           border-bottom: 2px solid $paiRed;
         }
@@ -44,6 +44,15 @@ body {
         color: #ff8124;
         float: right;
 
+      }
+      i.clock {
+        @include smallIcon(0.32rem,0.32rem,url("../imgs/clock.png"));
+        vertical-align: middle;
+        margin-top: -0.07rem;
+        margin-right: 0.1rem;
+      }
+      .time_left {
+        color: #2f2f2f;
       }
     }
     .order_detail {
@@ -110,7 +119,7 @@ body {
         color: #2f2f2f;
       }
     }
-    .order_deit {
+    .order_edit {
       background-color: #fff;
       color: #858585;
       outline: none;
@@ -123,6 +132,10 @@ body {
       float: right;
       margin-right: 0.24rem;
       margin-bottom: 0.16rem;
+      &.red {
+        color: $paiRed;
+        border-color: $paiRed;
+      }
     }
   }
 }

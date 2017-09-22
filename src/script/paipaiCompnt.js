@@ -53,5 +53,37 @@ Paipai.prototype = {
             //$(this).addClass('active');
 
         })
+    },
+
+    //待支付订单的计时器
+    addOrderTimer: function(timeLeft,domPosition,timerList){
+        var timer = null;
+        timer = setInterval(function(){
+            timeLeft --;
+            var timePrompt = "";
+            var cal_time = timeLeft;
+            if(cal_time >= 86400){
+                timePrompt += Math.floor(cal_time/86400) + "天";
+                cal_time = timeLeft % 86400;
+            }
+            if(cal_time >= 3600){
+                timePrompt += Math.floor(cal_time/3600) + "小时";
+                cal_time = timeLeft % 3600;
+            }
+            if(cal_time >= 60){
+                timePrompt += Math.floor(cal_time/60) + "分";
+                cal_time = timeLeft % 60;
+            }
+            timePrompt += cal_time + "秒";
+            domPosition.html(timePrompt);
+            if(timeLeft === 0){
+                location.reload(true);
+            }
+        },1000)
+        timerList.push(timer);
+
+
+
+        //return timePrompt;
     }
 }
