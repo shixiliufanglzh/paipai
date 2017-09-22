@@ -47,10 +47,11 @@ Paipai.prototype = {
 
 
         $('body').append(html);
-        $('#mainNav button')
+        $('#mainNav button').eq(index-1).addClass('active');
         $('#mainNav').on('click','button',function(){
             //$('#mainNav button').removeClass('active');
             //$(this).addClass('active');
+
         })
     }
 }
