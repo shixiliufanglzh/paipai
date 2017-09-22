@@ -16,6 +16,7 @@ $paiYellow: #ffcd44;
   background-size: contain;
 }
 
+body {  color: #2f2f2f;  }
 *{
   box-sizing: border-box;
   outline: none;
@@ -56,5 +57,6 @@ a,button,input,textarea{
   color:    #666;
 }
 
-.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;line-height: 0;
+  font-size: 0;}
 .clearfix{*zoom:1;}

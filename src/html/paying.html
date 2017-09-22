@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/paying.css">
+</head>
+<body>
+<div id="paying">
+    <section id="addrMsg">
+        <div class="addressee">
+            <p><span class="name">某某先生</span><span class="phone">13623456789</span></p>
+            <p class="address">上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼602室</p>
+            <i></i>
+        </div>
+        <div class="bottom_img"></div>
+    </section>
+
+    <section id="orderDetail">
+        <h4>恭喜您竞拍成功！</h4>
+        <div class="good_detail">
+            <div class="img"></div>
+            <p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>
+            <p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
+            <p class="price_start">起拍价：<span class="price">￥3999.00</span></p>
+            <p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>
+        </div>
+
+        <div class="fee">
+            <p class="logistics_discount">物流运费：<span>再拍123.23元，即可免运费</span></p>
+            <div class="fee_detail">
+                <p>起拍价总计 <span>￥108.00</span></p>
+                <p>中标价总计 <span>￥108.00</span></p>
+                <p>减价节省 <span>￥108.00</span></p>
+                <p>运费 <span>￥108.00</span></p>
+            </div>
+        </div>
+        <p class="fee_result">需要支付（含运费）<span>￥109.00</span></p>
+
+    </section>
+
+    <div id="payBtn">
+        <div id="bottomBtn">
+            <button class="like">稍后支付</button>
+            <button class="purchase">立即支付</button>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+
+    $(function(){
+
+
+    })
+
+
+</script>
+</html>

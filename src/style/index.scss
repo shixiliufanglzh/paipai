@@ -1,4 +1,6 @@
 @import "_reset.scss";
+@import "_common.scss";
+
 
 #viewTotal {
   .swiper-container {
@@ -42,6 +44,7 @@
 
   #goods {
     padding: 0.24rem;
+    margin-bottom: 0.9rem;
     .single_good{
       max-height: 4.84rem;
       width: 3.45rem;
@@ -53,7 +56,7 @@
       .item_img {
         width: 100%;
         height: 3.45rem;
-        background: url("../imgs/1.jpg") center center no-repeat;
+        background: url("../imgs/detail_01.jpg") center center no-repeat;
         -webkit-background-size: cover;
         background-size: cover;
       }
@@ -93,7 +96,6 @@
             float: right;
           }
         }
-
       }
     }
   }
