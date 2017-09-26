@@ -146,11 +146,14 @@ body {
   #state {
     width: 100%;
     height: 1.76rem;
-    background-color: red;
+    background: linear-gradient(to right, #4e4f50 , #38393a);
     color: #fff;
     padding: 0.24rem;
     font-size: 0;
     position: relative;
+    &.golden_bg {
+      background: linear-gradient(to right, #f9c300 , #ff8b2d);
+    }
     .car {
       @include smallIcon(0.35rem,0.29rem,url("../imgs/car.png"));
       position: absolute;
@@ -175,6 +178,13 @@ body {
       right: 0.38rem;
       top: 0.52rem;
     }
+    .complete {
+      @include smallIcon(0.71rem,0.71rem,url("../imgs/complete.png"));
+      position: absolute;
+      right: 0.38rem;
+      top: 0.52rem;
+    }
+
   }
   #receiveMsg {
     padding: 0.24rem 0.24rem 0.24rem 0.74rem;
@@ -286,6 +296,38 @@ body {
       .fee {
         color: $paiRed;
         line-height: 0.54rem;
+      }
+    }
+  }
+  #orderNum {
+    background-color: #fff;
+    padding: 0.12rem 0.24rem;
+    margin-top: 0.16rem;
+    font-size: 0.2rem;
+    line-height: 0.32rem;
+  }
+
+  #logistics{
+    background-color: #fff;
+    margin-top: 0.16rem;
+    padding-bottom: 0.24rem;
+    h3 {
+      font-size: 0.3rem;
+      color: #2f2f2f;
+      font-weight: 500;
+      line-height: 0.64rem;
+      margin: 0 0.24rem;
+      i {
+        @include smallIcon(0.354rem,0.3rem,url("../imgs/logistics.png"));
+        margin-bottom: -0.04rem;
+        margin-right: 0.12rem;
+      }
+    }
+    .detail {
+      margin: 0 0.24rem;
+      line-height: 0.4rem;
+      p {
+        font-size: 0.24rem;
       }
     }
   }

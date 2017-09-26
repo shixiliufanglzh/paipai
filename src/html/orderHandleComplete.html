@@ -26,14 +26,14 @@
 </head>
 <body>
     <div id="orderHandle">
-        <div id="state">
+        <div id="state" class="golden_bg">
             <i class="car"></i>
             <div class="order_state">
-                <h3>待支付</h3>
-                <p>等待买家支付</p>
-                <p>距订单关闭还剩：<span class="time_left">0天0小时0分0秒</span></p>
+                <h3>交易成功</h3>
+                <p>您真有眼光</p>
+                <p>欢迎您再来选购物品</p>
             </div>
-            <i class="caution"></i>
+            <i class="complete"></i>
         </div>
 
         <div id="receiveMsg">
@@ -60,8 +60,22 @@
             </div>
             <div class="price_total clearfix">
                 <p>共<span class="count">2</span>件商品，共<span class="fee">￥3999.00</span>元</p>
-                <button class="order_edit red">付款</button>
-                <button class="order_edit">取消订单</button>
+                <button class="order_edit red">再来一单</button>
+            </div>
+        </div>
+
+        <div id="orderNum">
+            <p>订单编号：<span>54564561456456146</span></p>
+            <p>创建时间：<span>2017-09-18 18:15:21</span></p>
+            <p>付款时间：<span>2017-09-18 18:15:21</span></p>
+            <p>发货时间：<span>2017-09-18 18:15:21</span></p>
+        </div>
+
+        <div id="logistics">
+            <h3><i></i>物流信息</h3>
+            <div class="detail">
+                <p>物流公司：<span>优速快递</span></p>
+                <p>物流编号：<span>54564561456456146</span></p>
             </div>
         </div>
 
@@ -75,19 +89,6 @@
 
     $(function(){
 
-        var timeLeft = 234567;
-        var timerList = [];
-
-        var addOrderTimer = new Paipai;
-        addOrderTimer.addOrderTimer(timeLeft,$('#state .time_left'),timerList);
-
-
-
-    })
-
-    $('#orderSorts .nav_wrap').on('click', '.tab', function(){
-        $('.nav_wrap .tab').removeClass('current');
-        $(this).addClass('current');
     })
 
 
