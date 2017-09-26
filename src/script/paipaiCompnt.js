@@ -85,5 +85,179 @@ Paipai.prototype = {
 
 
         //return timePrompt;
+    },
+
+    //弹出提示信息
+    popPrompt: function (expression) {
+
+        function setStyle(obj, css) {
+            for (var atr in css) {
+                obj.style[atr] = css[atr];
+            }
+        }
+
+        var body = document.getElementsByTagName("body")[0];
+        var container = document.createElement('div');
+        body.appendChild(container);
+        setStyle(container, {
+            position: "fixed",
+            width: "100%",
+            top: "6rem",
+            textAlign: "center",
+            opacity: "0",
+            zIndex: "9999"
+
+        });
+        var promptContent = document.createElement('div');
+        promptContent.innerHTML = expression;
+        container.appendChild(promptContent);
+        setStyle(promptContent, {
+            display: "inline-block",
+            minWidth: "1.86rem",
+            padding: "0 0.24rem",
+            height: "0.8rem",
+            backgroundColor: "rgba(0,0,0,0.8)",
+            textAlign: "center",
+            lineHeight: "0.8rem",
+            color: "#fff",
+            fontSize: "0.32rem",
+            borderRadius: "0.1rem"
+        });
+
+        var num = 0;
+        var st = setInterval(function() {
+            num++;
+            container.style.opacity = num / 10;
+            if (num >= 10) {
+                clearInterval(st);
+                setTimeout(function() {
+                    var st = setInterval(function() {
+                        num--;
+                        container.style.opacity = num / 10;
+                        if (num <= 0) {
+                            clearInterval(st);
+                            body.removeChild(container);
+                        }
+                    }, 30);
+                }, 3000)
+            }
+        }, 30);
+
+    },
+
+    //图片压缩转base64，依赖EXIF，解决iphone拍照旋转问题
+    readFile: function(obj,imgListBase64,position,addBtn) {
+
+        //var windowURL = window.URL || window.webkitURL;
+
+        var popPrompt = this.popPrompt;
+        var files = obj.files;
+        var imgCount = 0;
+        if(files.length + imgListBase64.length > 4){
+            addBtn.hide();
+            imgCount = 4 - imgListBase64.length;
+            popPrompt('最多只能上传4张！');
+        }else if(files.length + imgListBase64.length == 4){
+            addBtn.hide();
+            imgCount = files.length;
+        }else{
+            //addBtn.hide();
+            imgCount = files.length;
+        }
+        if(imgCount > 0){
+            this.addMask("图片加载中...");
+        }
+        for(var i=0; i<imgCount; i++){
+            //判断类型是不是图片
+            if (!/image\/\w+/.test(files[i].type)) {
+                this.popPrompt("请确保文件为图像类型");
+                return false;
+            }
+
+            //var dataURL = windowURL.createObjectURL(files[i]);
+            //imgListUrl.push(dataURL);
+            //position.html('');
+            //for(var j=0;j<imgListUrl.length;j++){
+            //    position.append('<span class="picture" style="background: url('+ imgListUrl[j] +') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i></span>');
+            //}
+
+            //获取照片的拍摄方向
+            var orient;
+            EXIF.getData(files[i], function () {
+                orient = EXIF.getTag(this, 'Orientation');
+            });
+
+            var reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+            reader.onload = function(e) {
+
+                var canvas=document.createElement("canvas");
+                var ctx=canvas.getContext("2d");
+                var image=new Image();
+                // var image = $('#photo')[0];
+                image.src=this.result;
+                //imgListUrl.push(this.result);
+                //position.html('');
+                //for(var j=0;j<imgListUrl.length;j++){
+                //    position.append('<span class="picture" style="background: url('+ imgListUrl[j] +') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i></span>');
+                //}
+
+                image.onload=function(){
+                    //alert(orient);
+                    var cw=image.width;
+                    var ch=image.height;
+                    var w=image.width;
+                    var h=image.height;
+                    canvas.width=w;
+                    canvas.height=h;
+
+
+                    if(cw>1920&&cw>ch){
+                        w=1920;
+                        h=(1920*ch)/cw;
+                        canvas.width=w;
+                        canvas.height=h;
+                    }
+                    if(ch>1920&&ch>cw){
+                        h=1920;
+                        w=(1920*cw)/ch;
+                        canvas.width=w;
+                        canvas.height=h;
+                    }
+
+                    if (orient == 6) {
+                        canvas.width = h;
+                        canvas.height = w;
+                        ctx.rotate(90 * Math.PI / 180);
+                        ctx.drawImage(image, 0, -h, w, h);
+                    } else {
+                        // 执行Canvas的drawImage语句
+                        ctx.drawImage(image,0,0,w,h);
+                    }
+
+                    imgListBase64.push(canvas.toDataURL("image/jpeg"));
+                    console.log(imgListBase64);
+                    position.html('');
+                    for(var j=0;j<imgListBase64.length;j++){
+                        position.append('<span class="picture" style="background: url('+ imgListBase64[j] +') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i></span>');
+                    }
+
+                    if($('#mask')){
+                        $('#mask').remove();
+                    }
+                }
+
+            }
+        }
+        //console.log("添加结束",imgListBase64);
+
+    },
+
+    addMask: function(str){
+        var html = '<div id="mask" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;">'+
+                        '<p style="color:#fff;font-size:0.28rem;text-align:center;margin-top:5rem;">' + str + '</p>'+
+                    '</div>';
+
+        $('body').append(html);
     }
 }

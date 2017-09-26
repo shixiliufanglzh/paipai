@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/service.css">
+</head>
+<body>
+<div id="serviceDetail">
+
+    <div id="goodDetail">
+        <div class="good_msg clearfix">
+            <span class="img"></span>
+            <div class="product_desc">
+                <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
+                <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
+            </div>
+            <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×2</span></div>
+        </div>
+    </div>
+
+    <div id="fillMsg">
+        <div class="form_group clearfix">
+            <span class="required">*</span>
+            <label>申请服务：</label>
+            <span class="content">退款</span>
+        </div>
+        <div class="form_group clearfix">
+            <span class="required">*</span>
+            <label>退款原因：</label>
+            <select class="reason_sel">
+                <option disabled selected value>选择退款原因</option>
+                <option value="不想要">不想要</option>
+                <option value="参数选错了">参数选错了</option>
+            </select>
+        </div>
+        <div class="form_group clearfix">
+            <span class="required">*</span>
+            <label>退款金额：</label>
+            <span class="content">￥<span class="count">3999.00</span></span>
+        </div>
+        <p class="count_prompt">最多退款￥<span class="most_count">3999.00</span>，包含快递费￥<span class="postage">0.00</span></p>
+    </div>
+
+    <div id="addition">
+        <h3>补充说明：</h3>
+        <textarea></textarea>
+    </div>
+
+    <button id="msgSubmit">提交</button>
+</div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+    })
+
+
+    $('#msgSubmit').click(function(){
+//        console.log("待提交：",imgListBase64);
+        var $reason = $('.reason_sel').val();
+        if(!$reason){
+            Paipai.prototype.popPrompt("请选择退款原因");
+        }else {
+//            $.ajax({
+//                url:'http://yiyayiya.0lz.net/verify_phone',
+//                data: {
+//
+//                },
+//                type:'post',
+//                dataType:'json',
+////                async:false,
+//                success:function(data){},
+//                error: function(err){}
+//            })
+        }
+    })
+
+
+
+
+</script>
+</html>
