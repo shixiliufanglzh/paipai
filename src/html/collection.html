@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body style="background-color:#fff;">
+<div id="collection">
+    <div class="single_collect">
+        <span class="img"></span>
+        <div class="content">
+            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
+            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
+            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
+        </div>
+        <i class="close"></i>
+        <span class="count">×1</span>
+        <button>销售告罄</button>
+    </div>
+
+    <div class="single_collect">
+        <span class="img"></span>
+        <div class="content">
+            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
+            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
+            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
+        </div>
+        <i class="close"></i>
+        <span class="count">×1</span>
+        <button class="active">立即抢拍</button>
+    </div>
+
+    <div class="single_collect">
+        <span class="img"></span>
+        <div class="content">
+            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
+            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
+            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
+        </div>
+        <i class="close"></i>
+        <span class="count">×1</span>
+        <button class="active">正价购买</button>
+    </div>
+</div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+        //生成底部导航
+        commonCompt.mainNav(2);
+    })
+
+    $('.single_collect').on('click','.close',function(){
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认删除该商品吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+
+
+
+</script>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body>
+<div id="persoanlCenter">
+    <div id="zoneHeader">
+        <span class="avatar"></span>
+        <div class="info">
+            <span class="name">昵称名称</span><br>
+            <span class="phone">136****5342</span>
+        </div>
+        <i class="detail_enter"></i>
+    </div>
+
+    <div id="selection">
+        <div class="single_btn">
+            <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money">20拍币</span>
+        </div>
+
+        <div class="single_btn">
+            <i class="pre_icon order"></i><span class="title">我的订单</span><i class="icon_enter"></i>
+        </div>
+
+        <div class="single_btn">
+            <i class="pre_icon collection"></i><span class="title">我的收藏</span><i class="icon_enter"></i>
+        </div>
+
+        <div class="single_btn">
+            <i class="pre_icon address"></i><span class="title">地址管理</span><i class="icon_enter"></i>
+        </div>
+
+        <div class="single_btn">
+            <i class="pre_icon service"></i><span class="title">客服中心</span><i class="icon_enter"></i>
+        </div>
+
+        <div class="single_btn">
+            <i class="pre_icon help"></i><span class="title">新手帮助</span><i class="icon_enter"></i>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+        //生成底部导航
+        commonCompt.mainNav(4);
+    })
+
+
+
+    commonCompt.Confirm({
+        hasTitle: true,
+        title: "重要提示",
+        contentText: "为保证帐号安全，请尽快完善会员信息",
+        cancleText: "下次提示",
+        certainText: "立即完善",
+        rightBtnClick: function(){
+
+        },
+        leftBtnClick: function(){
+
+        }
+    })
+
+
+</script>
+</html>

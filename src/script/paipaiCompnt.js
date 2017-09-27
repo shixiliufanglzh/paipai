@@ -26,35 +26,6 @@ Paipai.prototype = {
         return html;
     },
 
-    mainNav: function(index){
-        var html;
-        html =  '<div id="mainNav">'+
-                    '<div class="nav_wrap">'+
-                        '<button class="home">'+
-                            '<i></i><br><span>商城</span>'+
-                        '</button>'+
-                        '<button class="collection">'+
-                            '<i></i><br><span>收藏</span>'+
-                        '</button>'+
-                        '<button class="order">'+
-                            '<i></i><br><span>订单</span>'+
-                        '</button>'+
-                        '<button class="personal">'+
-                            '<i></i><br><span>会员</span>'+
-                        '</button>'+
-                    '</div>'+
-                '</div>'
-
-
-        $('body').append(html);
-        $('#mainNav button').eq(index-1).addClass('active');
-        $('#mainNav').on('click','button',function(){
-            //$('#mainNav button').removeClass('active');
-            //$(this).addClass('active');
-
-        })
-    },
-
     //待支付订单的计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
@@ -81,10 +52,46 @@ Paipai.prototype = {
             }
         },1000)
         timerList.push(timer);
-
-
-
         //return timePrompt;
+    },
+
+
+}
+
+
+var commonCompt = {
+
+    //弹出对话框
+    Confirm: function (objPara){
+        var html =  '<div id="confirm" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;z-index:99;display:none">'+
+            '<div class="content" style="width:4.5rem;position:absolute;left:50%;margin-left:-2.25rem;margin-top:4rem;background-color:#fff;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem;border-radius:0.1rem;overflow:hidden;">'+
+            '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
+            '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
+            '<div class="action" style="font-size:0;">'+
+            '<button class="cancel" style="width:50%;background-color:#fff;border:none;outline:none;text-align:center;border-right:1px solid #c5c5c5;color:#858585;line-height:0.66rem;">'+objPara.cancleText+'</button>'+
+            '<button class="certain" style="width:50%;background-color:#fff;border:none;outline:none;text-align:center;color:#F95454;line-height:0.66rem;">'+objPara.certainText+'</button>'+
+            '</div>'+
+            '</div>'+
+            '</div>'
+
+        $('body').append(html);
+        if(objPara.hasTitle){
+            $('#confirm .content .title').show();
+        }
+        $('#confirm').fadeIn();
+        $('#confirm .action .cancel').click(function(){
+            objPara.rightBtnClick();
+            $('#confirm').fadeOut(300,function(){
+                $('#confirm').remove();
+            });
+
+        })
+        $('#confirm .action .certain').click(function(){
+            objPara.leftBtnClick();
+            $('#confirm').fadeOut(300,function(){
+                $('#confirm').remove();
+            });
+        })
     },
 
     //弹出提示信息
@@ -145,12 +152,51 @@ Paipai.prototype = {
 
     },
 
+    //底部主导航
+    mainNav: function(index){
+        var html;
+        html =  '<div id="mainNav">'+
+                    '<div class="nav_wrap">'+
+                        '<button class="home">'+
+                            '<i></i><br><span>商城</span>'+
+                        '</button>'+
+                        '<button class="collection">'+
+                            '<i></i><br><span>收藏</span>'+
+                        '</button>'+
+                        '<button class="order">'+
+                            '<i></i><br><span>订单</span>'+
+                        '</button>'+
+                        '<button class="personal">'+
+                            '<i></i><br><span>会员</span>'+
+                        '</button>'+
+                    '</div>'+
+                '</div>'
+
+
+        $('body').append(html);
+        $('#mainNav button').eq(index-1).addClass('active');
+        $('#mainNav').on('click','button',function(){
+            //$('#mainNav button').removeClass('active');
+            //$(this).addClass('active');
+
+        })
+    },
+
+    //提示用户等待的遮罩
+    addMask: function(str){
+        var html = '<div id="mask" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;">'+
+            '<p style="color:#fff;font-size:0.28rem;text-align:center;margin-top:5rem;">' + str + '</p>'+
+            '</div>';
+
+        $('body').append(html);
+    },
+
     //图片压缩转base64，依赖EXIF，解决iphone拍照旋转问题
     readFile: function(obj,imgListBase64,position,addBtn) {
 
         //var windowURL = window.URL || window.webkitURL;
 
-        var popPrompt = this.popPrompt;
+        var popPrompt = commonCompt.popPrompt;
         var files = obj.files;
         var imgCount = 0;
         if(files.length + imgListBase64.length > 4){
@@ -165,12 +211,12 @@ Paipai.prototype = {
             imgCount = files.length;
         }
         if(imgCount > 0){
-            this.addMask("图片加载中...");
+            commonCompt.addMask("图片加载中...");
         }
         for(var i=0; i<imgCount; i++){
             //判断类型是不是图片
             if (!/image\/\w+/.test(files[i].type)) {
-                this.popPrompt("请确保文件为图像类型");
+                popPrompt("请确保文件为图像类型");
                 return false;
             }
 
@@ -251,13 +297,8 @@ Paipai.prototype = {
         }
         //console.log("添加结束",imgListBase64);
 
-    },
-
-    addMask: function(str){
-        var html = '<div id="mask" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;">'+
-                        '<p style="color:#fff;font-size:0.28rem;text-align:center;margin-top:5rem;">' + str + '</p>'+
-                    '</div>';
-
-        $('body').append(html);
     }
+
 }
+
+

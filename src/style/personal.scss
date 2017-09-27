@@ -1,0 +1,167 @@
+@import "_reset.scss";
+@import "_common.scss";
+body {
+  background-color: #f0f0f0;
+}
+#persoanlCenter {
+  
+  #zoneHeader {
+    position: relative;
+    width: 100%;
+    height: 2.7rem;
+    background-color: $paiRed;
+    padding-left: 2.28rem;
+    overflow: hidden;
+    .avatar {
+      @include smallBlock(1.68rem,1.68rem);
+      background: url("../imgs/detail_03.jpg") center center no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      border-radius: 50%;
+      position: absolute;
+      top: 0.48rem;
+      left: 0.24rem;
+    }
+    .info {
+      color: #fff;
+      font-size: 0;
+      margin-top: 0.94rem;
+      .name {
+        font-size: 0.3rem;
+        line-height: 0.5rem;
+      }
+      .phone {
+        font-size: 0.28rem;
+      }
+    }
+    .detail_enter {
+      @include smallIcon(0.14rem,0.22rem,url("../imgs/arrow_right_white.png"));
+      position: absolute;
+      top: 1.2rem;
+      right: 0.24rem;
+    }
+  }
+
+  #selection {
+    .single_btn {
+      font-size: 0;
+      padding: 0 0.24rem;
+      border-bottom: 1px solid #bbb;
+      .pre_icon {
+        @include smallIcon(0.44rem,0.44rem,url("../imgs/zone_money.png"));
+        vertical-align: middle;
+        margin-right: 0.1rem;
+        &.order {
+          background-image: url("../imgs/zone_order.png");
+        }
+        &.collection {
+          background-image: url("../imgs/zone_collection.png");
+        }
+        &.address {
+          background-image: url("../imgs/zone_address.png");
+        }
+        &.service {
+          background-image: url("../imgs/zone_service.png");
+        }
+        &.help {
+          background-image: url("../imgs/zone_help.png");
+        }
+      }
+      .title {
+        line-height: 0.84rem;
+        font-size: 0.26rem;
+        vertical-align: middle;
+      }
+      .icon_enter {
+        @include smallIcon(0.14rem,0.22rem,url("../imgs/icon_arrow.png"));
+        float: right;
+        margin-top: 0.32rem;
+      }
+      .money {
+        font-size: 0.26rem;
+        color: $paiRed;
+        float: right;
+        line-height: 0.84rem;
+        margin-right: 0.12rem;
+      }
+    }
+  }
+  
+}
+
+#collection {
+  padding: 0 0.24rem;
+  .single_collect {
+    width: 100%;
+    height: 2.4rem;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    -webkit-box-shadow: 0 0 0.1rem rgba(98,98,98,0.5);
+    -moz-box-shadow: 0 0 0.1rem rgba(98,98,98,0.5);
+    box-shadow: 0 0 0.1rem rgba(98,98,98,0.5);
+    font-size: 0.2rem;
+    margin-top: 0.16rem;
+    padding: 0.26rem 0.52rem 0.2rem 2.2rem;
+    position: relative;
+    .img {
+      @include smallBlock(1.92rem,1.92rem);
+      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      position: absolute;
+      left: 0.12rem;
+      top: 0.24rem;
+    }
+    .content {
+      .title {
+        font-size: 0.22rem;
+      }
+      .para {
+        color: #858585;
+        font-size: 0.2rem;
+      }
+      .price {
+        margin-top: 0.36rem;
+        .price_now {
+          font-size: 0.3rem;
+          color: $paiRed;
+        }
+        .price_primary {
+          font-size: 0.2rem;
+          color: #858585;
+          text-decoration: line-through;
+          margin-left: 0.1rem;
+        }
+      }
+    }
+    .close {
+      @include smallIcon(0.28rem,0.28rem,url("../imgs/close.png"));
+      position: absolute;
+      right: 0.1rem;
+      top: 0.1rem;
+    }
+    .count {
+      color: #858585;
+      position: absolute;
+      right: 0.24rem;
+      top: 1.02rem;
+    }
+    button {
+      position: absolute;
+      right: 0.16rem;
+      bottom: 0.2rem;
+      background-color: #858585;
+      color: #fff;
+      font-size: 0.2rem;
+      width: 0.96rem;
+      line-height: 0.36rem;
+      border-radius: 0.04rem;
+      border: none;
+      outline: none;
+      &.active {
+        background-color: $paiRed;
+      }
+    }
+  }
+}

@@ -95,7 +95,7 @@
     var imgListBase64 = [];
 //    var imgListUrl = [];
     $('#uploadImg').change(function(e){
-        Paipai.prototype.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
+        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
     })
 
     $('#pics_box').on('click', '.picture i',function(){
@@ -118,7 +118,7 @@
 //        console.log("待提交：",imgListBase64);
         var $reason = $('.reason_sel').val();
         if(!$reason){
-            Paipai.prototype.popPrompt("请选择退款原因");
+            commonCompt.popPrompt("请选择退款原因");
         }else {
 //            $.ajax({
 //                url:'http://yiyayiya.0lz.net/verify_phone',
@@ -132,6 +132,14 @@
 //                error: function(err){}
 //            })
         }
+
+        var data = {
+            reason: "不想要了",
+            imgs: imgListBase64,
+            addition: "这个商品的发生的故事公司如果发"
+        }
+
+        console.log(data);
     })
 
 
