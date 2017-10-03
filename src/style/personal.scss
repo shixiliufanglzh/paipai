@@ -159,8 +159,251 @@ body {
       border-radius: 0.04rem;
       border: none;
       outline: none;
-      &.active {
+      &.red {
         background-color: $paiRed;
+      }
+      &.yellow {
+        background-color: $paiYellow;
+      }
+    }
+  }
+}
+
+#purse {
+
+  #header {
+    padding-left: 1.9rem;
+    position: relative;
+    background-color: #fff;
+    min-height: 1.8rem;
+    .avatar {
+      @include smallBlock(1.16rem,1.16rem);
+      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      -webkit-background-size: cover;
+      background-size: cover;
+      border-radius: 50%;
+      position: absolute;
+      left: 0.38rem;
+      top: 0.36rem;
+    }
+    .msg {
+      padding-top: 0.44rem;
+      .name {
+        font-size: 0.26rem;
+      }
+      .count {
+        font-size: 0.24rem;
+        margin-top: 0.1rem;
+        span {
+          font-size: 0.36rem;
+          color: $paiRed;
+          margin-left: 0.36rem;
+        }
+      }
+    }
+    button {
+      background-color: $paiRed;
+      position: absolute;
+      right: 0.3rem;
+      top: 0.6rem;
+      color: #fff;
+      font-size: 0.24rem;
+      width: 1.28rem;
+      line-height: 0.58rem;
+      border-radius: 0.06rem;
+      border: none;
+      outline: none;
+    }
+  }
+
+  #column {
+    margin-top: 0.2rem;
+    padding: 0.1rem 0.24rem;
+    background-color: #fff;
+    font-size: 0.24rem;
+    h4 {
+      font-size: 0.3rem;
+      font-weight: 500;
+      i.rule {
+        @include smallIcon(0.35rem,0.35rem,url("../imgs/rule_caution.png"));
+        margin-right: 0.1rem;
+        vertical-align: middle;
+        margin-top: -0.08rem;
+      }
+      i.gift {
+        @include smallIcon(0.35rem,0.35rem,url("../imgs/gift.png"));
+        margin-right: 0.1rem;
+        vertical-align: middle;
+        margin-top: -0.08rem;
+      }
+    }
+    p.content {
+      padding-left: 0.52rem;
+      line-height: 0.36rem;
+    }
+  }
+
+  #bottomBtn {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+}
+
+
+#purseChange {
+  .change_detail {
+    padding: 0.24rem;
+    border-bottom: 1px solid #E8E8E8;
+    .left {
+      float: left;
+      h4 {
+        font-size: 0.24rem;
+        font-weight: 500;
+      }
+      p {
+        font-size: 0.22rem;
+        margin-top: 0.06rem;
+      }
+    }
+    .right {
+      float: right;
+      font-size: 0.48rem;
+      &.plus {
+        color: $paiRed;
+      }
+    }
+  }
+}
+
+#receiveInfo {
+  .single_addr {
+    background-color: #fff;
+    margin-bottom: 0.2rem;
+    .info {
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0.24rem;
+      .base {
+        font-size: 0.3rem;
+        .name {
+          float: left;
+        }
+        .phone {
+          float: right;
+        }
+      }
+      .addr {
+        font-size: 0.26rem;
+        color: #858585;
+        margin-top: 0.24rem;
+      }
+    }
+    .change {
+      font-size: 0;
+      padding: 0.18rem 0.24rem;
+      .default {
+        display: inline-block;
+        margin-top: 0.2rem;
+        font-size: 0.26rem;
+        color: #666;
+        i {
+          @include smallIcon(0.32rem,0.32rem,url("../imgs/unselected.png"));
+          margin-bottom: -0.06rem;
+          margin-right: 0.1rem;
+        }
+      }
+      button {
+        margin-left: 0.2rem;
+        font-size: 0.28rem;
+        color: #666;
+        outline: none;
+        background-color: transparent;
+        float: right;
+        line-height: 0.6rem;
+        width: 1.18rem;
+        border: 1px solid #666;
+        -webkit-border-radius: 0.04rem;
+        -moz-border-radius: 0.04rem;
+        border-radius: 0.04rem;
+      }
+    }
+    &.set_default {
+      .change {
+        .default {
+          color: $paiRed;
+          i {
+            @include smallIcon(0.32rem,0.32rem,url("../imgs/selected.png"));
+          }
+        }
+      }
+    }
+  }
+}
+#newAddr {
+  font-size: 0.3rem;
+  color: #fff;
+  width: 88%;
+  margin-left: 6%;
+  position: fixed;
+  bottom: 0.6rem;
+  line-height: 0.9rem;
+  outline: none;
+  border: none;
+  background-color: $paiRed;
+}
+
+#addInfo {
+  .fill_one {
+    background-color: #fff;
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 0.28rem;
+    padding: 0 0.24rem;
+    .title {
+      line-height: 0.96rem;
+    }
+    input {
+      font-size: 0.28rem;
+      float: right;
+      line-height: 0.96rem;
+      border: none;
+      width: 5.2rem;
+      &#area {
+        margin-right: 0.1rem;
+        text-align: right;
+        width: 5rem;
+      }
+    }
+    i {
+      @include smallIcon(0.3rem,0.18rem,url("../imgs/icon_arrow.png"));
+      float: right;
+      margin-top: 0.38rem;
+    }
+    #address {
+      width: 100%;
+      height: 1.24rem;
+      margin: 0.24rem 0;
+      resize: none;
+      height: 2.2rem;
+      border: none;
+      font-size: 0.28rem;
+      font-family: 'Microsoft YaHei';
+    }
+  }
+  .default {
+    margin-top: 0.2rem;
+    padding: 0 0.24rem;
+    background-color: #fff;
+    font-size: 0;
+    span  {
+      line-height: 0.96rem;
+      font-size: 0.28rem;
+    }
+    i {
+      float: right;
+      @include smallIcon(0.32rem,0.32rem,url("../imgs/unselected.png"));
+      margin-top: 0.32rem;
+      &.set_default {
+        @include smallIcon(0.32rem,0.32rem,url("../imgs/selected.png"));
       }
     }
   }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body style="background-color: #fff;">
+<div id="purseChange">
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>签到拍币</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right plus">+1</div>
+    </div>
+
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>系统随机赠送拍币</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right plus">+2</div>
+    </div>
+
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>签到拍币</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right plus">+1</div>
+    </div>
+
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>竞拍商品</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right">-1</div>
+    </div>
+
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>互动拍币</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right plus">+2</div>
+    </div>
+
+    <div class="change_detail clearfix">
+        <div class="left">
+            <h4>竞拍商品</h4>
+            <p>2017-08-17 20:02:07</p>
+        </div>
+        <div class="right">-1</div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+    })
+
+
+
+
+
+</script>
+</html>

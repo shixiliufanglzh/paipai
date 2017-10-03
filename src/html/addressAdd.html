@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body>
+<div id="addInfo">
+    <div class="fill_one">
+        <span class="title">收货人</span><input id="name" type="text" placeholder="请输入姓名">
+    </div>
+    <div class="fill_one">
+        <span class="title">联系电话</span><input id="phone" type="number" placeholder="请输入手机号码">
+    </div>
+
+    <div class="fill_one">
+        <span class="title">所在地区</span><i></i><input id="area" type="text" placeholder="省/市/县（区）" readonly="readonly">
+    </div>
+
+    <div class="fill_one">
+        <textarea name="" id="address" placeholder="请输入详细地址"></textarea>
+    </div>
+
+    <div class="default">
+        <span>设为默认</span><i></i>
+    </div>
+
+</div>
+
+<button id="newAddr">保存新地址</button>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="../script/city.js"></script>
+<script src="../script/picker.min.js"></script>
+<script src="../script/iscroll.js"></script>
+
+<script>
+
+    var name,phone,province,city,county,address;
+    $(function(){
+        $('#area').val('');
+        changeAddress();
+
+
+    })
+
+    $('.default i').click(function(){
+        $(this).toggleClass('set_default');
+
+        if($(this).hasClass('set_default')){
+
+        }
+    })
+
+    $('#newAddr').click(function(){
+        name = $('#name').val();
+        phone = $('#phone').val();
+        address = $('#address').val();
+        if(name.length <= 0){
+            commonCompt.popPrompt('请输入收货人姓名');
+        }else if(phone.length <= 0){
+            commonCompt.popPrompt('请输入收货人联系电话');
+        }else if(!commonCompt.checkPhone(phone)){
+            commonCompt.popPrompt('号码格式错误');
+        }else if(city.length <= 0){
+            commonCompt.popPrompt('请选择省市信息');
+        }else if(address.length <= 0){
+            commonCompt.popPrompt('请填写详细地址');
+        }else{
+
+
+
+        }
+    })
+
+    $('#name').blur(function(){
+        if(!commonCompt.nameVerify($('#name').val())){
+            $('#name').val($('#name').val().replace(/(^\s*)|(\s*$)/g, ""));
+        }
+    })
+
+    //所在区域
+    function changeAddress() {
+
+        //省市区选择
+        var first = []; /* 省，直辖市 */
+        var second = []; /* 市 */
+        var third = []; /* 县镇 */
+
+        var selectedIndex = [0, 0, 0]; /* 默认选中的地区 */
+
+        var checked = [0, 0, 0]; /* 已选选项 */
+
+        function creatList(obj, list) {
+            obj.forEach(function(item, index, arr) {
+                var temp = new Object();
+                temp.text = item.name;
+                temp.value = index;
+                list.push(temp);
+            })
+        }
+
+        creatList(proData_, first);
+
+        var sel_city = [];
+        for (var i = 0; i < cityData_.length; i++) {
+            if (cityData_[i].pk == proData_[selectedIndex[0]].pk) {
+                sel_city.push(cityData_[i])
+            }
+        }
+        creatList(sel_city, second);
+
+        var sel_country = [];
+        for (var i = 0; i < countryData_.length; i++) {
+            if (countryData_[i].ck == sel_city[selectedIndex[1]].ck) {
+                sel_country.push(countryData_[i])
+            }
+        }
+        creatList(sel_country, third);
+
+
+
+        var picker = new Picker({
+            data: [first, second, third],
+            selectedIndex: selectedIndex,
+            title: '地址选择'
+        });
+
+        picker.on('picker.select', function(selectedVal, selectedIndex) {
+            var text1 = first[selectedIndex[0]].text;
+            var text2 = second[selectedIndex[1]].text;
+            var text3 = third[selectedIndex[2]].text;
+
+            $('#area').innerText = text1 + ' ' + text2 + ' ' + text3;
+        });
+
+        picker.on('picker.change', function(index, selectedIndex) {
+            if (index === 0) {
+                firstChange();
+            } else if (index === 1) {
+                secondChange();
+            }
+
+            function firstChange() {
+                second = [];
+                third = [];
+                checked[0] = selectedIndex;
+                var firstCity = proData_[selectedIndex];
+
+                var cur_city_arr = [];
+                for (var i = 0; i < cityData_.length; i++) {
+                    if (cityData_[i].pk == firstCity.pk) {
+                        cur_city_arr.push(cityData_[i])
+                    }
+                }
+                creatList(cur_city_arr, second);
+
+                var cur_country_arr = [];
+                for (var i = 0; i < countryData_.length; i++) {
+                    if (countryData_[i].ck == cur_city_arr[0].ck) {
+                        cur_country_arr.push(countryData_[i])
+                    }
+                }
+                creatList(cur_country_arr, third);
+
+
+                picker.refillColumn(1, second);
+                picker.refillColumn(2, third);
+                picker.scrollColumn(1, 0)
+                picker.scrollColumn(2, 0)
+            }
+
+            function secondChange() {
+                third = [];
+                checked[1] = selectedIndex;
+                var first_index = checked[0];
+                var cur_city_arr = [];
+                for (var i = 0; i < cityData_.length; i++) {
+                    if (cityData_[i].pk == proData_[first_index].pk) {
+                        cur_city_arr.push(cityData_[i])
+                    }
+                }
+                var secondCity = cur_city_arr[selectedIndex];
+
+                var cur_country_arr = [];
+                for (var i = 0; i < countryData_.length; i++) {
+                    if (countryData_[i].ck == secondCity.ck) {
+                        cur_country_arr.push(countryData_[i])
+                    }
+                }
+                creatList(cur_country_arr, third);
+                picker.refillColumn(2, third);
+                picker.scrollColumn(2, 0)
+            }
+
+        });
+
+        picker.on('picker.valuechange', function(selectedVal, selectedIndex) {
+            console.log(selectedVal);
+            console.log(selectedIndex);
+            var $sel_province = proData_[selectedVal[0]].name;
+
+            var cur_city_arr = [];
+            for (var i = 0; i < cityData_.length; i++) {
+                if (cityData_[i].pk == proData_[selectedVal[0]].pk) {
+                    cur_city_arr.push(cityData_[i])
+                }
+            }
+            var $sel_city = cur_city_arr[selectedVal[1]].name;
+            var cur_country_arr = [];
+            for (var i = 0; i < countryData_.length; i++) {
+                if (countryData_[i].ck == cur_city_arr[selectedVal[1]].ck) {
+                    cur_country_arr.push(countryData_[i])
+                }
+            }
+            var $sel_county = cur_country_arr[selectedVal[2]].name;
+
+            $('#area').val($sel_province + " " + $sel_city + " " + $sel_county);
+//            console.log($sel_province + " " + $sel_city + " " + $sel_county);
+            province = $sel_province;
+            city = $sel_city;
+            county = $sel_county;
+        });
+
+        $('#area').on('click', function() {
+            picker.show();
+        });
+        $('#area').focus(function() {
+            this.blur();
+        });
+
+    }
+
+</script>
+</html>

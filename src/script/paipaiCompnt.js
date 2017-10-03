@@ -80,14 +80,14 @@ var commonCompt = {
         }
         $('#confirm').fadeIn();
         $('#confirm .action .cancel').click(function(){
-            objPara.rightBtnClick();
+            objPara.leftBtnClick();
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
 
         })
         $('#confirm .action .certain').click(function(){
-            objPara.leftBtnClick();
+            objPara.rightBtnClick();
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
@@ -297,6 +297,60 @@ var commonCompt = {
         }
         //console.log("添加结束",imgListBase64);
 
+    },
+
+    //验证手机号
+    checkPhone: function(phoneNum) {
+        var pattern = /^1[0-9]{10}$/;
+        var isPhone = 1;
+        if (phoneNum != '' && !pattern.test(phoneNum)) {
+            //this.popPrompt('错误的手机号码');
+            isPhone = 0;
+        } else {
+            isPhone = 1;
+        }
+        return isPhone;
+    },
+
+    //姓名校验函数
+    nameVerify: function(val) {
+        //var reg = new RegExp("[`~!@#$^&*()=|{}':;',\\[\\].<>/?~！@#￥……&*（）——|{}【】‘；：”“'。，、？]");
+        //var reg_space = /(^\s+)|(\s+$)/g;
+        var reg_space = /(^\s+)|(\s+$)/g;
+        //var reg_num = /\d/g;
+        //var regIcon = /\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]/g;
+        if (val !== "" && (reg_space.test(val))) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
+    //验证码倒计时
+    timeCount: function(remainTime, sendBtn) {
+        var timer = null;
+
+        sendBtn.attr("disabled", true); //设置disabled属性
+        sendBtn.html('重新发送(60)');
+
+        var remain = remainTime,
+            remain_time = ""
+        remain_time = '重新发送(' + remainTime + ')';
+        timer = setInterval(function() {
+            remain--;
+            sendBtn.html('重新发送(' + remain + ')');
+            if (remain <= 0) {
+                sendBtn.removeAttr("disabled"); //移除disabled属性
+                sendBtn.html('获取验证码');
+                clearInterval(timer); //清除setInterval
+            }
+        }, 1000);
+    },
+
+    trim: function(str){
+        return str.replace(/(^\s*)|(\s*$)/g, "");
+        //alert($a.length);
+        //   alert(str.length);
     }
 
 }
