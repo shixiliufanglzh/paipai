@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body>
+<div id="persoanlInfo">
+    <div class="single_option clearfix" id="nickname">
+        <span class="left">昵称</span>
+        <span class="right">是昔流芳</span>
+    </div>
+    <div class="single_option clearfix">
+        <span class="left">手机</span>
+        <span class="right">136****5342</span>
+    </div>
+    <div class="single_option clearfix" id="name">
+        <span class="left">姓名</span>
+        <span class="right">王者荣耀</span>
+    </div>
+    <div class="single_option clearfix">
+        <span class="left">生日</span>
+        <input id="birth" placeholder="生日" class="right">
+        <!--<span class="right">1994-09-01</span>-->
+    </div>
+    <div class="single_option clearfix">
+        <span class="left">性别</span>
+        <select class="right">
+            <option value selected disabled>性别</option>
+            <option value="男">男</option>
+            <option value="男">女</option>
+        </select>
+    </div>
+</div>
+
+<div id="datePlugin"></div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="../script/picker.min.js"></script>
+<script src="../script/iscroll.js"></script>
+<script src="../script/date.js"></script>
+
+<script>
+
+    $(function(){
+        $('#birth').date();
+
+
+
+    })
+
+    $('.single_option').change(function(){
+
+    })
+
+    $('#nickname').click(function(){
+        commonCompt.Confirm({
+            hasTitle: true,
+            showInput: true,
+            title: "修改昵称",
+            contentText: "",
+            cancleText: "取消",
+            certainText: "确认",
+            inputPlace: "新昵称",
+            rightBtnClick: function(){
+                var changeVal = $('#confirm input').val() ;
+                if(!commonCompt.nameVerify(changeVal)){
+                    changeVal = changeVal.replace(/(^\s*)|(\s*$)/g, "");
+                }
+                if(!changeVal){
+                    commonCompt.popPrompt("不能为空");
+                }else {
+//                    $.ajax({})
+                }
+            },
+            leftBtnClick: function(){
+            }
+        })
+    })
+
+    $('#name').click(function(){
+        commonCompt.Confirm({
+            hasTitle: true,
+            showInput: true,
+            title: "姓名",
+            contentText: "",
+            cancleText: "取消",
+            certainText: "确认",
+            inputPlace: "姓名",
+            rightBtnClick: function(){
+                var changeVal = $('#confirm input').val() ;
+                if(!commonCompt.nameVerify(changeVal)){
+                    changeVal = changeVal.replace(/(^\s*)|(\s*$)/g, "");
+                }
+                if(!changeVal){
+                    commonCompt.popPrompt("不能为空");
+                }else {
+//                    $.ajax({})
+                }
+            },
+            leftBtnClick: function(){
+            }
+        })
+    })
+
+
+
+
+
+</script>
+</html>
