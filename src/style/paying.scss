@@ -36,43 +36,63 @@
 
   #orderDetail {
     //padding-bottom: 0.3rem;
-    h4 {
-      font-size: 0.3rem;
-      color: $paiRed;
-      font-weight: 500;
-      line-height: 0.7rem;
-      padding: 0rem 0.24rem;
-      border-bottom: 1px solid #333;
-    }
-    .good_detail {
-      padding: 0.24rem 0.24rem 0.24rem 2.3rem;
-      position: relative;
-      .img {
-        width: 1.82rem;
-        height: 1.82rem;
-        background: url("../imgs/detail_03.jpg") center center no-repeat;
-        -webkit-background-size: cover;
-        background-size: cover;
-        position: absolute;
-        left: 0.24rem;
-        top: 0.24rem;
-      }
-      p {
-        font-size: 0.22rem;
-        color: #858585;
-        margin-top: 0.10rem;
-      }
-      p.product {
-        font-size: 0.24rem;
-        color: #2f2f2f;
-        margin-top: 0;
-      }
-      p.price_now {
-        .price {
-          color: $paiRed;
+    .single_good {
+      border-bottom: 0.2rem solid #f0f0f0;
+      &.selected {
+        h4 {
+          .contain_state {
+            @include smallIcon(0.32rem,0.32rem,url("../imgs/selected.png"));
+          }
         }
-        .count {
+      }
+      h4 {
+        font-size: 0;
+        font-weight: 500;
+        padding: 0.18rem 0.24rem;
+        border-bottom: 1px solid #eee;
+        .contain_state {
+          @include smallIcon(0.32rem,0.32rem,url("../imgs/unselected.png"));
+          margin-bottom: -0.08rem;
+          margin-right: 0.1rem;
+        }
+        span {
+          font-size: 0.24rem;
+        }
+        .delete {
+          @include smallIcon(0.28rem,0.34rem,url("../imgs/trash.png"));
           float: right;
+        }
+      }
+      .good_detail {
+        padding: 0.24rem 0.24rem 0.24rem 2.3rem;
+        position: relative;
+        .img {
+          width: 1.82rem;
+          height: 1.82rem;
+          background: url("../imgs/detail_03.jpg") center center no-repeat;
+          -webkit-background-size: cover;
+          background-size: cover;
+          position: absolute;
+          left: 0.24rem;
+          top: 0.24rem;
+        }
+        p {
+          font-size: 0.22rem;
+          color: #858585;
+          margin-top: 0.10rem;
+        }
+        p.product {
+          font-size: 0.24rem;
+          color: #2f2f2f;
+          margin-top: 0;
+        }
+        p.price_now {
+          .price {
+            color: $paiRed;
+          }
+          .count {
+            float: right;
+          }
         }
       }
     }
@@ -108,6 +128,7 @@
       font-size: 0.3rem;
       color: #2f2f2f;
       padding: 0.24rem;
+      margin-bottom: 2rem;
       span {
         float: right;
         color: $paiRed;
@@ -115,9 +136,103 @@
     }
   }
 
-  #payBtn {
-    width: 100%;
+  #submitOrder {
     position: fixed;
-    bottom: 0;
+    bottom: 0.98rem;
+    width: 100%;
+    .total_wrap {
+      display: flex;
+      flex-wrap: nowrap;
+      font-size: 0.3rem;
+      background-color: rgba(255,255,255,0.9);
+      border-top: 1px solid #ddd;
+      .select_all {
+        flex-grow: 190;
+        line-height: 0.98rem;
+        margin-left: 0.24rem;
+        i {
+          @include smallIcon(0.32rem,0.32rem,url("../imgs/unselected.png"));
+          margin-bottom: -0.05rem;
+          margin-right: 0.1rem;
+        }
+        &.active {
+          i {
+            @include smallIcon(0.32rem,0.32rem,url("../imgs/selected.png"));
+          }
+        }
+      }
+      .sum {
+        flex-grow: 370;
+        padding-top: 0.16rem;
+        padding-right: 0.16rem;
+        p {
+          text-align: right;
+          .should_pay {
+            color: $paiRed;
+          }
+          &.save {
+            font-size: 0.2rem;
+          }
+        }
+      }
+      .submit_btn {
+        flex-grow: 190;
+        background-color: $paiRed;
+        color: #fff;
+        text-align: center;
+        line-height: 0.98rem;
+      }
+    }
+  }
+
+  #payingDetail {
+    border-bottom: 0.2rem solid #f0f0f0;
+    &>div {
+      line-height: 0.84rem;
+      font-size: 0;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0 0.24rem;
+      span {
+        font-size: 0.24rem;
+        &.red {
+          color: $paiRed;
+        }
+        &.content {
+          float: right;
+        }
+      }
+    }
+  }
+  #payingPath {
+    &>div {
+      line-height: 0.95rem;
+      font-size: 0;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 0 0.24rem;
+      span {
+        font-size: 0.24rem;
+        vertical-align: middle;
+      }
+      .arrow {
+        @include smallIcon(0.14rem, 0.22rem, url("../imgs/icon_arrow.png"));
+        float: right;
+        margin-top: 0.36rem;
+      }
+    }
+    .alipay {
+      .icon_pay {
+        @include smallIcon(0.6rem,0.6rem,url("../imgs/alipay.png"));
+        vertical-align: middle;
+        margin-right: 0.3rem;
+      }
+    }
+    .wechat {
+      .icon_pay {
+        @include smallIcon(0.6rem,0.6rem,url("../imgs/wechat.png"));
+        vertical-align: middle;
+        margin-right: 0.3rem;
+      }
+
+    }
   }
 }

@@ -27,41 +27,18 @@
 <body>
 <div id="serviceDetail">
 
-    <div id="goodDetail">
-        <div class="good_msg clearfix">
-            <span class="img"></span>
-            <div class="product_desc">
-                <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-            </div>
-            <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×2</span></div>
-        </div>
+    <div id="grade">
+        <span class="title">总体评价</span>
+        <span class="chose_grade"><i></i><i></i><i></i><i></i><i></i></span>
+        <span class="state">待评价</span>
     </div>
 
-    <div id="fillMsg">
-        <div class="form_group clearfix">
-            <span class="required">*</span>
-            <label>申请服务：</label>
-            <span class="content">仅退款</span>
-        </div>
-        <div class="form_group clearfix">
-            <span class="required">*</span>
-            <label>退货原因：</label>
-            <select class="reason_sel">
-                <option disabled selected value>选择退款原因</option>
-                <option value="不想要">不想要</option>
-                <option value="参数选错了">参数选错了</option>
-            </select>
-        </div>
-        <div class="form_group clearfix">
-            <span class="required">*</span>
-            <label>退款金额：</label>
-            <span class="content">￥<span class="count">3999.00</span></span>
-        </div>
-        <p class="count_prompt">最多退款￥<span class="most_count">3999.00</span>，包含快递费￥<span class="postage">0.00</span></p>
+    <div id="addition">
+        <!--<h3>补充说明：</h3>-->
+        <textarea placeholder="评价内容"></textarea>
     </div>
 
-    <div id="uploadPics" class="clearfix">
+    <div id="uploadPics" class="pic_evaluate clearfix">
         <h3>上传凭证<span>（最多上传4张照片）</span>：</h3>
         <input type="file" id="uploadImg" accept="image/*" multiple="multiple" capture=“camera”>
         <div id="pics_box">
@@ -69,13 +46,9 @@
         </div>
         <label for="uploadImg" class="add_pic"></label>
     </div>
-    
-    <div id="addition">
-        <h3>补充说明：</h3>
-        <textarea></textarea>
-    </div>
 
-    <button id="msgSubmit">提交</button>
+
+    <button id="msgSubmit" class="submit_eva">提交</button>
 </div>
 
 
@@ -95,15 +68,15 @@
     var imgListBase64 = [];
 //    var imgListUrl = [];
     $('#uploadImg').change(function(e){
-        Paipai.prototype.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
+        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
     })
 
     $('#pics_box').on('click', '.picture i',function(){
-        console.log("删除前：",imgListBase64);
+//        console.log("删除前：",imgListBase64);
 //        console.log($(this).parent().index());
         imgListBase64.splice($(this).parent().index(),1);
 //        imgListUrl.splice($(this).parent().index(),1);
-        console.log("删除后：",imgListBase64);
+//        console.log("删除后：",imgListBase64);
         $(this).parent().remove();
         imgListBase64,$('#pics_box').html('');
         for(var i=0;i<imgListBase64.length;i++){
@@ -118,7 +91,7 @@
 //        console.log("待提交：",imgListBase64);
         var $reason = $('.reason_sel').val();
         if(!$reason){
-            Paipai.prototype.popPrompt("请选择退款原因");
+            commonCompt.popPrompt("请选择退款原因");
         }else {
 //            $.ajax({
 //                url:'http://yiyayiya.0lz.net/verify_phone',
@@ -132,6 +105,45 @@
 //                error: function(err){}
 //            })
         }
+
+        var data = {
+            reason: "不想要了",
+            imgs: imgListBase64,
+            addition: "这个商品的发生的故事公司如果发"
+        }
+
+        console.log(data);
+    })
+
+    $('.chose_grade').on('click','i',function(){
+        var grade = $(this).index();
+//        console.log(grade);
+        $('.chose_grade i').removeClass('light');
+        for(var i=0; i<grade+1; i++){
+            $('.chose_grade i').eq(i).addClass('light');
+        }
+        var eva_summary = "";
+        switch(grade){
+            case 0 :
+                eva_summary = "非常差";
+                break;
+            case 1 :
+                eva_summary = "差";
+                break;
+            case 2 :
+                eva_summary = "一般";
+                break;
+            case 3 :
+                eva_summary = "好";
+                break;
+            case 4 :
+                eva_summary = "非常好";
+                break;
+            default:
+                eva_summary = "待评价";
+        };
+//        console.log(eva_summary);
+        $('#grade .state').html(eva_summary);
     })
 
 

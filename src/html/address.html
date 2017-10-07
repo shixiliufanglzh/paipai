@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/personal.css">
+</head>
+<body>
+<div id="receiveInfo">
+    <div class="single_addr set_default" data-addr-id="1">
+        <div class="info">
+            <div class="base clearfix">
+                <span class="name">张三</span>
+                <span class="phone">13637115342</span>
+            </div>
+            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
+        </div>
+        <div class="change clearfix">
+            <span class="default"><i></i>设为默认</span>
+            <button class="delete">删除</button>
+            <button class="edit">编辑</button>
+        </div>
+    </div>
+
+    <div class="single_addr" data-addr-id="2">
+        <div class="info">
+            <div class="base clearfix">
+                <span class="name">李四</span>
+                <span class="phone">13637115342</span>
+            </div>
+            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
+        </div>
+        <div class="change clearfix">
+            <span class="default"><i></i>设为默认</span>
+            <button class="delete">删除</button>
+            <button class="edit">编辑</button>
+        </div>
+    </div>
+
+    <div class="single_addr" data-addr-id="3">
+        <div class="info">
+            <div class="base clearfix">
+                <span class="name">王二麻子</span>
+                <span class="phone">13637115342</span>
+            </div>
+            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
+        </div>
+        <div class="change clearfix">
+            <span class="default"><i></i>设为默认</span>
+            <button class="delete">删除</button>
+            <button class="edit">编辑</button>
+        </div>
+    </div>
+</div>
+
+<button id="newAddr">添加新地址</button>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+    })
+
+    $('.delete').click(function(){
+        var addressCur = $(this).parents('.single_addr');
+        var addressId = addressCur.attr('data-addr-id');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认要删除该地址吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                addressCur.remove();
+                $('.single_addr').eq(0).addClass('set_default');
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    $('.default').click(function(){
+        $('.single_addr').removeClass('set_default');
+        $(this).parents('.single_addr').addClass('set_default');
+    })
+
+</script>
+</html>

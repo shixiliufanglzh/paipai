@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/service.css">
+</head>
+<body style="background-color: #f0f0f0;">
+<div id="serviceDetail">
+
+    <div id="goodDetail">
+        <div class="good_msg clearfix">
+            <span class="img"></span>
+            <div class="product_desc">
+                <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
+                <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
+            </div>
+            <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×2</span></div>
+        </div>
+    </div>
+
+    <div class="service_kind">
+        <span class="main_icon"></span>
+        <h6>退货退款</h6>
+        <p>已收到货，需要退还收到的货物</p>
+        <i></i>
+    </div>
+
+    <div class="service_kind">
+        <span class="main_icon"></span>
+        <h6>仅退款</h6>
+        <p>未收到货（包含未签收），或卖家协商同意前提下</p>
+        <i></i>
+    </div>
+
+    <div class="service_kind">
+        <span class="main_icon"></span>
+        <h6>换货</h6>
+        <p>商品存在质量问题，联系卖家协商换货</p>
+        <i></i>
+    </div>
+
+
+</div>
+
+
+
+</body>
+<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>-->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/exif.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+    $(function(){
+
+    })
+
+
+
+
+
+
+</script>
+</html>

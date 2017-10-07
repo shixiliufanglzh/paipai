@@ -49,8 +49,12 @@
             <label>退款原因：</label>
             <select class="reason_sel">
                 <option disabled selected value>选择退款原因</option>
-                <option value="不想要">不想要</option>
-                <option value="参数选错了">参数选错了</option>
+                <option value="空包裹">空包裹</option>
+                <option value="快递物流一直未送到">快递物流一直未送到</option>
+                <option value="快递物流无跟踪记录">快递物流无跟踪记录</option>
+                <option value="货物破损已拒签">货物破损已拒签</option>
+                <option value="不喜欢/不想要已拒签">不喜欢/不想要已拒签</option>
+                <option value="其它">其它</option>
             </select>
         </div>
         <div class="form_group clearfix">
@@ -95,7 +99,7 @@
     var imgListBase64 = [];
     //    var imgListUrl = [];
     $('#uploadImg').change(function(e){
-        Paipai.prototype.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
+        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
     })
 
     $('#pics_box').on('click', '.picture i',function(){
@@ -118,7 +122,7 @@
 //        console.log("待提交：",imgListBase64);
         var $reason = $('.reason_sel').val();
         if(!$reason){
-            Paipai.prototype.popPrompt("请选择退款原因");
+            commonCompt.popPrompt("请选择退款原因");
         }else {
 //            $.ajax({
 //                url:'http://yiyayiya.0lz.net/verify_phone',

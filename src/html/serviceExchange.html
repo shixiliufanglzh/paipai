@@ -49,8 +49,12 @@
             <label>换货原因：</label>
             <select class="reason_sel">
                 <option disabled selected value>选择换货原因</option>
-                <option value="不想要">不想要</option>
-                <option value="参数选错了">参数选错了</option>
+                <option value="选错型号规格颜色">选错型号规格颜色</option>
+                <option value="质量问题">质量问题</option>
+                <option value="商品与描述不符">商品与描述不符</option>
+                <option value="卖家发错货">卖家发错货</option>
+                <option value="商品少件/破损/污渍等">商品少件/破损/污渍等</option>
+                <option value="其它">其它</option>
             </select>
         </div>
     </div>
@@ -89,7 +93,7 @@
     var imgListBase64 = [];
     //    var imgListUrl = [];
     $('#uploadImg').change(function(e){
-        Paipai.prototype.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
+        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
     })
 
     $('#pics_box').on('click', '.picture i',function(){
@@ -112,7 +116,7 @@
 //        console.log("待提交：",imgListBase64);
         var $reason = $('.reason_sel').val();
         if(!$reason){
-            Paipai.prototype.popPrompt("请选择退款原因");
+            commonCompt.popPrompt("请选择退款原因");
         }else {
 //            $.ajax({
 //                url:'http://yiyayiya.0lz.net/verify_phone',

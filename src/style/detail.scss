@@ -169,6 +169,8 @@
   }
 
   #production {
+    padding-bottom: 0.2rem;
+    border-bottom: 0.2rem solid #f0f0f0;
     .sorts_sel {
       font-size: 0.3rem;
       color: #2f2f2f;
@@ -187,8 +189,142 @@
         padding: 0.24rem;
         font-weight: 500;
       }
+      .rule_content {
+        display: flex;
+        flex-wrap: nowrap;
+        .single_rule {
+          flex_grow: 1;
+          padding: 0 0.12rem;
+          h6 {
+            font-weight: 500;
+            font-size: 0;
+            text-align: center;
+            margin-bottom: 0.2rem;
+            span {
+              font-size: 0.24rem;
+              vertical-align: middle;
+            }
+            i {
+              margin-right: 0.1rem;
+              vertical-align: middle;
+              &.one {
+                @include smallIcon(0.34rem,0.34rem,url("../imgs/rule_down.png"));
+              }
+              &.two {
+                @include smallIcon(0.34rem,0.34rem,url("../imgs/rule_hummer.png"));
+              }
+              &.three {
+                @include smallIcon(0.34rem,0.34rem,url("../imgs/rule_cycle.png"));
+              }
+            }
+          }
+          p {
+            font-size: 0.18rem;
+            text-align: justify;
+          }
+        }
+      }
     }
 
+  }
+
+  #about {
+    .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      border-bottom: 1px solid #f0f0f0;
+      height: 0.84rem;
+      .tab {
+        flex-grow: 1;
+        line-height: 0.84rem;
+        height: 0.84rem;
+        font-size: 0.28rem;
+        text-align: center;
+        &.current {
+          border-bottom: 2px solid $paiRed;
+          color: $paiRed;
+        }
+      }
+    }
+    .about_sorts {
+      padding: 0.1rem 0.24rem;
+      .good_detail {
+
+      }
+      .deal_record {
+        display: none;
+        .single_deal {
+          border-bottom: 1px solid #f0f0f0;
+          padding-bottom: 0.12rem;
+          margin-bottom: 0.12rem;
+          .deal_msg {
+            font-size: 0;
+            .name {
+              font-size: 0.3rem;
+            }
+            .time {
+              font-size: 0.2rem;
+              float: right;
+            }
+          }
+          .deal_detail {
+            padding-right: 2rem;
+            position: relative;
+            font-size: 0.2rem;
+            p {
+              margin-top: 0.1rem;
+            }
+            .deal_price {
+              font-size: 0.3rem;
+              color: $paiRed;
+              position: absolute;
+              right: 0;
+              top: 0.1rem;
+            }
+          }
+        }
+
+      }
+      .evaluate_list {
+        display: none;
+        .single_evaluate {
+          border-bottom: 1px solid #f0f0f0;
+          padding-bottom: 0.12rem;
+          margin-bottom: 0.12rem;
+          .evaluate_msg {
+            font-size: 0;
+            .name {
+              font-size: 0.3rem;
+            }
+            .time {
+              font-size: 0.2rem;
+              float: right;
+            }
+          }
+          .evaluate_content {
+            font-size: 0.24rem;
+            margin-top: 0.1rem;
+          }
+          .imgs {
+            margin-top: 0.1rem;
+            font-size: 0;
+            span {
+              @include smallBlock(1rem,1rem);
+              background: url("../imgs/detail_01.jpg");
+              -webkit-background-size: cover;
+              background-size: cover;
+              border-radius: 0.1rem;
+              margin-right: 0.24rem;
+            }
+          }
+          .good_para {
+            margin-top: 0.1rem;
+            font-size: 0.2rem;
+            color: #858585;
+          }
+        }
+      }
+    }
   }
 }
 
