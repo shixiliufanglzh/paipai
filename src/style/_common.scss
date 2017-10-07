@@ -52,6 +52,16 @@
           @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_home.png"));
         }
       }
+      &.grab {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_grab_normal.png"));
+        }
+      }
+      &.grab.active {
+        i {
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_grab_normal.png"));
+        }
+      }
       &.collection {
         i {
           @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_hearts_normal.png"));

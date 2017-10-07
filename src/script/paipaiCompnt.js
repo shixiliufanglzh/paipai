@@ -170,6 +170,9 @@ var commonCompt = {
                         '<button class="collection">'+
                             '<i></i><br><span>收藏</span>'+
                         '</button>'+
+                        '<button class="grab">'+
+                            '<i></i><br><span>拍得</span>'+
+                        '</button>'+
                         '<button class="order">'+
                             '<i></i><br><span>订单</span>'+
                         '</button>'+
