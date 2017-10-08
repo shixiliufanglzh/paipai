@@ -45,65 +45,23 @@
         </section>
 
         <section id="goods" class="clearfix">
-            <div class="single_good">
-                <div class="item_img"></div>
-                <div class="about">
-                    <p class="desc">某低级发vDVDvDVD是dff搜集反对法发集反对法发vDVDvDVD是dffdd韩国ref</p>
-                    <div class="price">
-                        <span class="price_now">￥8388999.26</span>
-                        <span class="price_primary">4868999.00</span>
-                        <i class="hummer"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="single_good">
-                <div class="item_img"></div>
-                <div class="about">
-                    <p class="desc">某低级搜集反对法发vD集反对法发vDVDVD是dffdd韩国ref</p>
-                    <div class="price">
-                        <span class="price_now">￥8388999.26</span>
-                        <span class="price_primary">4868999.00</span>
-                        <i class="hummer"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="single_good">
-                <div class="item_img"></div>
-                <div class="about">
-                    <p class="desc">某低级搜集反对法发vD集反对法发vDVDV对法发vDVD是dffdd韩国ref</p>
-                    <div class="price">
-                        <span class="price_now">￥8388999.26</span>
-                        <span class="price_primary">4868999.00</span>
-                        <i class="hummer"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="single_good">
-                <div class="item_img"></div>
-                <div class="about">
-                    <p class="desc">某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref</p>
-                    <div class="price">
-                        <span class="price_now">￥8388999.26</span>
-                        <span class="price_primary">4868999.00</span>
-                        <i class="hummer"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="single_good">
-                <div class="item_img"></div>
-                <div class="about">
-                    <p class="desc">某低级搜集反对法发vD集反对法发vDVDVD是dffdd韩国ref</p>
-                    <div class="price">
-                        <span class="price_now">￥8388999.26</span>
-                        <span class="price_primary">4868999.00</span>
-                        <i class="hummer"></i>
-                    </div>
-                </div>
-            </div>
+
+            <!--<div class="single_good">-->
+                <!--<div class="item_img"></div>-->
+                <!--<div class="about">-->
+                    <!--<p class="desc">某低级发vDVDvDVD是dff搜集反对法发集反对法发vDVDvDVD是dffdd韩国ref</p>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price_now">￥8388999.26</span>-->
+                        <!--<span class="price_primary">4868999.00</span>-->
+                        <!--<i class="hummer"></i>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
         </section>
     </div>
     
-    <div id="sortsWrap" class="sortsWrap">
+    <div class="sortsWrap" id="sortsWrap">
         <div class="sorts">
             <ul>
                 <!--<li data-sort-id="1" class="current">全部类型</li>-->
@@ -120,7 +78,7 @@
         </div>
     </div>
 
-    <div id="sortsWrap" class="statesWrap">
+    <div class="sortsWrap" id="statesWrap">
         <div class="sorts">
             <ul>
                 <!--<li data-state-id="1" class="current">全部状态</li>-->
@@ -202,8 +160,99 @@
         sortId: 1,
         stateId: 1,
         sales: false,  //true按销量排序
-        price: 1  //降序0升序1
-    }
+        price: 0  //无0降序1升序2
+    };
+    var goodsList = [
+        {
+            img: "imgs/detail_01.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.03,
+            price_now: 1111111.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_02.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.02,
+            price_now: 2222222.26,
+            price_primary: 9999999.99,
+            state: 1  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_03.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.01,
+            price_now: 3333333.26,
+            price_primary: 9999999.99,
+            state: 2  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_01.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.02,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_02.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.03,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 1  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_03.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.05,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 2  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_01.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.01,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_02.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.03,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 1  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_03.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.01,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 2  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_01.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.02,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_02.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.01,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        }
+    ];
+    var timer = null;
 
     $(function(){
 
@@ -214,7 +263,7 @@
             for(var i=1; i<sorts.length; i++){
                 sortListHtml += '<li data-sort-id="'+ sorts[i].id +'">'+ sorts[i].sort_name +'</li>'
             }
-            $('#sortsWrap.sortsWrap ul').html(sortListHtml);
+            $('#sortsWrap ul').html(sortListHtml);
 
             //商品状态筛选列表生成
             var stateListHtml = "";
@@ -222,8 +271,8 @@
             for(var i=1; i<states.length; i++){
                 stateListHtml += '<li data-state-id="'+ states[i].id +'">'+ states[i].state_name +'</li>'
             }
-            $('#sortsWrap.statesWrap ul').html(stateListHtml);
-        })()
+            $('#statesWrap ul').html(stateListHtml);
+        })();
 
 
         //生成底部导航
@@ -234,12 +283,39 @@
             commonCompt.verifyPhone(60,"新用户注册",false);
         }
 
+        //商品列表dom
         (function(){
-            var width = 0;
-            $('.navtabs_wrap .navtab').each(function () {
-                width += $(this).outerWidth(true);
-            });
-            $('.navtabs_wrap').css('width', width + $(window).width()*0.064 + "px");
+            var goodsListHtml = "";
+            for(var i=0; i<sorts.length; i++){
+                var cur_state;
+                if(goodsList[i].state == 0){
+                    var timestamp=new Date().getTime();
+                    var todayTimestamp = timestamp % 86400000;
+                    if(todayTimestamp > 57600000){
+                        cur_state = "out_time";
+                    }else {
+                        cur_state = "salling_cut";
+                    }
+                }else if(goodsList[i].state == 1){
+                    cur_state = "pre_sale";
+                }else if(goodsList[i].state == 2){
+                    cur_state = "sold_out";
+                }
+                goodsListHtml+= '<div class="single_good">'+
+                                    '<div class="item_img" style="background: url('+ goodsList[i].img +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                    '<div class="about">'+
+                                        '<p class="desc">'+ goodsList[i].title +'</p>'+
+                                        '<div class="price">'+
+                                            '<span class="price_now">￥'+ goodsList[i].price_now +'</span>'+
+                                            '<span class="price_primary">'+ goodsList[i].price_primary +'</span>'+
+                                            '<i class="sales_state '+ cur_state +'"></i>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>'
+            }
+
+            $('#goods').append(goodsListHtml);
+
         })()
 
         var mySwiper = new Swiper ('.swiper-container', {
@@ -254,38 +330,40 @@
     //打开类型列表
     $('#filters .sorts').click(function(){
         $('#filters').addClass('fixed_top');
-        $('#sortsWrap.statesWrap').hide();
-        $('#sortsWrap.sortsWrap').fadeIn(300);
+        $('#statesWrap').hide();
+        $('#sortsWrap').fadeIn(300);
     })
 
     //打开状态列表
     $('#filters .states').click(function(){
         $('#filters').addClass('fixed_top');
-        $('#sortsWrap.sortsWrap').hide();
-        $('#sortsWrap.statesWrap').fadeIn(300);
+        $('#sortsWrap').hide();
+        $('#statesWrap').fadeIn(300);
     })
 
     //选择筛选类型
-    $('#sortsWrap.sortsWrap ul').on('click','li',function(){
-        $('#sortsWrap.sortsWrap ul li').removeClass('current');
+    $('#sortsWrap ul').on('click','li',function(){
+        $(document).scrollTop(0);
+        $('#sortsWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
         $('#filters .sorts span').html(sorts[$index].sort_name);
 
-        $('#sortsWrap.sortsWrap').hide();
+        $('#sortsWrap').hide();
         $('#filters').removeClass('fixed_top');
 
         filters.sortId = sorts[$index].id;
     })
 
     //选择筛选状态
-    $('#sortsWrap.statesWrap ul').on('click','li',function(){
-        $('#sortsWrap.statesWrap ul li').removeClass('current');
+    $('#statesWrap ul').on('click','li',function(){
+        $(document).scrollTop(0);
+        $('#statesWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
         $('#filters .states span').html(states[$index].state_name);
 
-        $('#sortsWrap.statesWrap').hide();
+        $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
 
         filters.stateId = states[$index].id;
@@ -293,7 +371,11 @@
 
     //是否销量优先
     $('#filters .sales').click(function(){
-        $('#filters .price i').attr('class','price_sort');
+        filters.price = 0;
+        if(filters.price == 0){
+            $('#filters .price i').attr('class','price_sort');
+        }
+
         $(this).toggleClass('active');
         if($(this).hasClass('active')){
             filters.sales = true;
@@ -304,7 +386,11 @@
 
     //价格升序/降序
     $('#filters .price').click(function(){
-        $('#filters .sales').removeClass('active');
+        filters.sales = false;
+        if(!filters.sales){
+            $('#filters .sales').removeClass('active');
+        }
+
         var $arrow = $(this).find('i');
         if($arrow.hasClass('up')) {
             $arrow.removeClass('up').addClass('down');
@@ -317,6 +403,27 @@
             filters.price = 0;
         }
     })
+
+    //点击其他部分隐藏
+    $('.sortsWrap').on('click',function(){
+        $('.sortsWrap').hide();
+        $('#filters').removeClass('fixed_top');
+    })
+
+//    $('.sortsWrap .sorts').on('click',function(e){
+//        e.stopPropagation();
+//    })
+    //菜单顶部吸附
+    $(document).scroll(function(){
+        var max_distance = $('.swiper-container').height() + $('#filters').height()/2;
+        if($(document).scrollTop() > max_distance){
+            $('#filters').addClass('fixed_top');
+        }else {
+            $('#filters').removeClass('fixed_top');
+        }
+    })
+
+
 
 
 </script>
