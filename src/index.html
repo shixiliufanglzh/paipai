@@ -35,14 +35,13 @@
             </div>
         </section>
 
-        <section id="navSort">
-            <ul class="navtabs_wrap clearfix">
-                <li class="navtab"><a>全部物品</a></li>
-                <li class="navtab"><a class="current">日用百货</a></li>
-                <li class="navtab"><a>虚拟物品</a></li>
-                <li class="navtab"><a>数码影音</a></li>
-                <li class="navtab"><a>其他物品</a></li>
-            </ul>
+        <section id="filters">
+            <div class="filtersWrap">
+                <div class="filter sorts"><span>全部类型</span><i></i></div>
+                <div class="filter states"><span>全部状态</span><i></i></div>
+                <div class="filter sales"><span>销量优先</span></div>
+                <div class="filter price"><span>价格</span><i class="price_sort"></i></div>
+            </div>
         </section>
 
         <section id="goods" class="clearfix">
@@ -103,32 +102,137 @@
             </div>
         </section>
     </div>
+    
+    <div id="sortsWrap" class="sortsWrap">
+        <div class="sorts">
+            <ul>
+                <!--<li data-sort-id="1" class="current">全部类型</li>-->
+                <!--<li data-sort-id="2">手机电脑</li>-->
+                <!--<li data-sort-id="3">珠宝首饰</li>-->
+                <!--<li data-sort-id="4">数码产品</li>-->
+                <!--<li data-sort-id="5">美妆护肤</li>-->
+                <!--<li data-sort-id="6">虚拟物品</li>-->
+                <!--<li data-sort-id="7">箱包皮具</li>-->
+                <!--<li data-sort-id="8">生活家电</li>-->
+                <!--<li data-sort-id="9">户外运动</li>-->
+                <!--<li data-sort-id="10">日用百货</li>-->
+            </ul>
+        </div>
+    </div>
 
-    <!--<div id="mainNav">-->
-        <!--<div class="nav_wrap">-->
-            <!--<button class="home">-->
-                <!--<i></i><br><span>商城</span>-->
-            <!--</button>-->
-            <!--<button class="collection active">-->
-                <!--<i></i><br><span>收藏</span>-->
-            <!--</button>-->
-            <!--<button class="order">-->
-                <!--<i></i><br><span>订单</span>-->
-            <!--</button>-->
-            <!--<button class="personal">-->
-                <!--<i></i><br><span>会员</span>-->
-            <!--</button>-->
-        <!--</div>-->
-    <!--</div>-->
+    <div id="sortsWrap" class="statesWrap">
+        <div class="sorts">
+            <ul>
+                <!--<li data-state-id="1" class="current">全部状态</li>-->
+                <!--<li data-state-id="2">减价中</li>-->
+                <!--<li data-state-id="3">待拍中</li>-->
+                <!--<li data-state-id="4">已售罄</li>-->
+            </ul>
+        </div>
+    </div>
 </body>
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
 <script>
+
+    var sorts = [
+        {
+            id: 1,
+            sort_name: "全部类型"
+        },
+        {
+            id: 2,
+            sort_name: "手机电脑"
+        },
+        {
+            id: 3,
+            sort_name: "珠宝首饰"
+        },
+        {
+            id: 4,
+            sort_name: "数码产品"
+        },
+        {
+            id: 5,
+            sort_name: "美妆护肤"
+        },
+        {
+            id: 6,
+            sort_name: "虚拟物品"
+        },
+        {
+            id: 7,
+            sort_name: "箱包皮具"
+        },
+        {
+            id: 8,
+            sort_name: "生活家电"
+        },
+        {
+            id: 9,
+            sort_name: "户外运动"
+        },
+        {
+            id: 10,
+            sort_name: "日用百货"
+        }
+
+    ];
+    var states = [
+        {
+            id: 1,
+            state_name: "全部状态"
+        },
+        {
+            id: 2,
+            state_name: "减价中"
+        },
+        {
+            id: 3,
+            state_name: "待拍中"
+        },
+        {
+            id: 4,
+            state_name: "已售罄"
+        }
+
+    ];
+    var filters = {
+        sortId: 1,
+        stateId: 1,
+        sales: false,  //true按销量排序
+        price: 1  //降序0升序1
+    }
+
     $(function(){
+
+        (function(){
+            //商品类型筛选列表生成
+            var sortListHtml = "";
+            sortListHtml += '<li data-sort-id="'+ sorts[0].id +'" class="current">'+ sorts[0].sort_name +'</li>'
+            for(var i=1; i<sorts.length; i++){
+                sortListHtml += '<li data-sort-id="'+ sorts[i].id +'">'+ sorts[i].sort_name +'</li>'
+            }
+            $('#sortsWrap.sortsWrap ul').html(sortListHtml);
+
+            //商品状态筛选列表生成
+            var stateListHtml = "";
+            stateListHtml += '<li data-state-id="'+ states[0].id +'" class="current">'+ states[0].state_name +'</li>'
+            for(var i=1; i<states.length; i++){
+                stateListHtml += '<li data-state-id="'+ states[i].id +'">'+ states[i].state_name +'</li>'
+            }
+            $('#sortsWrap.statesWrap ul').html(stateListHtml);
+        })()
+
 
         //生成底部导航
         commonCompt.mainNav(1);
+
+        //如果是未绑定手机号的用户
+        if(false){
+            commonCompt.verifyPhone(60,"新用户注册",false);
+        }
 
         (function(){
             var width = 0;
@@ -146,10 +250,74 @@
 
     })
 
-    $('#navSort .navtabs_wrap').on('click', '.navtab', function(){
-        $('#navSort .navtab a').removeClass('current');
-        $(this).find('a').addClass('current');
+
+    //打开类型列表
+    $('#filters .sorts').click(function(){
+        $('#filters').addClass('fixed_top');
+        $('#sortsWrap.statesWrap').hide();
+        $('#sortsWrap.sortsWrap').fadeIn(300);
     })
+
+    //打开状态列表
+    $('#filters .states').click(function(){
+        $('#filters').addClass('fixed_top');
+        $('#sortsWrap.sortsWrap').hide();
+        $('#sortsWrap.statesWrap').fadeIn(300);
+    })
+
+    //选择筛选类型
+    $('#sortsWrap.sortsWrap ul').on('click','li',function(){
+        $('#sortsWrap.sortsWrap ul li').removeClass('current');
+        $(this).addClass('current');
+        var $index = $(this).index();
+        $('#filters .sorts span').html(sorts[$index].sort_name);
+
+        $('#sortsWrap.sortsWrap').hide();
+        $('#filters').removeClass('fixed_top');
+
+        filters.sortId = sorts[$index].id;
+    })
+
+    //选择筛选状态
+    $('#sortsWrap.statesWrap ul').on('click','li',function(){
+        $('#sortsWrap.statesWrap ul li').removeClass('current');
+        $(this).addClass('current');
+        var $index = $(this).index();
+        $('#filters .states span').html(states[$index].state_name);
+
+        $('#sortsWrap.statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
+
+        filters.stateId = states[$index].id;
+    })
+
+    //是否销量优先
+    $('#filters .sales').click(function(){
+        $('#filters .price i').attr('class','price_sort');
+        $(this).toggleClass('active');
+        if($(this).hasClass('active')){
+            filters.sales = true;
+        }else {
+            filters.sales = false;
+        }
+    })
+
+    //价格升序/降序
+    $('#filters .price').click(function(){
+        $('#filters .sales').removeClass('active');
+        var $arrow = $(this).find('i');
+        if($arrow.hasClass('up')) {
+            $arrow.removeClass('up').addClass('down');
+            filters.price = 0;
+        }else if($arrow.hasClass('down')){
+            $arrow.removeClass('down').addClass('up');
+            filters.price = 1;
+        }else {
+            $arrow.addClass('down');
+            filters.price = 0;
+        }
+    })
+
 
 </script>
 </html>

@@ -341,11 +341,9 @@ var commonCompt = {
         var timer = null;
 
         sendBtn.attr("disabled", true); //设置disabled属性
-        sendBtn.html('重新发送(60)');
+        sendBtn.html('重新发送(' + remainTime + ')');
 
-        var remain = remainTime,
-            remain_time = ""
-        remain_time = '重新发送(' + remainTime + ')';
+        var remain = remainTime;
         timer = setInterval(function() {
             remain--;
             sendBtn.html('重新发送(' + remain + ')');
@@ -361,6 +359,60 @@ var commonCompt = {
         return str.replace(/(^\s*)|(\s*$)/g, "");
         //alert($a.length);
         //   alert(str.length);
+    },
+
+    //验证手机号
+    verifyPhone: function(remainTime,title,hasCloseBtn){
+        var html =  '<div id="registerWrap">'+
+                        '<div class="register">'+
+                            '<i class="verify_close"></i>'+
+                            '<h3>' + title + '</h3>'+
+                            '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
+                            '<div class="verify">'+
+                                '<input type="number" placeholder="请填写验证码" id="code">'+
+                                '<button>获取验证码</button>'+
+                            '</div>'+
+                            '<button id="regSubmit">提交</button>'+
+                        '</div>'+
+                    '</div>';
+        $('body').append(html);
+        $('#registerWrap').fadeIn(300);
+
+        if(hasCloseBtn){
+            $('.verify_close').show();
+        }
+
+        var _that = this;
+        $('.verify button').on('click', function(){
+            var $phoneNum = $('#phoneNum').val();
+            if(!$phoneNum){
+                _that.popPrompt("手机号不能为空");
+            }else if(!_that.checkPhone($phoneNum)){
+                _that.popPrompt("错误的手机号码");
+            }else {
+                _that.timeCount(remainTime,$(this));
+                //$.ajax({})
+            }
+        })
+
+        $('#regSubmit').on('click', function(){
+            console.log("提交中...");
+            var $phoneNum = $('#phoneNum').val();
+            console.log($phoneNum);
+            if(!$phoneNum){
+                _that.popPrompt("手机号不能为空");
+            }else if(!_that.checkPhone($phoneNum)){
+                _that.popPrompt("错误的手机号码");
+            }else {
+                //$.ajax({})
+            }
+        })
+
+        $('.verify_close').on('click',function(){
+            $('#registerWrap').fadeOut(300,function(){
+                $('#registerWrap').remove();
+            });
+        })
     }
 
 }

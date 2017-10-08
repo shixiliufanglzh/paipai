@@ -8,36 +8,51 @@
     height: 3.2rem;
   }
 
-  #navSort {
-    width: 7.5rem;
-    overflow-x: scroll;
-    overflow-y: hidden;
-
-    .navtabs_wrap {
-      border-bottom: 1px solid #999;
-      padding: 0 0.24rem;
-      width: 10rem;
-      height: 0.82rem;
-      .navtab {
-        height: 0.82rem;
-        font-size: 0;
-        float: left;
-        margin-right: 0.75rem;
-        &:last-of-type {
-          margin-right: 0;
-        }
-        a {
-          display: inline-block;
-          font-size: 0.24rem;
-          color: #1c1c1c;
-          line-height: 0.82rem;
-          height: 0.82rem;
-          &.current {
+  #filters {
+    background-color: #fff;
+    transition: all 0.3s ease;
+    &.fixed_top {
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+    .filtersWrap {
+      display: flex;
+      flex-wrap: nowrap;
+      border-bottom: 1px solid #858585;
+      .filter {
+        text-align: center;
+        flex-grow: 1;
+        font-size: 0.24rem;
+        line-height: 0.82rem;
+        &.sales {
+          &.active {
             color: $paiRed;
-            border-bottom: 2px solid $paiRed;
           }
         }
-
+        i {
+          @include smallIcon(0.16rem,0.08rem,url("../imgs/down_grey.png"));
+          vertical-align: middle;
+          margin-left: 0.05rem;
+          &.price_sort {
+            position: relative;
+            margin-bottom: -0.04rem;
+            &::after {
+              content: "";
+              @include smallIcon(0.16rem,0.08rem,url("../imgs/up_grey.png"));
+              position: absolute;
+              top: -0.1rem;
+              left: 0;
+            }
+          }
+          &.price_sort.up::after {
+            @include smallIcon(0.16rem,0.08rem,url("../imgs/up_red.png"));
+          }
+          &.price_sort.down {
+            @include smallIcon(0.16rem,0.08rem,url("../imgs/down_red.png"));
+          }
+        }
       }
     }
   }
@@ -95,6 +110,36 @@
             background-size: cover;
             float: right;
           }
+        }
+      }
+    }
+  }
+}
+
+#sortsWrap {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 999;
+  .sorts {
+    background-color: #fff;
+    margin-top: 0.82rem;
+    ul {
+      padding: 0 0.1rem;
+      li {
+        font-size: 0.22rem;
+        line-height: 0.7rem;
+        border-bottom: 1px solid #ccc;
+        padding: 0 0.2rem;
+        &.current::after {
+          content: "";
+          @include smallIcon(0.29rem,0.21rem,url("../imgs/sort_selected.png"));
+          float: right;
+          margin-top: 0.22rem;
         }
       }
     }
