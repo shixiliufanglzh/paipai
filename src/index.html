@@ -33,6 +33,7 @@
                 <img class="swiper-slide" src="./imgs/banner_02.jpg" />
                 <img class="swiper-slide" src="./imgs/banner_03.jpg" />
             </div>
+            <div class="swiper-pagination"></div>
         </section>
 
         <section id="filters">
@@ -59,6 +60,8 @@
             <!--</div>-->
 
         </section>
+
+        <div class="loading"><i></i><span>加载中...</span></div>
     </div>
     
     <div class="sortsWrap" id="sortsWrap">
@@ -94,49 +97,7 @@
 <script src="./script/paipaiCompnt.js"></script>
 <script>
 
-    var sorts = [
-        {
-            id: 1,
-            sort_name: "全部类型"
-        },
-        {
-            id: 2,
-            sort_name: "手机电脑"
-        },
-        {
-            id: 3,
-            sort_name: "珠宝首饰"
-        },
-        {
-            id: 4,
-            sort_name: "数码产品"
-        },
-        {
-            id: 5,
-            sort_name: "美妆护肤"
-        },
-        {
-            id: 6,
-            sort_name: "虚拟物品"
-        },
-        {
-            id: 7,
-            sort_name: "箱包皮具"
-        },
-        {
-            id: 8,
-            sort_name: "生活家电"
-        },
-        {
-            id: 9,
-            sort_name: "户外运动"
-        },
-        {
-            id: 10,
-            sort_name: "日用百货"
-        }
-
-    ];
+    var labels;
     var states = [
         {
             id: 1,
@@ -144,11 +105,11 @@
         },
         {
             id: 2,
-            state_name: "减价中"
+            state_name: "抢拍中"
         },
         {
             id: 3,
-            state_name: "待拍中"
+            state_name: "预拍中"
         },
         {
             id: 4,
@@ -162,7 +123,8 @@
         sales: false,  //true按销量排序
         price: 0  //无0降序1升序2
     };
-    var goodsList = [
+    var goodsList = [];
+    var addGoods = [
         {
             img: "imgs/detail_01.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
@@ -174,16 +136,16 @@
         {
             img: "imgs/detail_02.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
-            rate: 0.02,
-            price_now: 2222222.26,
+            rate: 0,
+            price_now: 9999999.9,
             price_primary: 9999999.99,
             state: 1  //0:减价中 1：待拍中 2：已售罄
         },
         {
             img: "imgs/detail_03.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
-            rate: 0.01,
-            price_now: 3333333.26,
+            rate: 0,
+            price_now: 9999999.9,
             price_primary: 9999999.99,
             state: 2  //0:减价中 1：待拍中 2：已售罄
         },
@@ -201,14 +163,14 @@
             rate: 0.03,
             price_now: 8388999.26,
             price_primary: 9999999.99,
-            state: 1  //0:减价中 1：待拍中 2：已售罄
+            state: 0  //0:减价中 1：待拍中 2：已售罄
         },
         {
             img: "imgs/detail_03.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
-            rate: 0.05,
+            rate: 0.0,
             price_now: 8388999.26,
-            price_primary: 9999999.99,
+            price_primary: 8388999.26,
             state: 2  //0:减价中 1：待拍中 2：已售罄
         },
         {
@@ -222,23 +184,31 @@
         {
             img: "imgs/detail_02.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
-            rate: 0.03,
+            rate: 0.0,
             price_now: 8388999.26,
-            price_primary: 9999999.99,
+            price_primary: 8388999.26,
             state: 1  //0:减价中 1：待拍中 2：已售罄
         },
         {
             img: "imgs/detail_03.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
-            rate: 0.01,
+            rate: 0.0,
             price_now: 8388999.26,
-            price_primary: 9999999.99,
+            price_primary: 8388999.26,
             state: 2  //0:减价中 1：待拍中 2：已售罄
         },
         {
             img: "imgs/detail_01.jpg",
             title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
             rate: 0.02,
+            price_now: 8388999.26,
+            price_primary: 9999999.99,
+            state: 0  //0:减价中 1：待拍中 2：已售罄
+        },
+        {
+            img: "imgs/detail_02.jpg",
+            title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+            rate: 0.01,
             price_now: 8388999.26,
             price_primary: 9999999.99,
             state: 0  //0:减价中 1：待拍中 2：已售罄
@@ -253,15 +223,101 @@
         }
     ];
     var timer = null;
+    var hasMorePages = true;
+    var finishLoading = true;
 
     $(function(){
 
+//        $.ajax({
+//            url: GETLABELS,
+//            type:'GET',
+//            dataType:'json',
+//            async:false,
+//            success: function(data){
+//                console.log(JSON.parse(data));
+//            },
+//            error: function(err){
+//                console.log(err);
+//            }
+//        });
+
+
+
         (function(){
+
+            var api_GETLABELS = {
+                responseCode: 2000,
+                responseDesc: null,
+                data: [
+                    {
+                        id: 1,
+                        labelName: "全部类型"
+                    },
+                    {
+                        id: 2,
+                        labelName: "电脑办公"
+                    },
+                    {
+                        id: 3,
+                        labelName: "家用电器"
+                    },
+                    {
+                        id: 4,
+                        labelName: "服装内衣"
+                    },
+                    {
+                        id: 5,
+                        labelName: "箱包皮具"
+                    },
+                    {
+                        id: 6,
+                        labelName: "鞋帽配饰"
+                    },
+                    {
+                        id: 7,
+                        labelName: "珠宝钟表"
+                    },
+                    {
+                        id: 8,
+                        labelName: "美妆个护"
+                    },
+                    {
+                        id: 9,
+                        labelName: "户外运动"
+                    },
+                    {
+                        id: 10,
+                        labelName: "玩具图书"
+                    },
+                    {
+                        id: 11,
+                        labelName: "家居家纺"
+                    },
+                    {
+                        id: 12,
+                        labelName: "生活日用"
+                    },
+                    {
+                        id: 13,
+                        labelName: "水果生鲜"
+                    },
+                    {
+                        id: 14,
+                        labelName: "酒水饮料"
+                    },
+                    {
+                        id: 15,
+                        labelName: "虚拟商品"
+                    }
+                ]
+            }
+            labels = api_GETLABELS.data;
+
             //商品类型筛选列表生成
             var sortListHtml = "";
-            sortListHtml += '<li data-sort-id="'+ sorts[0].id +'" class="current">'+ sorts[0].sort_name +'</li>'
-            for(var i=1; i<sorts.length; i++){
-                sortListHtml += '<li data-sort-id="'+ sorts[i].id +'">'+ sorts[i].sort_name +'</li>'
+            sortListHtml += '<li data-sort-id="'+ labels[0].id +'" class="current">'+ labels[0].labelName +'</li>'
+            for(var i=1; i< labels.length; i++){
+                sortListHtml += '<li data-sort-id="'+ labels[i].id +'">'+ labels[i].labelName +'</li>'
             }
             $('#sortsWrap ul').html(sortListHtml);
 
@@ -283,46 +339,21 @@
             commonCompt.verifyPhone(60,"新用户注册",false);
         }
 
-        //商品列表dom
-        (function(){
-            var goodsListHtml = "";
-            for(var i=0; i<sorts.length; i++){
-                var cur_state;
-                if(goodsList[i].state == 0){
-                    var timestamp=new Date().getTime();
-                    var todayTimestamp = timestamp % 86400000;
-                    if(todayTimestamp > 57600000){
-                        cur_state = "out_time";
-                    }else {
-                        cur_state = "salling_cut";
-                    }
-                }else if(goodsList[i].state == 1){
-                    cur_state = "pre_sale";
-                }else if(goodsList[i].state == 2){
-                    cur_state = "sold_out";
-                }
-                goodsListHtml+= '<div class="single_good">'+
-                                    '<div class="item_img" style="background: url('+ goodsList[i].img +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
-                                    '<div class="about">'+
-                                        '<p class="desc">'+ goodsList[i].title +'</p>'+
-                                        '<div class="price">'+
-                                            '<span class="price_now">￥'+ goodsList[i].price_now +'</span>'+
-                                            '<span class="price_primary">'+ goodsList[i].price_primary +'</span>'+
-                                            '<i class="sales_state '+ cur_state +'"></i>'+
-                                        '</div>'+
-                                    '</div>'+
-                                '</div>'
-            }
-
-            $('#goods').append(goodsListHtml);
-
-        })()
+        bindGoodsList();
 
         var mySwiper = new Swiper ('.swiper-container', {
             direction: 'horizontal',
             loop: true,
-            autoplay: 3000
+            autoplay: 3000,
+            pagination : '.swiper-pagination'
         })
+
+        timer = setInterval(function(){
+            for(var i=0; i<$('.single_good').length; i++){
+                goodsList[i].price_now = commonCompt.accSub(goodsList[i].price_now,goodsList[i].rate);
+                $('.single_good').eq(i).find('.price_now').html('￥'+goodsList[i].price_now);
+            }
+        },1000);
 
     })
 
@@ -347,12 +378,12 @@
         $('#sortsWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
-        $('#filters .sorts span').html(sorts[$index].sort_name);
+        $('#filters .sorts span').html(labels[$index].labelName);
 
         $('#sortsWrap').hide();
         $('#filters').removeClass('fixed_top');
 
-        filters.sortId = sorts[$index].id;
+        filters.sortId = labels[$index].id;
     })
 
     //选择筛选状态
@@ -413,16 +444,71 @@
 //    $('.sortsWrap .sorts').on('click',function(e){
 //        e.stopPropagation();
 //    })
-    //菜单顶部吸附
+
     $(document).scroll(function(){
+        //菜单顶部吸附
         var max_distance = $('.swiper-container').height() + $('#filters').height()/2;
         if($(document).scrollTop() > max_distance){
             $('#filters').addClass('fixed_top');
         }else {
-            $('#filters').removeClass('fixed_top');
+            if($('.sortsWrap').eq(0).css('display') == "none" && $('.sortsWrap').eq(1).css('display') == "none"){
+                $('#filters').removeClass('fixed_top');
+            }
+        }
+
+        //加载下一页
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+            console.log("daole");
+            finishLoading = true;
+            setTimeout(function(){
+                bindGoodsList();
+            },2000)
         }
     })
 
+    //商品列表dom
+    function bindGoodsList(){
+        goodsList = goodsList.concat(addGoods);
+        var goodsListHtml = "";
+        for(var i=0; i<addGoods.length; i++){
+            var cur_state;
+            if(addGoods[i].state == 0){
+                var timestamp=new Date().getTime();
+                var todayTimestamp = timestamp % 86400000;
+                if(todayTimestamp > 57600000){
+                    cur_state = "out_time";
+                }else {
+                    cur_state = "salling_cut";
+                }
+            }else if(addGoods[i].state == 1){
+                cur_state = "pre_sale";
+            }else if(addGoods[i].state == 2){
+                cur_state = "sold_out";
+            }
+            goodsListHtml+= '<div class="single_good">'+
+                    '<div class="item_img" style="background: url('+ addGoods[i].img +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                    '<div class="about">'+
+                    '<p class="desc">'+ addGoods[i].title +'</p>'+
+                    '<div class="price">'+
+                    '<span class="price_now">￥'+ addGoods[i].price_now +'</span>'+
+                    '<span class="price_primary">'+ addGoods[i].price_primary +'</span>'+
+                    '<i class="sales_state '+ cur_state +'"></i>'+
+                    '</div>'+
+                    '</div>'+
+                    '</div>'
+        }
+
+        $('#goods').append(goodsListHtml);
+
+        if(!hasMorePages){
+            $('.loading').hide();
+        }else{
+            $('.loading').show();
+        }
+
+        finishLoading = false;
+
+    }
 
 
 

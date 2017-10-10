@@ -493,3 +493,25 @@ body {
 #datescroll_datetime{display: none;background:#F8F8F8;width:94%; margin:10px 3%;margin-top: 10px;border: 1px solid #E0E0E0;border-radius: 4px;height: 120px;text-align: center;line-height: 40px;}
 #yearwrapper ul,#monthwrapper ul,#daywrapper ul{width:40%;}
 #dateFooter{width:100%;background: #fff;height: 50px;bottom: 0px;position: absolute;}
+
+#blank {
+  display: none;
+  text-align: center;
+  margin-top: 3rem;
+  .img {
+    img {
+      width: 2.22rem;
+      height: 2.14rem;
+    }
+  }
+  h6 {
+    font-weight: 500;
+    font-size: 0.32rem;
+    margin-top: 0.6rem;
+  }
+  p {
+    margin-top: 0.1rem;
+    font-size: 0.26rem;
+    color: #858585;
+  }
+}

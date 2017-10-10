@@ -3,6 +3,7 @@
 
 
 #viewTotal {
+  margin-bottom: 1.1rem;
   .swiper-container {
     width: 100%;
     height: 3.2rem;
@@ -59,8 +60,7 @@
   }
 
   #goods {
-    padding: 0.24rem;
-    margin-bottom: 0.9rem;
+    padding: 0.24rem 0.24rem 0;
     .single_good{
       max-height: 4.84rem;
       width: 3.45rem;
@@ -151,6 +151,8 @@
     margin-top: 0.82rem;
     ul {
       padding: 0 0.1rem;
+      max-height: 6.7rem;
+      overflow-y: scroll;
       li {
         font-size: 0.22rem;
         line-height: 0.7rem;

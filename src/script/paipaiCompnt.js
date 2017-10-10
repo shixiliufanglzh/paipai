@@ -2,6 +2,10 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
+var apiHost = "http://116.62.116.5/rshop/";
+var GETLABELS = apiHost + "goods/getLabelOne.jhtml";
+var GETGOODS = apiHost + "goods/getGoods.jhtml";
+
 var Paipai = function(){
     this.desc="商品描述";
     this.price_now = 0;
@@ -168,7 +172,7 @@ var commonCompt = {
                             '<i></i><br><span>商城</span>'+
                         '</button>'+
                         '<button class="collection">'+
-                            '<i></i><br><span>收藏</span>'+
+                            '<i></i><br><span>关注</span>'+
                         '</button>'+
                         '<button class="grab">'+
                             '<i></i><br><span>拍得</span>'+
@@ -413,6 +417,26 @@ var commonCompt = {
                 $('#registerWrap').remove();
             });
         })
+    },
+
+    //小数较精确的减法运算
+    accSub: function(arg1, arg2) {
+        var r1, r2, m, n;
+        try {
+            r1 = arg1.toString().split(".")[1].length;
+        }
+        catch (e) {
+            r1 = 0;
+        }
+        try {
+            r2 = arg2.toString().split(".")[1].length;
+        }
+        catch (e) {
+            r2 = 0;
+        }
+        m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
+        n = (r1 >= r2) ? r1 : r2;
+        return ((arg1 * m - arg2 * m) / m).toFixed(n);
     }
 
 }

@@ -1,3 +1,9 @@
+.swiper-pagination {
+  font-size: 0;
+  .swiper-pagination-bullet-active {
+    background-color: $paiRed;
+  }
+}
 
 #bottomBtn {
   display: flex;
@@ -164,5 +170,20 @@
       border-radius: 0.04rem;
       margin-top: 0.75rem;
     }
+  }
+}
+
+.loading {
+  text-align: center;
+  font-size: 0;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 0.08rem;
+  i {
+    @include smallIcon(0.18rem,0.18rem,url("../imgs/loading.gif"));
+    margin-right: 0.1rem;
+  }
+  span {
+    font-size: 0.22rem;
+    color: #858585;
   }
 }

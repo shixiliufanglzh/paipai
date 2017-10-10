@@ -64,6 +64,14 @@
     </div>
 </div>
 
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_collection.png" alt="">
+    </div>
+    <h6>暂无商品~</h6>
+    <p>快去收藏您的真爱吧</p>
+</div>
+
 
 
 </body>
@@ -73,6 +81,9 @@
 <script>
 
     $(function(){
+        if($('.single_collect').length <= 0){
+            $('#blank').show();
+        }
 
         //生成底部导航
         commonCompt.mainNav(2);
