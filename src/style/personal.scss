@@ -118,11 +118,12 @@ body {
         font-size: 0.22rem;
       }
       .para {
+        margin-top: 0.1rem;
         color: #858585;
         font-size: 0.2rem;
       }
       .price {
-        margin-top: 0.36rem;
+        margin-top: 0.26rem;
         .price_now {
           font-size: 0.3rem;
           color: $paiRed;
@@ -145,7 +146,14 @@ body {
       color: #858585;
       position: absolute;
       right: 0.24rem;
-      top: 1.02rem;
+      top: 0.94rem;
+    }
+    .grab_prompt {
+      display: none;
+      color: #858585;
+      position: absolute;
+      right: 0.24rem;
+      top: 1.22rem;
     }
     button {
       position: absolute;
@@ -159,11 +167,23 @@ body {
       border-radius: 0.04rem;
       border: none;
       outline: none;
-      &.red {
+    }
+    &.sold_out {
+      button {
+        background-color: #858585;
+      }
+    }
+    &.grab {
+      button {
         background-color: $paiRed;
       }
-      &.yellow {
+    }
+    &.primary {
+      button {
         background-color: $paiYellow;
+      }
+      .grab_prompt {
+        display: inline;
       }
     }
   }
@@ -473,3 +493,25 @@ body {
 #datescroll_datetime{display: none;background:#F8F8F8;width:94%; margin:10px 3%;margin-top: 10px;border: 1px solid #E0E0E0;border-radius: 4px;height: 120px;text-align: center;line-height: 40px;}
 #yearwrapper ul,#monthwrapper ul,#daywrapper ul{width:40%;}
 #dateFooter{width:100%;background: #fff;height: 50px;bottom: 0px;position: absolute;}
+
+#blank {
+  display: none;
+  text-align: center;
+  margin-top: 3rem;
+  .img {
+    img {
+      width: 2.22rem;
+      height: 2.14rem;
+    }
+  }
+  h6 {
+    font-weight: 500;
+    font-size: 0.32rem;
+    margin-top: 0.6rem;
+  }
+  p {
+    margin-top: 0.1rem;
+    font-size: 0.26rem;
+    color: #858585;
+  }
+}

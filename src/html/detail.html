@@ -27,27 +27,28 @@
 </head>
 <body>
 <div id="goodDetail">
-    <div class="swiper-container-detail">
+    <div class="swiper-container">
         <div class="swiper-wrapper">
             <div class="swiper-slide"></div>
         </div>
+        <div class="swiper-pagination"></div>
     </div>
 
     <section id="summary">
         <p class="desc">某低级搜集冬季加大技术敖东瓶塞哦思技术敖东瓶塞哦思考pop、 哦外婆fsasjdiiss似懂非懂</p>
         <div class="price_now">
-            <span class="cur_price">￥3999.23</span>
+            <span class="cur_price">￥0.00</span>
             <!--<span class="rate">减价频率：1次/S&nbsp;&nbsp;&nbsp;&nbsp;减价幅度：0.01元/次</span>-->
             <!--<span class="rate">减价抢拍时间：(每天8:00-24:00)</span>-->
             <span class="rate">距正式减拍还有<span class="left_time">0天0时0分0秒</span></span>
         </div>
         <div class="relevant_price clearfix">
-            <span class="primary">起拍价：<span>￥859599.23-859599.23</span></span>
-            <span class="market">市场价：<span>￥859599.23-859599.23</span></span>
+            <span class="primary">起拍价：<span class="primary_range">￥0.00-0.00</span></span>
+            <span class="market">市场价：<span class="market_range">￥0.00-0.00</span></span>
         </div>
         <div class="relevant_count clearfix">
-            <span class="store">库存：<span>1000件（每次限拍3件）</span></span>
-            <span class="sold">已拍：<span>12456635件</span></span>
+            <span class="store">库存：<span class="store_count">9999件</span></span>
+            <span class="sold">已拍：<span class="sold_count">999件</span></span>
         </div>
     </section>
 
@@ -141,7 +142,7 @@
     <div id="action">
         <div class="action_wrap">
             <button class="chat"><i></i></button>
-            <button class="like"><i></i><span>加入收藏</span></button>
+            <button class="like"><i></i><span>加入关注</span></button>
             <button class="purchase"><i></i><span>正价购买</span></button>
         </div>
     </div>
@@ -157,50 +158,41 @@
             <div class="left_price">库&nbsp;&nbsp;&nbsp;存：<span>154564件</span></div>
         </div>
 
-        <div class="sorts_para">
-            <h6>请选择颜色 尺寸 分类</h6>
-            <div class="single_para_container">
-                <h4>尺寸</h4>
-                <div class="sorts">
-                    <span>20寸</span>
-                    <span>22寸</span>
-                    <span class="active">24寸</span>
-                    <span>26寸</span>
-                    <span>28寸</span>
-                    <span>30寸</span>
-                    <span>32寸</span>
+        <div class="parameters">
+            <div class="sorts_para">
+                <h6>请选择参数</h6>
+                <!--<div class="single_para_container">-->
+                    <!--<h4>尺寸</h4>-->
+                    <!--<div class="sorts">-->
+                        <!--<span>20寸</span>-->
+                        <!--<span>22寸</span>-->
+                        <!--<span>24寸</span>-->
+                        <!--<span>26寸</span>-->
+                        <!--<span>28寸</span>-->
+                        <!--<span>30寸</span>-->
+                        <!--<span>32寸</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+            </div>
+
+            <div class="count_sel clearfix">
+                <div class="limit">购买数量<span>（限购3件）</span></div>
+                <div class="count">
+                    <i class="minus"></i>
+                    <span class="count_num">0</span>
+                    <i class="plus"></i>
                 </div>
             </div>
-            <div class="single_para_container">
-                <h4>尺寸</h4>
-                <div class="sorts">
-                    <span>20寸</span>
-                    <span>22寸</span>
-                    <span>24寸</span>
-                    <span>26寸</span>
-                    <span>28寸</span>
-                    <span>30寸</span>
-                    <span>32寸</span>
-                </div>
+
+            <div class="consume">
+                <h4>消耗</h4>
+                <p>1拍币（剩余23拍币）</p>
             </div>
         </div>
 
-        <div class="count_sel clearfix">
-            <div class="limit">购买数量（限购三件）</div>
-            <div class="count">
-                <i class="minus"></i>
-                <span>0</span>
-                <i class="plus"></i>
-            </div>
-        </div>
-
-        <div class="consume">
-            <h4>消耗</h4>
-            <p>1拍币（剩余23拍币）</p>
-        </div>
-
-        <div id="bottomBtn">
-            <button class="like">加入收藏</button>
+        <div id="bottomBtn" class="intension">
+            <button class="like">加入关注</button>
             <button class="purchase">立即竞拍</button>
         </div>
     </div>
@@ -210,45 +202,194 @@
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script>
+    var goodsPara = {
+        imgs: ["../imgs/detail_01.jpg","../imgs/detail_02.jpg","../imgs/detail_03.jpg"],
+        title: "某低级搜集反对法发v集反对法发vDVDDVD是dffdd韩国ref",
+        rate: 0.03,
+        price_now: 1111111.26,
+        price_primary: [777777.77,898989.99],
+        price_market: [799997.77,943534.99],
+        state: 0,  //0:减价中 1：待拍中 2：已售罄
+        store: 999,
+        sold: 777,
+        timeLeft: 234567,
+        purchase_limit: 5,
+        token_left: 63,
+        token_consume: 2,
+        paras_arr: [
+            {
+                type_id: 11,
+                type_name: "尺寸",
+                paras: [
+                    {
+                        para_id: 1,
+                        value: "20寸",
+                        stock: true
+                    },
+                    {
+                        para_id: 2,
+                        value: "22寸",
+                        stock: false
+                    },
+                    {
+                        para_id: 3,
+                        value: "24寸",
+                        stock: true
+                    },
+                    {
+                        para_id: 4,
+                        value: "26寸",
+                        stock: true
+                    },
+                    {
+                        para_id: 5,
+                        value: "28寸",
+                        stock: false
+                    },
+                    {
+                        para_id: 6,
+                        value: "30寸",
+                        stock: true
+                    },
+                    {
+                        para_id: 7,
+                        value: "32寸",
+                        stock: true
+                    }
+                ]
+            },
+            {
+                type_id: 22,
+                type_name: "颜色",
+                paras: [
+                    {
+                        para_id: 1,
+                        value: "红色",
+                        stock: true
+                    },
+                    {
+                        para_id: 2,
+                        value: "绿色",
+                        stock: false
+                    },
+                    {
+                        para_id: 3,
+                        value: "蓝色",
+                        stock: true
+                    },
+                    {
+                        para_id: 4,
+                        value: "黑色",
+                        stock: true
+                    }
+                ]
+            }
+        ]
+    };
+    var summaryTimer = null;
+    var userSel = {
+        count: 0,
+        type_id: [],
+        para_id: []
+    }
+
 
     $(function(){
-        var canGrab = true;
 
-        if(canGrab){
-            //判断是否在减价拍时间范围内
+        //价格、库存等信息展示
+        $('#summary .desc').html(goodsPara.title);
+        $('#summary .primary_range').html('￥'+ goodsPara.price_primary[0] +'-'+ goodsPara.price_primary[1]);
+        $('#summary .market_range').html('￥'+ goodsPara.price_market[0] +'-'+ goodsPara.price_market[1]);
+        $('#summary .sold_count').html(goodsPara.sold +'件');
+        $('#summary .cur_price').html('￥'+goodsPara.price_now);
+        $('#sortsList .cur_price span').html('￥'+goodsPara.price_now);
+        $('#sortsList .start_price span').html('￥'+ goodsPara.price_primary[0] +'-'+ goodsPara.price_primary[1]);
+        $('#sortsList .left_price span').html(goodsPara.store +'件');
+        $('#sortsList .consume p').html(goodsPara.token_consume +'拍币（剩余'+ goodsPara.token_left +'拍币）');
+
+        if(goodsPara.purchase_limit > 0){
+            $('#summary .store_count').html(goodsPara.store +'件（每次限拍'+ goodsPara.purchase_limit +'件）');
+            $('#sortsList .count_sel .limit span').html('（限购'+ goodsPara.purchase_limit +'件）');
+
+        }else {
+            $('#summary .store_count').html(goodsPara.store +'件');
+        }
+
+        //产品参数展示与操作
+        (function(){
+            //商品规格参数展示
+            for(var i=0; i<goodsPara.paras_arr.length; i++){
+                var paraWrapHtml = '';
+                paraWrapHtml += '<div class="single_para_container" data-type-id="'+ goodsPara.paras_arr[i].type_id +'">'+
+                                    '<h4>'+ goodsPara.paras_arr[i].type_name +'</h4>'+
+                                    '<div class="sorts">';
+                for(var j=0; j<goodsPara.paras_arr[i].paras.length; j++){
+                    var stock = "";
+                    stock = goodsPara.paras_arr[i].paras[j].stock ? "" : "short";
+                    paraWrapHtml += '<span class="'+ stock +'" data-para-id="'+ goodsPara.paras_arr[i].paras[j].para_id +'">'+ goodsPara.paras_arr[i].paras[j].value +'</span>';
+                }
+                paraWrapHtml +=     '</div>'+
+                                '</div>';
+
+                $('#sortsList .sorts_para').append(paraWrapHtml);
+            }
+
+            //商品参数选择
+
+
+        })()
+
+        //判断是否在减价拍时间范围内
+        if(goodsPara.state == 0){
             var timestamp=new Date().getTime();
             var todayTimestamp = timestamp % 86400000;
-            console.log(todayTimestamp);
+//            console.log(todayTimestamp);
             if(todayTimestamp > 57600000){
                 $('.action_wrap .purchase span').html('正价拍');
+                $('#sortsList .purchase').html('正价购买');
                 $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
             }else {
                 $('.action_wrap .purchase span').html('减价拍');
-                $('.rate').html('减价频率：1次/S&nbsp;&nbsp;&nbsp;&nbsp;减价幅度：0.01元/次');
+                $('#sortsList purchase').html('立即抢拍');
+                $('.rate').html('减价频率：1次/S&nbsp;&nbsp;&nbsp;&nb' +
+                        'sp;减价幅度：'+ goodsPara.rate +'元/次');
             }
-        }else{
-            //倒计时
-            var $timeLeft = 234567;
-            var timerList = [];
 
+            summaryTimer = setInterval(function(){
+                goodsPara.price_now = commonCompt.accSub(goodsPara.price_now,goodsPara.rate);
+                $('#summary .cur_price').html('￥'+goodsPara.price_now);
+                $('#sortsList .cur_price span').html('￥'+goodsPara.price_now);
+            },1000);
+
+        }else if(goodsPara.state == 1){
+            //倒计时
+            var timerList = [];
             var addOrderTimer = new Paipai;
-            addOrderTimer.addOrderTimer($timeLeft,$('.rate .left_time'),timerList);
+            addOrderTimer.addOrderTimer(goodsPara.timeLeft,$('.rate .left_time'),timerList);
             $('.action_wrap .purchase span').html('正价购买');
+            $('#sortsList .purchase').html('正价购买');
+
+        }else if(goodsPara.state == 2){
+            $('.action_wrap .purchase span').html('已售罄');
+            $('.purchase').attr('disabled','disabled');
+            $('#sortsList .purchase').html('已售罄');
+            $('.purchase').css('background-color','#858585');
+            $('.rate').hide();
         }
 
+        //轮播图
         (function(){
-            var imgList = ["detail_01.jpg","detail_02.jpg","detail_03.jpg"];
-            var imgsCount = imgList.length;
+            var imgsCount = goodsPara.imgs.length;
             $('.swiper-container-detail .swiper-wrapper').html('');
             for(var i=0; i<imgsCount; i++){
-                $('.swiper-container-detail .swiper-wrapper').append('<div class="swiper-slide" style="background:url(../imgs/'+ imgList[i] +') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></div>')
+                $('.swiper-container .swiper-wrapper').append('<div class="swiper-slide" style="background:url('+ goodsPara.imgs[i] +') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></div>')
             }
         })()
-
-        var mySwiper = new Swiper ('.swiper-container-detail', {
+        var mySwiper = new Swiper ('.swiper-container', {
             direction: 'horizontal',
             loop: true,
-            autoplay: 3000
+            autoplay: 3000,
+            pagination : '.swiper-pagination'
         })
 
     })
@@ -265,6 +406,41 @@
     })
 
 
+    //购买数量
+    $('#sortsList .minus').click(function(){
+        if(userSel.count > 0)  userSel.count --;
+        $('#sortsList .count_num').html(userSel.count);
+    })
+    $('#sortsList .plus').click(function(){
+        if(userSel.count < goodsPara.purchase_limit) userSel.count ++;
+        $('#sortsList .count_num').html(userSel.count);
+        console.log(userSel);
+    })
+
+    //选择参数
+    $('#sortsList .sorts_para').on('click', 'span',function(){
+        if(!$(this).hasClass('short')){
+            $(this).siblings().removeClass('selected');
+            $(this).addClass('selected');
+
+            var type_id = $(this).parents('.single_para_container').attr('data-type-id');
+            var para_id = $(this).attr('data-para-id');
+            var flag_exist = false;
+            for(var i=0; i<userSel.type_id.length; i++){
+                if(userSel.type_id[i] == type_id){
+                    flag_exist = true;
+                    userSel.para_id[i] = para_id;
+                }
+            }
+            if(!flag_exist){
+                userSel.type_id.push(type_id);
+                userSel.para_id.push(para_id);
+            }
+        }
+
+
+    })
+
     //商品详情、成交记录、用户评价 切换
     $('#about .nav').on('click','.tab',function(){
         var curIndex = $(this).index();
@@ -273,6 +449,7 @@
         $('.about_sorts>div').hide();
         $('.about_sorts>div').eq(curIndex).show();
     })
+
 
 
 </script>

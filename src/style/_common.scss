@@ -1,3 +1,9 @@
+.swiper-pagination {
+  font-size: 0;
+  .swiper-pagination-bullet-active {
+    background-color: $paiRed;
+  }
+}
 
 #bottomBtn {
   display: flex;
@@ -59,7 +65,7 @@
       }
       &.grab.active {
         i {
-          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_grab_normal.png"));
+          @include smallIcon(0.34rem,0.35rem,url("../imgs/icon_grab.png"));
         }
       }
       &.collection {
@@ -93,5 +99,91 @@
         }
       }
     }
+  }
+}
+
+#registerWrap {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 99;
+  .register {
+    background-color: #fff;
+    border-radius: 0.06rem;
+    width: 6.48rem;
+    position: absolute;
+    left: 50%;
+    margin-left: -3.24rem;
+    margin-top: 3rem;
+    padding: 0.45rem 0.4rem 0.68rem;
+    font-size: 0;
+    .verify_close {
+      @include smallIcon(0.4rem,0.4rem,url("../imgs/close.png"));
+      position: absolute;
+      right: 0.2rem;
+      top: 0.2rem;
+      display: none;
+    }
+    h3 {
+      text-align: center;
+      font-size: 0.36rem;
+      font-weight: 500;
+    }
+    input {
+      height: 0.7rem;
+      line-height: 0.7rem;
+      padding-left: 0.32rem;
+      border: 1px solid #e8e8e8;
+      border-radius: 0.04rem;
+      font-size: 0.24rem;
+    }
+    button {
+      background-color: $paiRed;
+      color: #fff;
+      border: none;
+      outline: none;
+    }
+    #phoneNum {
+      width: 100%;
+      margin-top: 0.6rem;
+    }
+    .verify {
+      margin-top: 0.3rem;
+      #code {
+        width: 60%;
+      }
+      button {
+        border-radius: 0.1rem;
+        line-height: 0.7rem;
+        width: 35%;
+        float: right;
+      }
+    }
+    #regSubmit {
+      line-height: 0.8rem;
+      width: 100%;
+      font-size: 0.3rem;
+      border-radius: 0.04rem;
+      margin-top: 0.75rem;
+    }
+  }
+}
+
+.loading {
+  text-align: center;
+  font-size: 0;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 0.08rem;
+  i {
+    @include smallIcon(0.18rem,0.18rem,url("../imgs/loading.gif"));
+    margin-right: 0.1rem;
+  }
+  span {
+    font-size: 0.22rem;
+    color: #858585;
   }
 }

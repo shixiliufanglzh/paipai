@@ -26,7 +26,7 @@
 </head>
 <body style="background-color:#fff;">
 <div id="collection">
-    <div class="single_collect">
+    <div class="single_collect sold_out" data-good-id="11">
         <span class="img"></span>
         <div class="content">
             <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
@@ -38,7 +38,7 @@
         <button>销售告罄</button>
     </div>
 
-    <div class="single_collect">
+    <div class="single_collect grab" data-good-id="22">
         <span class="img"></span>
         <div class="content">
             <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
@@ -47,10 +47,10 @@
         </div>
         <i class="close"></i>
         <span class="count">×1</span>
-        <button class="active">立即抢拍</button>
+        <button>立即抢拍</button>
     </div>
 
-    <div class="single_collect">
+    <div class="single_collect primary" data-good-id="33">
         <span class="img"></span>
         <div class="content">
             <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
@@ -59,8 +59,17 @@
         </div>
         <i class="close"></i>
         <span class="count">×1</span>
-        <button class="active">正价购买</button>
+        <span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>
+        <button>正价购买</button>
     </div>
+</div>
+
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_collection.png" alt="">
+    </div>
+    <h6>暂无商品~</h6>
+    <p>快去收藏您的真爱吧</p>
 </div>
 
 
@@ -72,9 +81,21 @@
 <script>
 
     $(function(){
+        if($('.single_collect').length <= 0){
+            $('#blank').show();
+        }
 
         //生成底部导航
         commonCompt.mainNav(2);
+
+        var timeLeft01 = 234567;
+        //var timeLeft02 = 67;
+        var timerList = [];
+
+        var addOrderTimer = new Paipai;
+        addOrderTimer.addOrderTimer(timeLeft01,$('[data-good-id="33"] .time_left'),timerList);
+        //addOrderTimer.addOrderTimer(timeLeft02,$('[data-order-id="22"] .time_left'),timerList);
+        console.log(timerList);
     })
 
     $('.single_collect').on('click','.close',function(){
