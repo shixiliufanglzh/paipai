@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>会员中心</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -36,29 +37,31 @@
     </div>
 
     <div id="selection">
-        <div class="single_btn">
-            <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money">20拍币</span>
-        </div>
+        <ul>
+            <li class="single_btn loc_purse">
+                <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money">20拍币</span>
+            </li>
 
-        <div class="single_btn">
-            <i class="pre_icon order"></i><span class="title">我的订单</span><i class="icon_enter"></i>
-        </div>
+            <li class="single_btn loc_order">
+                <i class="pre_icon order"></i><span class="title">我的订单</span><i class="icon_enter"></i>
+            </li>
 
-        <div class="single_btn">
-            <i class="pre_icon collection"></i><span class="title">我的收藏</span><i class="icon_enter"></i>
-        </div>
+            <li class="single_btn loc_collection">
+                <i class="pre_icon collection"></i><span class="title">我的收藏</span><i class="icon_enter"></i>
+            </li>
 
-        <div class="single_btn">
-            <i class="pre_icon address"></i><span class="title">地址管理</span><i class="icon_enter"></i>
-        </div>
+            <li class="single_btn loc_address">
+                <i class="pre_icon address"></i><span class="title">地址管理</span><i class="icon_enter"></i>
+            </li>
 
-        <div class="single_btn">
-            <i class="pre_icon service"></i><span class="title">客服中心</span><i class="icon_enter"></i>
-        </div>
+            <li class="single_btn loc_service">
+                <i class="pre_icon service"></i><span class="title">客服中心</span><i class="icon_enter"></i>
+            </li>
 
-        <div class="single_btn">
-            <i class="pre_icon help"></i><span class="title">新手帮助</span><i class="icon_enter"></i>
-        </div>
+            <li class="single_btn loc_help">
+                <i class="pre_icon help"></i><span class="title">新手帮助</span><i class="icon_enter"></i>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -90,6 +93,40 @@
         leftBtnClick: function(){
 
         }
+    })
+
+    $('body').on('click','#mainNav button',function(){
+        if($(this).attr('class') == 'home'){
+            window.location.href = '../index.html'
+        }else if($(this).attr('class') == 'collection'){
+            window.location.href = 'collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'personal.html'
+        }
+    })
+
+    $('#selection').on('click','.single_btn',function(){
+        if($(this).hasClass('loc_purse')){
+            window.location.href = 'personalPurse.html';
+        }else if($(this).hasClass('loc_order')){
+            window.location.href = 'order.html';
+        }else if($(this).hasClass('loc_collection')){
+            window.location.href = 'collection.html';
+        }else if($(this).hasClass('loc_address')){
+            window.location.href = 'address.html';
+        }else if($(this).hasClass('loc_service')){
+            window.location.href = 'services.html';
+        }else if($(this).hasClass('loc_help')){
+//            window.location.href = 'order.html';
+        }
+    })
+
+    $('#zoneHeader').click(function(){
+        window.location.href = 'personalInfo.html';
     })
 
 

@@ -2,34 +2,70 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://116.62.116.5/rshop/";
-var GETLABELS = apiHost + "goods/getLabelOne.jhtml";
-var GETGOODS = apiHost + "goods/getGoods.jhtml";
+var apiHost = "http://116.62.116.5/app/";
+var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
+var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
+var REFRESHGOODS = apiHost + "goods/refreshGoods.jhtml";  //刷新低于最低价或其他不和规则商品
+var GETGODDSDETAIL = apiHost + "goods/getGoodsDetail.jhtml";  //获取商品详情
+var GETGODDSSKU = apiHost + "goods/getGoodsSku.jhtml";  //获取商品规格参数列表
+var GETGOODSMIXSKU = apiHost + "goods/getGoodsMixSku.jhtml";  //获取商品参数的价格库存
+var GETGOODSCOMMENTS = apiHost + "goods/getGoodsComments.jhtml";  //获取商品评论列表
+var ADDSTORE = apiHost + "goods/addStore.jhtml";  //商品添加收藏
+var GETSTORE = apiHost + "goods/getStore.jhtml";  //获取商品收藏列表
+var CANCELSTORE = apiHost + "goods/cancelStore.jhtml";  //取消商品收藏
+var ADDUSERADDRESS = apiHost + "address/addUserAddress.jhtml";  //添加收货地址
+var GETUSERADDRESS = apiHost + "address/getUserAddress.jhtml";  //获取用户地址列表
+var DEFAULTADRESS = apiHost + "address/defaultAddress.jhtml";  //设置默认地址
+var DELUSERADDRESS = apiHost + "address/delUserAddress.jhtml";  //删除用户地址列表
+var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用户地址
+var getAddressById = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
+
+//接口返回状态响应
+function apiResponse(responseCode,responseDesc,redirectUrl){
+    switch(responseCode){
+        case "2000":
+            return true;
+            break;
+        case "4000":
+            window.location.href = redirectUrl;
+            break;
+        case "4001":
+            commonCompt.popPrompt(responseDesc);
+            break;
+        case "4002":
+            commonCompt.popPrompt("微信授权登录失败");
+            break;
+        case "4003":
+            commonCompt.popPrompt("用户已存在");
+            break;
+        case "4004":
+            commonCompt.popPrompt("未找到资源");
+            break;
+        case "4005":
+            commonCompt.popPrompt("未关注平台公众号");
+            break;
+        case "4006":
+            commonCompt.popPrompt("商品已被竞拍");
+            break;
+        case "4007":
+            commonCompt.popPrompt("拍币不足");
+            break;
+        case "5000":
+            commonCompt.popPrompt("服务器出错");
+            break;
+        case "5001":
+            commonCompt.popPrompt("找不到可使用的公众号");
+            break;
+        default:
+            commonCompt.popPrompt("未知错误");
+    }
+}
 
 var Paipai = function(){
-    this.desc="商品描述";
-    this.price_now = 0;
-    this.price_primary = 0;
+
 }
 
 Paipai.prototype = {
-    goodsListDom: function(){
-        var html;
-        html = '<div class="single_good">'+
-                    '<div class="item_img"></div>'+
-                    '<div class="about">'+
-                        '<p class="desc">'+ this.desc +'</p>'+
-                        '<div class="price">'+
-                            '<span class="price_now">'+ this.price_now +'</span>'+
-                            '<span class="price_primary">'+ this.price_primary +'</span>'+
-                            '<i class="hummer"></i>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>'
-
-        return html;
-    },
-
     //待支付订单的计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
@@ -58,8 +94,6 @@ Paipai.prototype = {
         timerList.push(timer);
         //return timePrompt;
     },
-
-
 }
 
 
@@ -437,6 +471,21 @@ var commonCompt = {
         m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
         n = (r1 >= r2) ? r1 : r2;
         return ((arg1 * m - arg2 * m) / m).toFixed(n);
+    },
+
+    //获取地址栏参数
+    GetUrlPara: function(name) {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    },
+
+    isContained: function(a,b){
+        if(a.length < b.length) return false;
+        for(var i = 0, len = b.length; i < len; i++){
+            if(a.indexOf(b[i]) == -1) return false;
+        }
+        return true;
     }
 
 }

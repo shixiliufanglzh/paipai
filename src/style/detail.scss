@@ -249,7 +249,10 @@
     .about_sorts {
       padding: 0.1rem 0.24rem;
       .good_detail {
-
+        img {
+          width: 100%;
+          display: block;
+        }
       }
       .deal_record {
         display: none;

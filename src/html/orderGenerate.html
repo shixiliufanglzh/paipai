@@ -144,6 +144,20 @@
         })
     })
 
+    $('body').on('click','#mainNav button',function(){
+        if($(this).attr('class') == 'home'){
+            window.location.href = '../index.html'
+        }else if($(this).attr('class') == 'collection'){
+            window.location.href = 'collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'personal.html'
+        }
+    })
+
 
 </script>
 </html>
