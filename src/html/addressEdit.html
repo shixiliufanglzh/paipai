@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>修改地址信息</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -47,7 +48,7 @@
 
 </div>
 
-<button id="newAddr">保存新地址</button>
+<div id="newAddr"><button>确认修改</button></div>
 
 
 </body>
@@ -58,12 +59,43 @@
 <script src="../script/iscroll.js"></script>
 
 <script>
-
+    var $addrId = commonCompt.GetUrlPara('addr_id');
     var name,phone,province,city,county,address;
     var isDefault = 0;
     $(function(){
-        $('#area').val('');
         changeAddress();
+
+        $.ajax({
+            url: GETADDRESSBYID,
+            type:'GET',
+            dataType:'json',
+            data: {
+                addressId: $addrId
+            },
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    console.log(data.data);
+                    var areaCombi = data.data.area.split(',');
+                    $('#name').val(data.data.name);
+                    $('#phone').val(data.data.tel);
+                    $('#area').val(areaCombi.join(' '));
+                    province = areaCombi[0];
+                    city = areaCombi[1];
+                    county = areaCombi[2];
+                    $('#address').val(data.data.address);
+                    if(data.data.defaultCode == 1){
+                        $('.default i').addClass('set_default');
+                    }
+
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
     })
 
     $('.default i').click(function(){
@@ -76,7 +108,7 @@
         }
     })
 
-    $('#newAddr').click(function(){
+    $('#newAddr button').click(function(){
         name = $('#name').val();
         phone = $('#phone').val();
         address = $('#address').val();
@@ -94,10 +126,11 @@
             console.log(name,phone,province,city,county,address);
 
             $.ajax({
-                url: ADDUSERADDRESS,
+                url: UPDATEUSERADDRESS,
                 type:'POST',
                 dataType:'json',
                 data: {
+                    id: $addrId,
                     address: address,
                     name: name,
                     tel: phone,
@@ -108,12 +141,11 @@
                     console.log(data);
                     apiResponse(data.responseCode,data.responseDesc);
                     if(data.responseCode == 2000){
-                        commonCompt.popPrompt('添加成功');
+                        commonCompt.popPrompt('修改成功');
                         setTimeout(function(){
                             window.location.href = 'address.html';
                         },2000);
                     }
-
                 },
                 error: function(err){
                     console.log(err);

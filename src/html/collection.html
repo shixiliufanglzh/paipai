@@ -241,7 +241,7 @@
                         }
 
                         collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ collectionList[i].storeId +'" data-good-id="'+ goodsList[i].goodsId +'">'+
-                                '<span class="img"></span>'+
+                                '<span class="img" style="background: url('+ collectionList[i].goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
                                 '<div class="content">'+
                                 '<p class="title">'+ collectionList[i].goodsDesc +'</p>'+
                                 '<div class="para"><span class="detail">'+ collectionList[i].goodsSpu +'</span><br><span class="store">库存：'+ collectionList[i].stockNum +'</span></div>'+
@@ -310,7 +310,7 @@
                 }
 
                 collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ goodPara.storeId +'" data-good-id="'+ goodPara.goodsId +'">'+
-                                        '<span class="img"></span>'+
+                                        '<span class="img" style="background: url('+ goodPara.goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
                                         '<div class="content">'+
                                             '<p class="title">'+ goodPara.goodsDesc +'</p>'+
                                             '<div class="para"><span class="detail">'+ goodPara.goodsSpu +'</span><br><span class="store">库存：'+ goodPara.stockNum +'</span></div>'+

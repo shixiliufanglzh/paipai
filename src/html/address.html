@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>地址管理</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -131,38 +132,7 @@
     $('#receiveInfo').on('click','.edit',function(){
         var $addDom = $(this).parents('.single_addr');
         var $defaultAddrId = $addDom.attr('data-addr-id');
-        commonCompt.Confirm({
-            hasTitle: false,
-            title: "",
-            contentText: "确认要删除该地址吗？",
-            cancleText: "取消",
-            certainText: "确认",
-            rightBtnClick: function(){
-                $.ajax({
-                    url: UPDATEUSERADDRESS,
-                    type:'POST',
-                    dataType:'json',
-                    data: {addressId: $defaultAddrId},
-                    success: function(data){
-                        console.log(data);
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000) {
-                            $addDom.remove();
-                            if(!$('.single_addr').eq(0).hasClass('set_default')){
-                                $('.single_addr').eq(0).addClass('set_default');
-                            }
-                        }
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                });
-
-            },
-            leftBtnClick: function(){
-
-            }
-        })
+        window.location.href = 'addressEdit.html?addr_id=' + $defaultAddrId;
     })
 
     $('#receiveInfo').on('click','.default',function(){
@@ -191,6 +161,16 @@
 
     $('#newAddr button').click(function(){
         window.location.href = 'addressAdd.html';
+    })
+
+    $('#receiveInfo').on('click','.single_addr .info',function(){
+        var $from = commonCompt.GetUrlPara('from');
+        var $addrId = $(this).parents('.single_addr').attr('data-addr-id');
+        if($from == 1){
+            window.localStorage.setItem("addrId", $addrId);
+            window.history.go(-1);
+
+        }
     })
 
 </script>

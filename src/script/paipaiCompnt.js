@@ -3,12 +3,14 @@
  */
 
 var apiHost = "http://116.62.116.5/app/";
+
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
 var REFRESHGOODS = apiHost + "goods/refreshGoods.jhtml";  //刷新低于最低价或其他不和规则商品
 var GETGODDSDETAIL = apiHost + "goods/getGoodsDetail.jhtml";  //获取商品详情
 var GETGODDSSKU = apiHost + "goods/getGoodsSku.jhtml";  //获取商品规格参数列表
 var GETGOODSMIXSKU = apiHost + "goods/getGoodsMixSku.jhtml";  //获取商品参数的价格库存
+var GETBUYRECORD = apiHost + "goods/getBuyRecord.jhtml";  //获取商品交易记录
 var GETGOODSCOMMENTS = apiHost + "goods/getGoodsComments.jhtml";  //获取商品评论列表
 var ADDSTORE = apiHost + "goods/addStore.jhtml";  //商品添加收藏
 var GETSTORE = apiHost + "goods/getStore.jhtml";  //获取商品收藏列表
@@ -18,7 +20,27 @@ var GETUSERADDRESS = apiHost + "address/getUserAddress.jhtml";  //获取用户�
 var DEFAULTADRESS = apiHost + "address/defaultAddress.jhtml";  //设置默认地址
 var DELUSERADDRESS = apiHost + "address/delUserAddress.jhtml";  //删除用户地址列表
 var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用户地址
-var getAddressById = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
+var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
+
+var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
+var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
+var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
+var CREATEORDER = apiHost + "order/createOrder.jhtml";  //创建订单
+var GETORDER = apiHost + "order/getOrder.jhtml";  //获取用户订单列表
+var GETORDERDETAIL = apiHost + "order/getOrderDetail.jhtml";  //获取订单详情
+var DELORDER = apiHost + "order/delOrder.jhtml";  //删除订单
+var CANCELORDER = apiHost + "order/cancelOrder.jhtml";  //取消订单
+var QUERYFORTRACKING = apiHost + "order/queryForTracking.jhtml";  //查询订单物流
+var GETORDERGOODS = apiHost + "order/getOrderGoods.jhtml";  //获取订单指定商品信息
+var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
+var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
+var ADDCOMMENT = apiHost + "order/addComment.jhtml";  //添加订单商品评论
+
+var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
+var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
+var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
+var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
+var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -27,6 +49,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             return true;
             break;
         case "4000":
+            commonCompt.popPrompt("请先登录");
             window.location.href = redirectUrl;
             break;
         case "4001":
@@ -451,6 +474,15 @@ var commonCompt = {
                 $('#registerWrap').remove();
             });
         })
+    },
+
+    //小数较精确的加法
+    accAdd: function(arg1,arg2){
+        var r1,r2,m;
+        try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0};
+        try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0};
+        m=Math.pow(10,Math.max(r1,r2));
+        return (arg1*m+arg2*m)/m;
     },
 
     //小数较精确的减法运算

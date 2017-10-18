@@ -91,39 +91,23 @@
             <div class="good_detail"></div>
 
             <div class="deal_record">
-                <div class="single_deal">
-                    <div class="deal_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>
-                    <div class="deal_detail">
-                        <span class="deal_price">￥3999.23</span>
-                        <p class="parameter">颜色：黄绿色 尺寸：235L 型号：SFGGR25ac</p>
-                        <p class="count">数量：1</p>
-                    </div>
-                </div>
-                <div class="single_deal">
-                    <div class="deal_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>
-                    <div class="deal_detail">
-                        <span class="deal_price">￥3999.23</span>
-                        <p class="parameter">颜色：黄绿色 尺寸：235L 型号：SFGGR25ac</p>
-                        <p class="count">数量：2</p>
-                    </div>
-                </div>
-                <div class="single_deal">
-                    <div class="deal_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>
-                    <div class="deal_detail">
-                        <span class="deal_price">￥3999.23</span>
-                        <p class="parameter">颜色：黄绿色 尺寸：235L 型号：SFGGR25ac</p>
-                        <p class="count">数量：3</p>
-                    </div>
-                </div>
+                <!--<div class="single_deal">-->
+                    <!--<div class="deal_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
+                    <!--<div class="deal_detail">-->
+                        <!--<span class="deal_price">￥3999.23</span>-->
+                        <!--<p class="parameter">颜色：黄绿色 尺寸：235L 型号：SFGGR25ac</p>-->
+                        <!--<p class="count">数量：1</p>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
 
             <div class="evaluate_list">
-                <div class="single_evaluate">
-                    <div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>
-                    <p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
-                    <!--<div class="imgs"><span></span><span></span><span></span><span></span></div>-->
-                    <p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>
-                </div>
+                <!--<div class="single_evaluate">-->
+                    <!--<div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
+                    <!--<p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>-->
+                    <!--&lt;!&ndash;<div class="imgs"><span></span><span></span><span></span><span></span></div>&ndash;&gt;-->
+                    <!--<p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>-->
+                <!--</div>-->
 
             </div>
             <div class="loading"><i></i><span>加载中...</span></div>
@@ -491,12 +475,10 @@
 
         if($(this).hasClass('tab_evaluate_list')){
             $('.loading').show();
-
             showComments($pageNum);
-
         }else if($(this).hasClass('tab_deal_record')){
-//            $('.loading').show();
-//            showDeals($pageNum);
+            $('.loading').show();
+            showDeals($pageNum);
         }
     })
 
@@ -555,29 +537,53 @@
     }
 
     //成交列表展示
-//    function showDeals(pageNum){
-//        if(pageNum <= 1){
-//            $('.deal_record').html('');
-//        }
-//        $.ajax({
-//            url: ,
-//            type:'GET',
-//            dataType:'json',
-//            data: {
-//                goodsId: $goodId,
-//                pageNum: pageNum,
-//                pageSize: $pageSize
-//            },
-//            success: function(data){
-//                //商品规格参数展示
-//                console.log(data);
-//
-//            },
-//            error: function(err){
-//                console.log(err);
-//            }
-//        });
-//    }
+    function showDeals(pageNum){
+        if(pageNum <= 1){
+            $('.deal_record').html('');
+        }
+        $.ajax({
+            url: GETBUYRECORD,
+            type:'GET',
+            dataType:'json',
+            data: {
+                goodsId: $goodId,
+                pageNum: pageNum,
+                pageSize: $pageSize
+            },
+            success: function(data){
+                //商品规格参数展示
+                console.log(data);
+                if(data.responseCode == 2000){
+                    var dealsList = data.data;
+                    var dealsHtml = "";
+                    for(var i=0; i<dealsList.length; i++){
+                        dealsHtml +=    '<div class="single_deal">'+
+                                            '<div class="deal_msg"><span class="name">'+ dealsList[i].userTel +'</span><span class="time">'+ dealsList[i].createDate +'</span></div>'+
+                                            '<div class="deal_detail">'+
+                                                '<span class="deal_price">￥'+ dealsList[i].totalPrice +'</span>'+
+                                                '<p class="parameter">'+ dealsList[i].goodsSpu +'</p>'+
+                                                '<p class="count">数量：'+ dealsList[i].goodsAmount +'</p>'+
+                                            '</div>'+
+                                        '</div>'
+                    }
+
+                    $('.deal_record').append(dealsHtml);
+
+                    if(dealsList.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
 
     $(document).scroll(function(){
 
@@ -595,7 +601,7 @@
                 console.log("交易记录","第"+$pageNum+"页");
                 finishLoading = true;
                 setTimeout(function(){
-//                    showDeals($pageNum);
+                    showDeals($pageNum);
                 },1000);
             }
         }
@@ -628,6 +634,43 @@
                     },
                     error: function (err) {
                         console.log(err);
+                    }
+                });
+            }else {
+                commonCompt.popPrompt('请选择数量');
+            }
+        }else {
+            commonCompt.popPrompt('请选择参数');
+        }
+    })
+
+    //立即购买
+    $('#bottomBtn .purchase').click(function() {
+        if(userSel.spu_id.length >= paraList.length) {
+            if(userSel.count > 0){
+                var paraData = {
+                        goodsId: $goodId,
+                        mixId: userSel.mixId,
+                        goodsAmount: userSel.count,
+                        goodsIssueno: goodsPara.goodsIssueno
+                    }
+                console.log(paraData);
+                $.ajax({
+                    url: ADDCART,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: paraData,
+                    success: function (data) {
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            window.location.href = 'orderGenerate.html';
+                        }
+
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        commonCompt.popPrompt("购买失败，请刷新后再尝试");
                     }
                 });
             }else {
