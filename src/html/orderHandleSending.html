@@ -70,9 +70,9 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+    var $curOrderId = commonCompt.GetUrlPara('order_id');
 
     $(function(){
-        var $curOrderId = commonCompt.GetUrlPara('order_id');
 
         $.ajax({
             url: GETORDERDETAIL,
@@ -93,12 +93,27 @@
                     var totalCount = 0;
                     var $primaryPriceSum = 0, $dealPriceSum = 0;
                     for(var i=0; i<goods.length; i++){
-
+                        var refundBtn = "";
+                        if(goods[i].relateStatus == 1){
+                            refundBtn = '<button class="order_edit refund">申请退款</button>';
+                        }else if(goods[i].relateStatus == 2){
+                            refundBtn = '<button class="order_edit">退款中</button>';
+                        }else if(goods[i].relateStatus == 3){
+                            refundBtn = '<button class="order_edit">退货退款中</button>';
+                        }else if(goods[i].relateStatus == 4){
+                            refundBtn = '<button class="order_edit">换货中</button>';
+                        }else if(goods[i].relateStatus == 5){
+                            refundBtn = '<button class="order_edit">退款完成</button>';
+                        }else if(goods[i].relateStatus == 6){
+                            refundBtn = '<button class="order_edit">退货退款完成</button>';
+                        }else if(goods[i].relateStatus == 7){
+                            refundBtn = '<button class="order_edit">换货完成</button>';
+                        }
                         $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goods[i].salePrice*goods[i].goodsAmount);
                         $dealPriceSum = commonCompt.accAdd($dealPriceSum,goods[i].buyPrice*goods[i].goodsAmount);
                         totalCount += goods[i].goodsAmount;
 
-                        goodsHtml +=   '<div class="single_good" data-good-id="'+ goods[i].goodsId +'">'+
+                        goodsHtml +=   '<div class="single_good" data-good-id="'+ goods[i].goodsId +'" data-relate-id="'+ goods[i].orderGoodsId +'">'+
                                 '<div class="good_msg clearfix">'+
                                 '<span class="img" style="background: url('+ goods[i].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
                                 '<div class="product_desc">'+
@@ -107,8 +122,7 @@
                                 '</div>'+
                                 '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice +'</span><br><span class="price_primary">'+ goods[i].salePrice +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
                                 '</div>'+
-                                '<div class="manipu clearfix">'+
-                                '<button class="order_edit">申请退款</button>'+
+                                '<div class="manipu clearfix">'+ refundBtn +
                                 '</div>'+
                                 '</div>'
                     }
@@ -131,7 +145,11 @@
 
     })
 
-
+    $('.good_list').on('click','.order_edit.refund',function(){
+        window.location.href = 'serviceRefundNotsend.html?orderId='+ $curOrderId +'&goodsId=' +
+                $(this).parents('.single_good').attr('data-good-id')+
+                '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id');
+    })
 
 </script>
 </html>
