@@ -28,163 +28,18 @@
 <div id="order">
     <div id="orderSorts">
         <div class="nav_wrap">
-            <div class="tab current"><a>全部</a></div>
-            <div class="tab"><a>待支付</a></div>
-            <div class="tab"><a>待发货</a></div>
-            <div class="tab"><a>待收货</a></div>
-            <div class="tab"><a>待评价</a></div>
+            <div class="tab tab_all current"><a>全部</a></div>
+            <div class="tab tab_before_paid"><a>待支付</a></div>
+            <div class="tab tab_before_send"><a>待发货</a></div>
+            <div class="tab tab_before_received"><a>待收货</a></div>
+            <div class="tab tab_complete"><a>已收货</a></div>
         </div>
     </div>
+    <div class="orders_list">
 
-    <div class="singleOrder clearfix" data-order-type="close">
-        <div class="order_head">订单号：<span class="order_number">1234567890</span><span class="orde_status">交易关闭</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit delete">删除订单</button>
     </div>
-
-    <div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="22">
-        <div class="order_head"><i class="clock"></i>距订单关闭剩余：<span class="time_left">0天0小时0分0秒</span><span class="orde_status">待支付</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit red pay">付款</button>
-        <button class="order_edit cancel">取消订单</button>
-    </div>
-
-    <div class="singleOrder clearfix" data-order-type="beforeSend">
-        <div class="order_head">订单号：<span class="order_number">1234567890</span><span class="orde_status">待发货</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit red before_send">催一下</button>
-    </div>
-
-    <div class="singleOrder clearfix" data-order-type="beforeReceived">
-        <div class="order_head">订单号：<span class="order_number">1234567890</span><span class="orde_status">待收货</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit red receive">确认收货</button>
-        <button class="order_edit logistics">查看物流</button>
-    </div>
-
-    <div class="singleOrder clearfix" data-order-type="beforeEvaluated">
-        <div class="order_head">订单号：<span class="order_number">1234567890</span><span class="orde_status">待评价</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit red evaluate">去评价</button>
-    </div>
-
-    <div class="singleOrder clearfix" data-order-type="complete">
-        <div class="order_head">订单号：<span class="order_number">1234567890</span><span class="orde_status">交易成功</span></div>
-        <div class="goods_detail">
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-            <div class="order_detail clearfix">
-                <div class="product_pic"></div>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×1</span></div>
-            </div>
-        </div>
-        <p class="total">共1件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥10.00</span>）</p>
-        <button class="order_edit red view">查看订单</button>
-    </div>
-
-
+    <div class="loading"><i></i><span>加载中...</span></div>
 </div>
-
 
 <div id="blank">
     <div class="img">
@@ -200,13 +55,14 @@
 
 <script>
     var $pageNum = 1;
-    var $pageSize = 6;
-    var ordersList = [];
+    var $pageSize = 5;
+    var $orderStatus = "";  //订单状态（""全部，1待发货，2待支付，4交易关闭，5待收货, 6已收货/交易成功）
+    var ordersListAll = [];
     var timer = null;
     var finishLoading = true;
 
     $(function(){
-
+        //没有订单时的显示
         if($('.singleOrder').length <= 0){
             $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
             $('body').css('background-color','#fff');
@@ -216,22 +72,55 @@
         //生成底部导航
         commonCompt.mainNav(4);
 
-        var timeLeft01 = 234567;
-        var timeLeft02 = 67;
-        var timerList = [];
+        bindOrdersList($pageNum,$orderStatus);
 
-        var addOrderTimer = new Paipai;
-        addOrderTimer.addOrderTimer(timeLeft01,$('[data-order-id="11"] .time_left'),timerList);
-        addOrderTimer.addOrderTimer(timeLeft02,$('[data-order-id="22"] .time_left'),timerList);
-        console.log(timerList);
-
-
+        timer = setInterval(function(){
+            for(var i=0; i<ordersListAll.length; i++){
+                if(ordersListAll[i].orderStatus == 2){
+                    ordersListAll[i].effectiveTime --;
+                    var timePrompt = "";
+                    var cal_time = ordersListAll[i].effectiveTime;
+                    if(cal_time >= 86400){
+                        timePrompt += Math.floor(cal_time/86400) + "天";
+                        cal_time = ordersListAll[i].effectiveTime % 86400;
+                    }
+                    if(cal_time >= 3600){
+                        timePrompt += Math.floor(cal_time/3600) + "小时";
+                        cal_time = ordersListAll[i].effectiveTime % 3600;
+                    }
+                    if(cal_time >= 60){
+                        timePrompt += Math.floor(cal_time/60) + "分";
+                        cal_time = ordersListAll[i].effectiveTime % 60;
+                    }
+                    timePrompt += cal_time + "秒";
+                    $('.singleOrder').eq(i).find('.time_left').html(timePrompt);
+                    if(ordersListAll[i].effectiveTime === 0){
+                        location.reload(true);
+                    }
+                }
+            }
+        },1000);
 
     })
 
+    //切换分类
     $('#orderSorts .nav_wrap').on('click', '.tab', function(){
+        ordersListAll = [];
+        $pageNum = 1;
         $('.nav_wrap .tab').removeClass('current');
         $(this).addClass('current');
+        if($(this).hasClass('tab_all')){
+            $orderStatus = "";
+        }else if($(this).hasClass('tab_before_paid')){
+            $orderStatus = 2;
+        }else if($(this).hasClass('tab_before_send')){
+            $orderStatus = 1;
+        }else if($(this).hasClass('tab_before_received')){
+            $orderStatus = 5;
+        }else if($(this).hasClass('tab_complete')){
+            $orderStatus = 6;
+        }
+        bindOrdersList($pageNum,$orderStatus);
     })
 
     $('body').on('click','#mainNav button',function(){
@@ -248,6 +137,278 @@
         }
     })
 
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+//            setTimeout(function(){
+            bindOrdersList($pageNum,$orderStatus);
+//            },1000)
+        }
+    })
 
+    //查看订单详情
+    $('.orders_list').on('click', '.singleOrder .goods_detail,.order_edit.logistics,.order_edit.view', function(){
+        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
+        var $curOrderStatus = $(this).attr('data-order-status');
+        switch($curOrderStatus){
+            case "1":
+                window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
+                break;
+            case "2":
+                window.location.href = 'orderHandlePaying.html?order_id='+ $curOrderId;
+                break;
+            case "4":
+                window.location.href = 'orderHandleClose.html?order_id='+ $curOrderId;
+                break;
+            case "5":
+                window.location.href = 'orderHandleReceiving.html?order_id='+ $curOrderId;
+                break;
+            case "6":
+                window.location.href = 'orderHandleEvaluating.html?order_id='+ $curOrderId;
+                break;
+        }
+
+    })
+
+    //删除订单
+    $('.orders_list').on('click', 'button.delete', function(){
+        var $curOrde = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认删除该订单吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: DELORDER,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrde.attr('data-order-id')
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.responseCode == 2000){
+                            $curOrde.remove();
+                            ordersListAll.splice($curOrde.index(),1);
+                            commonCompt.popPrompt('已删除该订单');
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+                                $pageNum ++;
+                                console.log("第"+$pageNum+"页");
+                                finishLoading = true;
+                                setTimeout(function(){
+                                    bindOrdersList($pageNum,$orderStatus);
+                                },1000);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //取消订单
+    $('.orders_list').on('click', 'button.cancel', function(){
+        var $curOrde = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认取消该订单吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: CANCELORDER,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrde.attr('data-order-id')
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.responseCode == 2000){
+                            $curOrde.remove();
+                            ordersListAll.splice($curOrde.index(),1);
+                            commonCompt.popPrompt('已取消该订单');
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+                                $pageNum ++;
+                                console.log("第"+$pageNum+"页");
+                                finishLoading = true;
+                                setTimeout(function(){
+                                    bindOrdersList($pageNum,$orderStatus);
+                                },1000);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //确认收货
+    $('.orders_list').on('click', 'button.receive', function(){
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "是否确认收货？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: CONFIRMRECEIPT,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrder.attr('data-order-id')
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已确认收货');
+                            location.reload(true);
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //催一下
+    $('.orders_list').on('click', 'button.before_send', function(){
+        setTimeout(function(){
+            commonCompt.popPrompt('已帮您催货，请耐心等待');
+        },500)
+    })
+
+    //获取商品列表
+    function bindOrdersList(pageNum,orderStatus){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.orders_list').html('');
+        }
+
+        //设置订单列表请求参数
+        var paraData = {};
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.orderStatus = orderStatus;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GETORDER,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var orders = data.data;
+                    if(orders.length > 0){
+                        $('#blank').hide();
+                    }
+                    ordersListAll = ordersListAll.concat(orders);
+                    var ordersListHtml = "";
+                    var $amount = 0;
+                    for(var i=0; i<orders.length; i++){
+
+                        if(orders[i].orderStatus == 1){
+                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeSend" data-order-id="'+ orders[i].orderId +'">'+
+                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">待发货</span></div>'
+                        }else if(orders[i].orderStatus == 2){
+                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
+                                    '<div class="order_head"><i class="clock"></i>距订单关闭剩余：<span class="time_left">0天0小时0分0秒</span><span class="orde_status">待支付</span></div>'
+                        }else if(orders[i].orderStatus == 4){
+                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="close" data-order-id="'+ orders[i].orderId +'">'+
+                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">交易关闭</span></div>'
+                        }else if(orders[i].orderStatus == 5){
+                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeReceived" data-order-id="'+ orders[i].orderId +'">'+
+                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">待收货</span></div>'
+                        }else if(orders[i].orderStatus == 6){
+                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="complete" data-order-id="'+ orders[i].orderId +'">'+
+                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">交易成功</span></div>'
+                        }
+
+
+                        ordersListHtml +=       '<div class="goods_detail" data-order-status="'+ orders[i].orderStatus +'">'
+
+                        for(var j=0; j<orders[i].goods.length; j++){
+                            $amount += orders[i].goods[j].goodsAmount;
+                            ordersListHtml +=       '<div class="order_detail clearfix">'+
+                                                        '<div class="product_pic" style="background: url('+ orders[i].goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                        '<div class="product_desc">'+
+                                                            '<p class="name">'+ orders[i].goods[j].goodsName +'</p>'+
+                                                            '<p class="parameter">'+ orders[i].goods[j].goodsSpu +'</p>'+
+                                                        '</div>'+
+                                                        '<div class="price"><span class="price_now">￥'+ orders[i].goods[j].buyPrice +'</span><br><span class="price_primary">'+ orders[i].goods[j].salePrice +'</span><br><span class="count">×'+ orders[i].goods[j].goodsAmount +'</span></div>'+
+                                                    '</div>'
+                        }
+
+                        ordersListHtml +=       '</div>' +
+                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥'+ orders[i].totalPrice +'</span>（含运费<span class="postage">￥'+ orders[i].freight +'</span>）</p>'
+
+                        if(orders[i].orderStatus == 1) {
+                            ordersListHtml +=   '<button class="order_edit red before_send">催一下</button>' +
+                                            '</div>'
+                        }else if(orders[i].orderStatus == 2) {
+                            ordersListHtml +=   '<button class="order_edit red pay">付款</button>'+
+                                                '<button class="order_edit cancel">取消订单</button>' +
+                                            '</div>'
+                        }else if(orders[i].orderStatus == 4) {
+                            ordersListHtml +=   '<button class="order_edit delete">删除订单</button>' +
+                                            '</div>'
+                        }else if(orders[i].orderStatus == 5) {
+                            ordersListHtml +=   '<button class="order_edit red receive">确认收货</button>'+
+                                                '<button class="order_edit logistics"  data-order-status="'+ orders[i].orderStatus +'">查看物流</button>' +
+                                            '</div>'
+                        }else if(orders[i].orderStatus == 6) {
+                            ordersListHtml +=   '<button class="order_edit red evaluate">去评价</button>'+
+                                                '<button class="order_edit red view"  data-order-status="'+ orders[i].orderStatus +'">查看订单</button>' +
+                                            '</div>'
+                        }
+
+                    }
+
+                    $('.orders_list').append(ordersListHtml);
+
+                    if(orders.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
 </script>
 </html>

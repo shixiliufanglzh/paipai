@@ -38,45 +38,39 @@
 
         <div id="receiveMsg">
             <i class="location"></i>
-            <p class="receiver">收货人：<span class="name">seven.王</span><span class="phone">136****5342</span></p>
-            <p class="address"><span>收货地址：</span><span class="addr_detail">中国上海上海明星去华裔式样大厦啊10层谁司的郭芙蓉个人四季啊</span></p>
+            <p class="receiver">收货人：<span class="name">收货人</span><span class="phone">手机号码</span></p>
+            <p class="address"><span>收货地址：</span><span class="addr_detail">详细地址</span></p>
         </div>
 
         <div id="googDetail">
             <h3><i></i>商品信息</h3>
-            <div class="good_msg clearfix">
-                <span class="img"></span>
-                <div class="product_desc">
-                    <p class="name">草莓有机生态草莓打开的卡斯科斯科拉卡拉克卢萨卡</p>
-                    <p class="parameter">颜色：中国红&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                </div>
-                <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×2</span></div>
-            </div>
+
+            <div class="good_list"></div>
+
             <div class="price_detail">
-                <p><span>起拍价总计：</span><span class="count_detail">￥3999.00</span></p>
-                <p><span>中标价总计：</span><span class="count_detail">￥3999.00</span></p>
-                <p><span>减价节省：</span><span class="count_detail">￥0.00</span></p>
-                <p><span>物流费用：</span><span class="count_detail">￥10.00</span></p>
+                <p><span>起拍价总计：</span><span class="count_detail primary">￥3999.00</span></p>
+                <p><span>中标价总计：</span><span class="count_detail now">￥3999.00</span></p>
+                <p><span>减价节省：</span><span class="count_detail save">￥0.00</span></p>
+                <p><span>物流费用：</span><span class="count_detail freight">￥10.00</span></p>
             </div>
             <div class="price_total clearfix">
                 <p>共<span class="count">2</span>件商品，共<span class="fee">￥3999.00</span>元</p>
-                <button class="order_edit red">评价</button>
-                <button class="order_edit">申请售后</button>
             </div>
         </div>
 
         <div id="orderNum">
-            <p>订单编号：<span>54564561456456146</span></p>
-            <p>创建时间：<span>2017-09-18 18:15:21</span></p>
-            <p>付款时间：<span>2017-09-18 18:15:21</span></p>
-            <p>发货时间：<span>2017-09-18 18:15:21</span></p>
+            <p>订单编号：<span class="num">54564561456456146</span></p>
+            <p>创建时间：<span class="create_time">2017-09-18 18:15:21</span></p>
+            <!--<p>付款时间：<span class="pay_time">2017-09-18 18:15:21</span></p>-->
+            <!--<p>发货时间：<span>2017-09-18 18:15:21</span></p>-->
         </div>
 
         <div id="logistics">
             <h3><i></i>物流信息</h3>
             <div class="detail">
-                <p>物流公司：<span>优速快递</span></p>
-                <p>物流编号：<span>54564561456456146</span></p>
+                <p>物流公司：<span class="express_name">优速快递</span></p>
+                <p>物流编号：<span class="express_num">54564561456456146</span></p>
+                <p>物流信息：</p>
             </div>
         </div>
 
@@ -89,7 +83,84 @@
 <script>
 
     $(function(){
+        var $curOrderId = commonCompt.GetUrlPara('order_id');
 
+        $.ajax({
+            url: GETORDERDETAIL,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var orderMsg = data.data;
+                    $('.receiver .name').html(orderMsg.name);
+                    $('.receiver .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
+                    $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+
+                    var goods = orderMsg.goods;
+                    var goodsHtml = "";
+                    var totalCount = 0;
+                    var $primaryPriceSum = 0, $dealPriceSum = 0;
+                    for(var i=0; i<goods.length; i++){
+
+                        $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goods[i].salePrice*goods[i].goodsAmount);
+                        $dealPriceSum = commonCompt.accAdd($dealPriceSum,goods[i].buyPrice*goods[i].goodsAmount);
+                        totalCount += goods[i].goodsAmount;
+
+                        goodsHtml +='<div class="single_good" data-good-id="'+ goods[i].goodsId +'">'+
+                                        '<div class="good_msg clearfix">'+
+                                            '<span class="img" style="background: url('+ goods[i].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
+                                            '<div class="product_desc">'+
+                                                '<p class="name">'+ goods[i].goodsName +'</p>'+
+                                                '<p class="parameter">'+ goods[i].goodsSpu +'</p>'+
+                                            '</div>'+
+                                            '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice +'</span><br><span class="price_primary">'+ goods[i].salePrice +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
+                                        '</div>'+
+                                        '<div class="manipu clearfix">'+
+                                            '<button class="order_edit red">评价</button>'+
+                                            '<button class="order_edit">申请售后</button>'+
+                                        '</div>'+
+                                    '</div>'
+                    }
+                    $('.good_list').html(goodsHtml);
+
+                    $('.count_detail.primary').html("￥"+ $primaryPriceSum);
+                    $('.count_detail.now').html("￥"+ $dealPriceSum);
+                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice);
+                    $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum));
+                    $('.count_detail.freight').html("￥"+ orderMsg.freight);
+
+                    $('#orderNum .num').html(orderMsg.orderNum);
+                    $('#orderNum .create_time').html(orderMsg.createDate);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+
+        $.ajax({
+            url: QUERYFORTRACKING,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var $expressMsg = data.data;
+                    $('.express_name').html($expressMsg.com);
+                    $('.express_num').html($expressMsg.nu);
+                    for(var i=0; i<$expressMsg.data.length; i++){
+                        $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
     })
 
 

@@ -6,7 +6,7 @@ body {
 }
 
 #order {
-  margin-bottom: 0.9rem;
+  margin-bottom: 1rem;
   #orderSorts {
     background-color: #fff;
     .nav_wrap {
@@ -31,7 +31,8 @@ body {
 
   .singleOrder {
     background-color: #fff;
-    margin-top: 0.2rem;
+    //margin-top: 0.2rem;
+    border-bottom: 0.2rem solid #f0f0f0;
     .order_head {
       font-size: 0.24rem;
       color: #2f2f2f;
@@ -229,53 +230,63 @@ body {
         margin-right: 0.12rem;
       }
     }
-    .good_msg {
-      padding: 0.14rem 0.24rem 0.14rem 2.1rem;
-      background-color: #f8f8f8;
-      position: relative;
-      min-height: 1.9rem;
-      .img {
-        @include smallBlock(1.63rem,1.63rem);
-        background: url("../imgs/detail_01.jpg") center center no-repeat;
-        -webkit-background-size: cover;
-        background-size: cover;
-        position: absolute;
-        left: 0.24rem;
-        top: 0.14rem;
-      }
-      .product_desc {
-        width: 3.1rem;
-        float: left;
-        .name {
-          font-size: 0.22rem;
+    .good_list {
+      .single_good {
+        .good_msg {
+          padding: 0.14rem 0.24rem 0.14rem 2.1rem;
+          background-color: #f8f8f8;
+          position: relative;
+          min-height: 1.9rem;
+          .img {
+            @include smallBlock(1.63rem,1.63rem);
+            background: url("../imgs/detail_01.jpg") center center no-repeat;
+            -webkit-background-size: cover;
+            background-size: cover;
+            position: absolute;
+            left: 0.24rem;
+            top: 0.14rem;
+          }
+          .product_desc {
+            width: 3.1rem;
+            float: left;
+            .name {
+              font-size: 0.22rem;
 
+            }
+            .parameter {
+              font-size: 0.2rem;
+              color: #858585;
+              margin-top: 0.14rem;
+            }
+          }
+          .price {
+            float: right;
+            font-size: 0;
+            text-align: right;
+            .price_now {
+              font-size: 0.28rem;
+            }
+            .price_primary {
+              font-size: 0.24rem;
+              color: #858585;
+              text-decoration: line-through;
+            }
+            .count {
+              display: inline-block;
+              font-size: 0.24rem;
+              color: #858585;
+              margin-top: 0.1rem;
+            }
+          }
         }
-        .parameter {
-          font-size: 0.2rem;
-          color: #858585;
-          margin-top: 0.14rem;
-        }
-      }
-      .price {
-        float: right;
-        font-size: 0;
-        text-align: right;
-        .price_now {
-          font-size: 0.28rem;
-        }
-        .price_primary {
-          font-size: 0.24rem;
-          color: #858585;
-          text-decoration: line-through;
-        }
-        .count {
-          display: inline-block;
-          font-size: 0.24rem;
-          color: #858585;
-          margin-top: 0.1rem;
+        .manipu {
+          border-bottom: 1px dashed #f0f0f0;
+          padding-top: 0.1rem;
+          margin-bottom: 0.1rem;
         }
       }
     }
+
     .price_detail {
       padding: 0.04rem 0.24rem;
       border-bottom: 1px solid #e8e8e8;
