@@ -32,14 +32,14 @@ var DELORDER = apiHost + "order/delOrder.jhtml";  //删除订单
 var CANCELORDER = apiHost + "order/cancelOrder.jhtml";  //取消订单
 var QUERYFORTRACKING = apiHost + "order/queryForTracking.jhtml";  //查询订单物流
 var GETORDERGOODS = apiHost + "order/getOrderGoods.jhtml";  //获取订单指定商品信息
-var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
-var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
 var ADDCOMMENT = apiHost + "order/addComment.jhtml";  //添加订单商品评论
+var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
+var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
 
-var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
-var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
 var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
+var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
+var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
 
 //接口返回状态响应
@@ -54,33 +54,63 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             break;
         case "4001":
             commonCompt.popPrompt(responseDesc);
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4002":
             commonCompt.popPrompt("微信授权登录失败");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4003":
             commonCompt.popPrompt("用户已存在");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4004":
             commonCompt.popPrompt("未找到资源");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4005":
             commonCompt.popPrompt("未关注平台公众号");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4006":
             commonCompt.popPrompt("商品已被竞拍");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "4007":
             commonCompt.popPrompt("拍币不足");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         case "5001":
             commonCompt.popPrompt("找不到可使用的公众号");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
             break;
         default:
             commonCompt.popPrompt("未知错误");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
     }
 }
 
@@ -148,14 +178,16 @@ var commonCompt = {
         }
         $('#confirm').fadeIn();
         $('#confirm .action .cancel').click(function(){
-            objPara.leftBtnClick();
+            var inputVal = $('#confirm .input input').val();
+            objPara.leftBtnClick(inputVal);
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
 
         })
         $('#confirm .action .certain').click(function(){
-            objPara.rightBtnClick();
+            var inputVal = $('#confirm .input input').val();
+            objPara.rightBtnClick(inputVal);
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
@@ -423,7 +455,7 @@ var commonCompt = {
     },
 
     //验证手机号
-    verifyPhone: function(remainTime,title,hasCloseBtn){
+    verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
         var html =  '<div id="registerWrap">'+
                         '<div class="register">'+
                             '<i class="verify_close"></i>'+
@@ -451,21 +483,71 @@ var commonCompt = {
             }else if(!_that.checkPhone($phoneNum)){
                 _that.popPrompt("错误的手机号码");
             }else {
-                _that.timeCount(remainTime,$(this));
-                //$.ajax({})
+                $.ajax({
+                    url: GETCODE,
+                    data: {
+                        phone: $phoneNum,
+                        type: 1
+                    },
+                    type:'POST',
+                    dataType:'json',
+                    //async:false,
+                    success:function(data){
+                        console.log(data);
+                        console.log({
+                            phone: $phoneNum,
+                            type: 1
+                        });
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            _that.timeCount(remainTime,$('.verify button'));
+                            _that.popPrompt("验证码已发送");
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
             }
         })
 
         $('#regSubmit').on('click', function(){
-            console.log("提交中...");
             var $phoneNum = $('#phoneNum').val();
-            console.log($phoneNum);
             if(!$phoneNum){
                 _that.popPrompt("手机号不能为空");
             }else if(!_that.checkPhone($phoneNum)){
                 _that.popPrompt("错误的手机号码");
             }else {
-                //$.ajax({})
+                $.ajax({
+                    url: UPDATEPHONE,
+                    data: {
+                        phone: $phoneNum,
+                        checkCode: $('#code').val()
+                    },
+                    type:'POST',
+                    dataType:'json',
+                    //async:false,
+                    success:function(data){
+                        console.log(data);
+                        console.log({
+                            phone: $phoneNum,
+                            checkCode: $('#code').val()
+                        });
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            _that.popPrompt(submitPrompt);
+                            if(callBack){
+                                callBack($phoneNum);
+                            }
+                            $('#registerWrap').fadeOut(300,function(){
+                                $('#registerWrap').remove();
+                            });
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
             }
         })
 
@@ -512,6 +594,7 @@ var commonCompt = {
         if(r!=null)return  unescape(r[2]); return null;
     },
 
+    //数组包含
     isContained: function(a,b){
         if(a.length < b.length) return false;
         for(var i = 0, len = b.length; i < len; i++){

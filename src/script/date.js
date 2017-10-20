@@ -117,6 +117,8 @@
                 }
                 $("#datePage").hide(); 
                 $("#dateshadow").hide();
+
+
             });
             $("#datecancle").click(function () {
                 $("#datePage").hide(); 

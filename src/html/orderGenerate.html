@@ -293,7 +293,7 @@
                     console.log(data);
                     apiResponse(data.responseCode,data.responseDesc);
                     if(data.responseCode == 2000){
-                        window.location.href= 'order.html?order_id='+ data.data.orderId;
+                        window.location.href= 'orderHandlePaying.html?order_id='+ data.data.orderId;
                     }
 
                 },

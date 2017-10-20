@@ -303,6 +303,12 @@
         },500)
     })
 
+    //支付
+    $('.orders_list').on('click', 'button.pay', function(){
+        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
+        window.location.href = 'paying.html?order_id='+ $curOrderId;
+    })
+
     //获取商品列表
     function bindOrdersList(pageNum,orderStatus){
         //如果是获取第一页，就应该先清空订单列表
