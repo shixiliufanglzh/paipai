@@ -105,6 +105,7 @@
                     var $primaryPriceSum = 0, $dealPriceSum = 0;
                     for(var i=0; i<goods.length; i++){
                         var refundBtn = "";
+                        var evaluateBtn = ""
                         if(goods[i].relateStatus == 1){
                             refundBtn = '<button class="order_edit refund">申请售后</button>';
                         }else if(goods[i].relateStatus == 2){
@@ -120,6 +121,11 @@
                         }else if(goods[i].relateStatus == 7){
                             refundBtn = '<button class="order_edit">换货完成</button>';
                         }
+                        if(goods[i].commentStatus == 1){
+                            evaluateBtn = '<button class="order_edit red" data-mix-id="'+ goods[i].mixId +'">已评价</button>';
+                        }else {
+                            evaluateBtn = '<button class="order_edit red evaluate" data-mix-id="'+ goods[i].mixId +'">评价</button>';
+                        }
 
                         $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goods[i].salePrice*goods[i].goodsAmount);
                         $dealPriceSum = commonCompt.accAdd($dealPriceSum,goods[i].buyPrice*goods[i].goodsAmount);
@@ -134,8 +140,7 @@
                                             '</div>'+
                                             '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice +'</span><br><span class="price_primary">'+ goods[i].salePrice +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
                                         '</div>'+
-                                        '<div class="manipu clearfix">'+
-                                            '<button class="order_edit red">评价</button>'+ refundBtn +
+                                        '<div class="manipu clearfix">'+ evaluateBtn+ refundBtn +
                                         '</div>'+
                                     '</div>'
                     }
@@ -183,6 +188,14 @@
         window.location.href = 'services.html?orderId='+ $curOrderId +'&goodsId=' +
                 $(this).parents('.single_good').attr('data-good-id')+
                 '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id');
+    })
+
+    //评价商品
+    $('.good_list').on('click','.order_edit.evaluate',function(){
+        window.location.href = 'evaluate.html?orderId='+ $curOrderId +'&goodsId=' +
+                $(this).parents('.single_good').attr('data-good-id')+
+                '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id')+
+                '&mixId=' + $(this).attr('data-mix-id');
     })
 
 </script>

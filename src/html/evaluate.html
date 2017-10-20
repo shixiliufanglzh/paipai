@@ -54,29 +54,49 @@
 
 
 </body>
-<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>-->
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/exif.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
 
-    $(function(){
+    var $curOrderId = commonCompt.GetUrlPara('orderId');
+    var $curGoodId = commonCompt.GetUrlPara('goodsId');
+    var $orderGoodsId = commonCompt.GetUrlPara('orderGoodsId');
+    var $mixId = commonCompt.GetUrlPara('mixId');
+    var $commentStatus = 2;
+    var $grade = 0;
 
+    $(function(){
+        $.ajax({
+            url: GETORDERGOODS,
+            data: {
+                orderGoodsId: $orderGoodsId
+            },
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var goodMsg = data.data;
+                    $commentStatus = goodMsg.commentStatus;
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
     })
 
     var imgListBase64 = [];
-//    var imgListUrl = [];
     $('#uploadImg').change(function(e){
         commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
     })
 
     $('#pics_box').on('click', '.picture i',function(){
-//        console.log("删除前：",imgListBase64);
-//        console.log($(this).parent().index());
         imgListBase64.splice($(this).parent().index(),1);
-//        imgListUrl.splice($(this).parent().index(),1);
-//        console.log("删除后：",imgListBase64);
         $(this).parent().remove();
         imgListBase64,$('#pics_box').html('');
         for(var i=0;i<imgListBase64.length;i++){
@@ -88,61 +108,82 @@
     })
 
     $('#msgSubmit').click(function(){
-//        console.log("待提交：",imgListBase64);
-        var $reason = $('.reason_sel').val();
-        if(!$reason){
-            commonCompt.popPrompt("请选择退款原因");
+        if($commentStatus == 2){
+            var imgsObj = {};
+            for(var i=0; i<imgListBase64.length; i++){
+                imgsObj[i] = imgListBase64[i];
+            }
+            var textContent = $('#addition textarea').val();
+            if($grade <= 0){
+                commonCompt.popPrompt("请选择评分等级");
+            }else if(textContent.length <= 0){
+                commonCompt.popPrompt("请填写评价内容");
+            }else {
+                var dataPara = {
+                    orderId: $curOrderId,
+                    goodsId: $curGoodId,
+                    mixId: $mixId,
+                    point: $grade,
+                    content: textContent,
+                    picfile: imgsObj
+
+                };
+                console.log(dataPara);
+                $.ajax({
+                    url: ADDCOMMENT,
+                    data: dataPara,
+                    type:'POST',
+                    dataType:'json',
+                    success:function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已提交申请');
+                            setTimeout(function(){
+                                window.location.href = 'order.html';
+                            },2000)
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
+            }
         }else {
-//            $.ajax({
-//                url:'http://yiyayiya.0lz.net/verify_phone',
-//                data: {
-//
-//                },
-//                type:'post',
-//                dataType:'json',
-////                async:false,
-//                success:function(data){},
-//                error: function(err){}
-//            })
+            commonCompt.popPrompt('您已经提交过评价了哦');
+            setTimeout(function(){
+                window.location.href = 'order.html';
+            },2000)
         }
-
-        var data = {
-            reason: "不想要了",
-            imgs: imgListBase64,
-            addition: "这个商品的发生的故事公司如果发"
-        }
-
-        console.log(data);
     })
 
+
     $('.chose_grade').on('click','i',function(){
-        var grade = $(this).index();
-//        console.log(grade);
+        $grade = $(this).index() + 1;
         $('.chose_grade i').removeClass('light');
-        for(var i=0; i<grade+1; i++){
+        for(var i=0; i<$grade; i++){
             $('.chose_grade i').eq(i).addClass('light');
         }
         var eva_summary = "";
-        switch(grade){
-            case 0 :
+        switch($grade){
+            case 1 :
                 eva_summary = "非常差";
                 break;
-            case 1 :
+            case 2 :
                 eva_summary = "差";
                 break;
-            case 2 :
+            case 3 :
                 eva_summary = "一般";
                 break;
-            case 3 :
+            case 4 :
                 eva_summary = "好";
                 break;
-            case 4 :
+            case 5 :
                 eva_summary = "非常好";
                 break;
             default:
                 eva_summary = "待评价";
         };
-//        console.log(eva_summary);
         $('#grade .state').html(eva_summary);
     })
 

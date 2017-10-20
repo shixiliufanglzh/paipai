@@ -83,6 +83,7 @@
     var $curGoodId = commonCompt.GetUrlPara('goodsId');
     var $orderGoodsId = commonCompt.GetUrlPara('orderGoodsId');
     var $refundMoney = 0;
+    var $commitStatus = 1;
 
     $(function(){
         $.ajax({
@@ -110,6 +111,8 @@
                     $('.good_msg .count').html('×' + goodMsg.goodsAmount);
                     $refundMoney = goodMsg.totalPrice;
                     $('.total_count,.most_count').html($refundMoney);
+                    $commitStatus = goodMsg.commentStatus;
+
                 }
             },
             error: function(err){
@@ -120,41 +123,47 @@
 
 
     $('#msgSubmit').click(function(){
-//        console.log("待提交：",imgListBase64);
-        var $reason = $('.reason_sel').val();
-        if(!$reason){
-            commonCompt.popPrompt("请选择退款原因");
-        }else {
-            var dataPara = {
-                orderId: $curOrderId,
-                goodsId: $curGoodId,
-                refundType: 1,
-                refundReason: $reason,
-                refundMoney: $refundMoney,
-                refundDesc: $('#addition textarea').val()
+        if($commitStatus == 1){
+            var $reason = $('.reason_sel').val();
+            if(!$reason){
+                commonCompt.popPrompt("请选择退款原因");
+            }else {
+                var dataPara = {
+                    orderId: $curOrderId,
+                    goodsId: $curGoodId,
+                    refundType: 1,
+                    refundReason: $reason,
+                    refundMoney: $refundMoney,
+                    refundDesc: $('#addition textarea').val()
 
-            };
-            console.log(dataPara);
-            $.ajax({
-                url: APPLYSERVER,
-                data: dataPara,
-                type:'post',
-                dataType:'json',
+                };
+                console.log(dataPara);
+                $.ajax({
+                    url: APPLYSERVER,
+                    data: dataPara,
+                    type:'post',
+                    dataType:'json',
 //                async:false,
-                success:function(data){
-                    console.log(data);
-                    apiResponse(data.responseCode,data.responseDesc);
-                    if(data.responseCode == 2000){
-                        commonCompt.popPrompt('已提交申请');
-                        setTimeout(function(){
-                            window.location.href = document.referrer;
-                        },2000)
+                    success:function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已提交申请');
+                            setTimeout(function(){
+                                window.location.href = document.referrer;
+                            },2000)
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
                     }
-                },
-                error: function(err){
-                    console.log(err);
-                }
-            })
+                })
+            }
+        }else {
+            commonCompt.popPrompt('您已经提交过评价了哦');
+            setTimeout(function(){
+                window.location.href = 'order.html';
+            },2000)
         }
     })
 
