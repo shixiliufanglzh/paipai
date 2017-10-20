@@ -28,8 +28,8 @@
 <div id="paying">
     <section id="addrMsg">
         <div class="addressee">
-            <p><span class="name">某某先生</span><span class="phone">13623456789</span></p>
-            <p class="address">上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼602室</p>
+            <p><span class="name">姓名</span><span class="phone">手机号码</span></p>
+            <p class="address">详细地址</p>
             <i></i>
         </div>
         <div class="bottom_img"></div>
@@ -37,48 +37,29 @@
 
     <section id="orderDetail">
         <div class="grab_list">
-            <div class="single_good" data-good-id="11">
-                <h4><i class="contain_state"></i><span>正价购买</span><i class="delete"></i></h4>
-                <div class="good_detail">
-                    <div class="img"></div>
-                    <p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>
-                    <p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                    <p class="price_start">起拍价：<span class="price">￥3999.00</span></p>
-                    <p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>
-                </div>
-            </div>
-            <div class="single_good" data-good-id="22">
-                <h4><i class="contain_state"></i><span>距商品中标价格失效还剩：<span class="time_left">0天0小时0分0秒</span></span><i class="delete"></i></h4>
-                <div class="good_detail">
-                    <div class="img"></div>
-                    <p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>
-                    <p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                    <p class="price_start">起拍价：<span class="price">￥3999.00</span></p>
-                    <p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>
-                </div>
-            </div>
-            <div class="single_good selected" data-good-id="33">
-                <h4><i class="contain_state"></i><span>距商品中标价格失效还剩：<span class="time_left">0天0小时0分0秒</span></span><i class="delete"></i></h4>
-                <div class="good_detail">
-                    <div class="img"></div>
-                    <p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>
-                    <p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>
-                    <p class="price_start">起拍价：<span class="price">￥3999.00</span></p>
-                    <p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>
-                </div>
-            </div>
+            <!--<div class="single_good" data-good-id="11">-->
+                <!--<h4><i class="contain_state"></i><span>正价购买</span><i class="delete"></i></h4>-->
+                <!--<div class="good_detail">-->
+                    <!--<div class="img"></div>-->
+                    <!--<p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>-->
+                    <!--<p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>-->
+                    <!--<p class="price_start">起拍价：<span class="price">￥3999.00</span></p>-->
+                    <!--<p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>-->
+                <!--</div>-->
+            <!--</div>-->
+
         </div>
 
         <div class="fee">
-            <p class="logistics_discount">物流运费：<span>再拍123.23元，即可免运费</span></p>
+            <p class="logistics_discount">物流运费：<span>再拍200.00元，即可免运费</span></p>
             <div class="fee_detail">
-                <p>起拍价总计 <span>￥108.00</span></p>
-                <p>中标价总计 <span>￥108.00</span></p>
-                <p>减价节省 <span>￥108.00</span></p>
-                <p>运费 <span>￥108.00</span></p>
+                <p>起拍价总计 <span class="primary_price_sum">￥0.00</span></p>
+                <p>中标价总计 <span class="deal_price_sum">￥0.00</span></p>
+                <p>减价节省 <span class="save_fee">￥0.00</span></p>
+                <p>运费 <span class="freight">￥20.00</span></p>
             </div>
         </div>
-        <p class="fee_result">需要支付（含运费）<span>￥109.00</span></p>
+        <p class="fee_result">需要支付（含运费）<span>￥20.00</span></p>
 
     </section>
 
@@ -86,8 +67,8 @@
         <div class="total_wrap">
             <div class="select_all"><i></i>全选</div>
             <div class="sum">
-                <p>合计：<span class="should_pay">￥1125534.00</span></p>
-                <p class="save">减价节省：<span class="save_count">￥1125534.00</span></p>
+                <p>合计：<span class="should_pay">￥20.00</span></p>
+                <p class="save">减价节省：<span class="save_count save_fee">￥0.00</span></p>
             </div>
             <div class="submit_btn">提交订单</div>
         </div>
@@ -99,26 +80,127 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script>
+    var goodsList = [];
+    var $primaryPriceSum = 0,
+        $dealPriceSum = 0,
+        $freeFreightPrice = 0,
+        $accFreeFreightPrice = 0,
+        $distance = 0,
+        $feeFreight = 0,
+        $payTotal;
 
+    var $addrId = window.localStorage.getItem("addrId");
+    var $selAddrId;
+
+    var timer;
     $(function(){
         //生成底部导航
         commonCompt.mainNav(3);
+        //地址信息
+        console.log($addrId);
+        $.ajax({
+            url: GETUSERADDRESS,
+            type:'GET',
+            dataType:'json',
+            async: false,
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var address = data.data;
+                    var $index = 0;
+                    for(var i=0; i<address.length; i++){
+                        if(address[i].id == $addrId){
+                            $index = i;
+                        }
+                    }
+                    $selAddrId = address[$index].id;
+                    $freeFreightPrice = address[$index].freePrice;
+                    $feeFreight = address[$index].freight;
+                    $('#addrMsg .addressee .name').html(address[$index].name);
+                    $('#addrMsg .addressee .phone').html(address[$index].tel);
+                    $('#addrMsg .addressee .address').html(address[$index].area.split(',').join('') + address[$index].address);
 
+                }
 
-        var timeLeft01 = 234567;
-        var timeLeft02 = 67;
-        var timerList = [];
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
 
-        var addOrderTimer = new Paipai;
-        addOrderTimer.addOrderTimer(timeLeft01,$('[data-good-id="22"] .time_left'),timerList);
-        addOrderTimer.addOrderTimer(timeLeft02,$('[data-good-id="33"] .time_left'),timerList);
+        //商品列表
+        $.ajax({
+            url: GETCART,
+            type:'GET',
+            dataType:'json',
+            async: false,
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    goodsList = data.data;
+                    for(var i=0; i<goodsList.length; i++){
 
+                        var goodState = goodsList[i].buyType == 1 ? '<span>距商品中标价格失效还剩：<span class="time_left">0天0小时0分0秒</span></span>' : '<span>正价购买</span>';
+                        var goodsHtml = '<div class="single_good selected" data-good-id="'+ goodsList[i].goodsId +'" data-cart-id="'+ goodsList[i].cartId +'">'+
+                                            '<h4><i class="contain_state"></i>'+ goodState +'<i class="delete"></i></h4>'+
+                                            '<div class="good_detail">'+
+                                                '<div class="img" style="background: url('+ goodsList[i].goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></div>'+
+                                                '<p class="product">'+ goodsList[i].goodsName +'</p>'+
+                                                '<p class="parameter">'+ goodsList[i].goodsSpu +'</p>'+
+                                                '<p class="price_start">起拍价：<span class="price">￥'+ goodsList[i].salePrice +'</span></p>'+
+                                                '<p class="price_now">中标价：<span class="price">￥'+ goodsList[i].price +'</span><span class="count">×'+ goodsList[i].goodsAmount +'</span></p>'+
+                                            '</div>'+
+                                        '</div>'
+
+                        $('.grab_list').append(goodsHtml);
+                    }
+
+                    calculateFee();
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        timer = setInterval(function(){
+            for(var i=0; i<goodsList.length; i++){
+                if(goodsList[i].buyType == 1){
+                    goodsList[i].effectiveTime --;
+                    var timePrompt = "";
+                    var cal_time = goodsList[i].effectiveTime;
+                    if(cal_time >= 86400){
+                        timePrompt += Math.floor(cal_time/86400) + "天";
+                        cal_time = goodsList[i].effectiveTime % 86400;
+                    }
+                    if(cal_time >= 3600){
+                        timePrompt += Math.floor(cal_time/3600) + "小时";
+                        cal_time = goodsList[i].effectiveTime % 3600;
+                    }
+                    if(cal_time >= 60){
+                        timePrompt += Math.floor(cal_time/60) + "分";
+                        cal_time = goodsList[i].effectiveTime % 60;
+                    }
+                    timePrompt += cal_time + "秒";
+                    $('.single_good').eq(i).find('.time_left').html(timePrompt);
+                    if(goodsList[i].effectiveTime === 0){
+                        location.reload(true);
+                    }
+                }
+            }
+        },1000);
     })
 
-    $('.single_good').on('click','.contain_state',function(){
+    //选择商品
+    $('.grab_list').on('click','.single_good .contain_state',function(){
         $(this).parents('.single_good').toggleClass('selected');
+        calculateFee();
     })
 
+    //全选
     $('.select_all').click(function(){
         $(this).toggleClass('active');
         if($(this).hasClass('active')){
@@ -126,9 +208,12 @@
         }else {
             $('.single_good').removeClass('selected');
         }
+        calculateFee();
     })
 
-    $('.single_good').on('click','.delete',function(){
+    //删除商品
+    $('.grab_list').on('click','.single_good .delete',function(){
+        var $cartId = $(this).parents('.single_good').attr('data-cart-id');
         commonCompt.Confirm({
             hasTitle: false,
             title: "",
@@ -136,13 +221,129 @@
             cancleText: "取消",
             certainText: "确认",
             rightBtnClick: function(){
+                $.ajax({
+                    url: DELCART,
+                    type:'POST',
+                    dataType:'json',
+                    data: {
+                        cartId: $cartId
+                    },
+                    success: function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            location.reload(true);
+                        }
 
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                });
             },
             leftBtnClick: function(){
 
             }
         })
+    });
+
+    //查看商品详情
+    $('.grab_list').on('click','.single_good .good_detail',function(){
+        window.location.href = 'detail.html?good_id='+$(this).parents('.single_good').attr('data-good-id');
     })
+
+    $('body').on('click','#mainNav button',function(){
+        if($(this).attr('class') == 'home'){
+            window.location.href = '../index.html'
+        }else if($(this).attr('class') == 'collection'){
+            window.location.href = 'collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'personal.html'
+        }
+    });
+
+    //选择地址
+    $('#addrMsg').click(function(){
+        window.location.href = 'address.html?from=1';
+    })
+
+    //提交订单
+    $('.submit_btn').click(function(){
+        window.localStorage.removeItem("addrId");
+        var selectList = [];
+        for(var i=0; i<goodsList.length; i++){
+            if($('.single_good').eq(i).hasClass('selected')){
+                selectList.push($('.single_good').eq(i).attr('data-cart-id'));
+            }
+        }
+        if(selectList.length > 0){
+            $.ajax({
+                url: CREATEORDER,
+                type:'POST',
+                dataType:'json',
+                data: {
+                    cartIds: selectList.join(","),
+                    addressId: $selAddrId
+                },
+                success: function(data){
+                    console.log(data);
+                    apiResponse(data.responseCode,data.responseDesc);
+                    if(data.responseCode == 2000){
+                        window.location.href= 'orderHandlePaying.html?order_id='+ data.data.orderId;
+                    }
+
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }else {
+            commonCompt.popPrompt('请选择下单商品');
+        }
+    })
+
+    //计算金额
+    function calculateFee(){
+        $primaryPriceSum = 0;
+        $dealPriceSum = 0;
+        $accFreeFreightPrice = 0;
+        $distance = 0;
+        $payTotal = 0;
+
+        for(var i=0; i<goodsList.length; i++){
+            if($('.single_good').eq(i).hasClass('selected')){
+                $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goodsList[i].salePrice*goodsList[i].goodsAmount);
+                $dealPriceSum = commonCompt.accAdd($dealPriceSum,goodsList[i].price*goodsList[i].goodsAmount);
+                if(goodsList[i].freightStatus == 1){
+                    $accFreeFreightPrice = commonCompt.accAdd($accFreeFreightPrice,goodsList[i].price*goodsList[i].goodsAmount);
+                }
+
+            }
+        }
+        $('.primary_price_sum').html("￥"+$primaryPriceSum);
+        $('.deal_price_sum').html("￥"+$dealPriceSum);
+        $('.save_fee').html("￥"+commonCompt.accSub($primaryPriceSum,$dealPriceSum));
+
+        $distance = commonCompt.accSub($freeFreightPrice,$accFreeFreightPrice);
+        if($distance > 0){
+            $('.logistics_discount span').html("再拍"+ $distance +"元，即可免运费");
+            $('.freight').html('￥'+ $feeFreight);
+            $payTotal = commonCompt.accAdd($dealPriceSum,$feeFreight);
+        }else {
+            $('.logistics_discount span').html("金额达到免运费标准，已自动帮您免去运费");
+            $('.freight').html('￥0.00');
+            $payTotal = $dealPriceSum;
+        }
+        $('.fee_result span,.should_pay').html("￥"+ $payTotal);
+        if($dealPriceSum == 0){
+            $('.fee_result span,.should_pay').html("￥0.00");
+            $('.freight').html('￥0.00');
+        }
+    }
 
 
 </script>

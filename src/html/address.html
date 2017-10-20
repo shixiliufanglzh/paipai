@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>地址管理</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -26,53 +27,24 @@
 </head>
 <body>
 <div id="receiveInfo">
-    <div class="single_addr set_default" data-addr-id="1">
-        <div class="info">
-            <div class="base clearfix">
-                <span class="name">张三</span>
-                <span class="phone">13637115342</span>
-            </div>
-            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
-        </div>
-        <div class="change clearfix">
-            <span class="default"><i></i>设为默认</span>
-            <button class="delete">删除</button>
-            <button class="edit">编辑</button>
-        </div>
-    </div>
+    <!--<div class="single_addr set_default" data-addr-id="1">-->
+        <!--<div class="info">-->
+            <!--<div class="base clearfix">-->
+                <!--<span class="name">张三</span>-->
+                <!--<span class="phone">13637115342</span>-->
+            <!--</div>-->
+            <!--<p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>-->
+        <!--</div>-->
+        <!--<div class="change clearfix">-->
+            <!--<span class="default"><i></i>设为默认</span>-->
+            <!--<button class="delete">删除</button>-->
+            <!--<button class="edit">编辑</button>-->
+        <!--</div>-->
+    <!--</div>-->
 
-    <div class="single_addr" data-addr-id="2">
-        <div class="info">
-            <div class="base clearfix">
-                <span class="name">李四</span>
-                <span class="phone">13637115342</span>
-            </div>
-            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
-        </div>
-        <div class="change clearfix">
-            <span class="default"><i></i>设为默认</span>
-            <button class="delete">删除</button>
-            <button class="edit">编辑</button>
-        </div>
-    </div>
-
-    <div class="single_addr" data-addr-id="3">
-        <div class="info">
-            <div class="base clearfix">
-                <span class="name">王二麻子</span>
-                <span class="phone">13637115342</span>
-            </div>
-            <p class="addr">银河系太阳系地球中国上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼608室</p>
-        </div>
-        <div class="change clearfix">
-            <span class="default"><i></i>设为默认</span>
-            <button class="delete">删除</button>
-            <button class="edit">编辑</button>
-        </div>
-    </div>
 </div>
 
-<button id="newAddr">添加新地址</button>
+<div id="newAddr"><button>添加新地址</button></div>
 
 
 </body>
@@ -80,14 +52,49 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
-
     $(function(){
+
+        $.ajax({
+            url: GETUSERADDRESS,
+            type:'GET',
+            dataType:'json',
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var addressList = data.data;
+                    for(var i=0; i<addressList.length; i++){
+                        var isDeault = addressList[i].defaultCode ? "set_default" : "";
+                        var addressHtml =   '<div class="single_addr '+ isDeault +'" data-addr-id="'+ addressList[i].id +'">'+
+                                                '<div class="info">'+
+                                                    '<div class="base clearfix">'+
+                                                        '<span class="name">'+ addressList[i].name +'</span>'+
+                                                        '<span class="phone">'+ addressList[i].tel +'</span>'+
+                                                    '</div>'+
+                                                    '<p class="addr">'+ addressList[i].area.split(',').join('') + addressList[i].address +'</p>'+
+                                                '</div>'+
+                                                '<div class="change clearfix">'+
+                                                    '<span class="default"><i></i>设为默认</span>'+
+                                                    '<button class="delete">删除</button>'+
+                                                    '<button class="edit">编辑</button>'+
+                                                '</div>'+
+                                            '</div>'
+
+                        $('#receiveInfo').append(addressHtml);
+                    }
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
 
     })
 
-    $('.delete').click(function(){
-        var addressCur = $(this).parents('.single_addr');
-        var addressId = addressCur.attr('data-addr-id');
+    $('#receiveInfo').on('click','.delete',function(){
+        var $addDom = $(this).parents('.single_addr');
+        var $defaultAddrId = $addDom.attr('data-addr-id');
         commonCompt.Confirm({
             hasTitle: false,
             title: "",
@@ -95,18 +102,75 @@
             cancleText: "取消",
             certainText: "确认",
             rightBtnClick: function(){
-                addressCur.remove();
-                $('.single_addr').eq(0).addClass('set_default');
+                $.ajax({
+                    url: DELUSERADDRESS,
+                    type:'POST',
+                    dataType:'json',
+                    data: {addressId: $defaultAddrId},
+                    success: function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000) {
+                            $addDom.remove();
+                            if(!$('.single_addr').eq(0).hasClass('set_default')){
+                                $('.single_addr').eq(0).addClass('set_default');
+                            }
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                });
+
             },
             leftBtnClick: function(){
 
             }
         })
+    });
+
+    $('#receiveInfo').on('click','.edit',function(){
+        var $addDom = $(this).parents('.single_addr');
+        var $defaultAddrId = $addDom.attr('data-addr-id');
+        window.location.href = 'addressEdit.html?addr_id=' + $defaultAddrId;
     })
 
-    $('.default').click(function(){
-        $('.single_addr').removeClass('set_default');
-        $(this).parents('.single_addr').addClass('set_default');
+    $('#receiveInfo').on('click','.default',function(){
+        var $addDom = $(this).parents('.single_addr');
+        var $defaultAddrId = $addDom.attr('data-addr-id');
+        console.log($defaultAddrId);
+        $.ajax({
+            url: DEFAULTADRESS,
+            type:'POST',
+            dataType:'json',
+            data: {addressId: $defaultAddrId},
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000) {
+                    $('.single_addr').removeClass('set_default');
+                    $addDom.addClass('set_default');
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+    })
+
+    $('#newAddr button').click(function(){
+        window.location.href = 'addressAdd.html';
+    })
+
+    $('#receiveInfo').on('click','.single_addr .info',function(){
+        var $from = commonCompt.GetUrlPara('from');
+        var $addrId = $(this).parents('.single_addr').attr('data-addr-id');
+        if($from == 1){
+            window.localStorage.setItem("addrId", $addrId);
+            window.history.go(-1);
+
+        }
     })
 
 </script>

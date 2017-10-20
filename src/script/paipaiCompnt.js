@@ -2,34 +2,123 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://116.62.116.5/rshop/";
-var GETLABELS = apiHost + "goods/getLabelOne.jhtml";
-var GETGOODS = apiHost + "goods/getGoods.jhtml";
+var apiHost = "http://116.62.116.5/app/";
+
+var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
+var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
+var REFRESHGOODS = apiHost + "goods/refreshGoods.jhtml";  //刷新低于最低价或其他不和规则商品
+var GETGODDSDETAIL = apiHost + "goods/getGoodsDetail.jhtml";  //获取商品详情
+var GETGODDSSKU = apiHost + "goods/getGoodsSku.jhtml";  //获取商品规格参数列表
+var GETGOODSMIXSKU = apiHost + "goods/getGoodsMixSku.jhtml";  //获取商品参数的价格库存
+var GETBUYRECORD = apiHost + "goods/getBuyRecord.jhtml";  //获取商品交易记录
+var GETGOODSCOMMENTS = apiHost + "goods/getGoodsComments.jhtml";  //获取商品评论列表
+var ADDSTORE = apiHost + "goods/addStore.jhtml";  //商品添加收藏
+var GETSTORE = apiHost + "goods/getStore.jhtml";  //获取商品收藏列表
+var CANCELSTORE = apiHost + "goods/cancelStore.jhtml";  //取消商品收藏
+var ADDUSERADDRESS = apiHost + "address/addUserAddress.jhtml";  //添加收货地址
+var GETUSERADDRESS = apiHost + "address/getUserAddress.jhtml";  //获取用户地址列表
+var DEFAULTADRESS = apiHost + "address/defaultAddress.jhtml";  //设置默认地址
+var DELUSERADDRESS = apiHost + "address/delUserAddress.jhtml";  //删除用户地址列表
+var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用户地址
+var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
+
+var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
+var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
+var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
+var CREATEORDER = apiHost + "order/createOrder.jhtml";  //创建订单
+var GETORDER = apiHost + "order/getOrder.jhtml";  //获取用户订单列表
+var GETORDERDETAIL = apiHost + "order/getOrderDetail.jhtml";  //获取订单详情
+var DELORDER = apiHost + "order/delOrder.jhtml";  //删除订单
+var CANCELORDER = apiHost + "order/cancelOrder.jhtml";  //取消订单
+var QUERYFORTRACKING = apiHost + "order/queryForTracking.jhtml";  //查询订单物流
+var GETORDERGOODS = apiHost + "order/getOrderGoods.jhtml";  //获取订单指定商品信息
+var ADDCOMMENT = apiHost + "order/addComment.jhtml";  //添加订单商品评论
+var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
+var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
+
+var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
+var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
+var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
+var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
+var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
+
+//接口返回状态响应
+function apiResponse(responseCode,responseDesc,redirectUrl){
+    switch(responseCode){
+        case "2000":
+            return true;
+            break;
+        case "4000":
+            commonCompt.popPrompt("请先登录");
+            window.location.href = redirectUrl;
+            break;
+        case "4001":
+            commonCompt.popPrompt(responseDesc);
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4002":
+            commonCompt.popPrompt("微信授权登录失败");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4003":
+            commonCompt.popPrompt("用户已存在");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4004":
+            commonCompt.popPrompt("未找到资源");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4005":
+            commonCompt.popPrompt("未关注平台公众号");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4006":
+            commonCompt.popPrompt("商品已被竞拍");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "4007":
+            commonCompt.popPrompt("拍币不足");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "5000":
+            commonCompt.popPrompt("服务器出错");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        case "5001":
+            commonCompt.popPrompt("找不到可使用的公众号");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+            break;
+        default:
+            commonCompt.popPrompt("未知错误");
+            setTimeout(function(){
+                location.reload(true);
+            },2000)
+    }
+}
 
 var Paipai = function(){
-    this.desc="商品描述";
-    this.price_now = 0;
-    this.price_primary = 0;
+
 }
 
 Paipai.prototype = {
-    goodsListDom: function(){
-        var html;
-        html = '<div class="single_good">'+
-                    '<div class="item_img"></div>'+
-                    '<div class="about">'+
-                        '<p class="desc">'+ this.desc +'</p>'+
-                        '<div class="price">'+
-                            '<span class="price_now">'+ this.price_now +'</span>'+
-                            '<span class="price_primary">'+ this.price_primary +'</span>'+
-                            '<i class="hummer"></i>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>'
-
-        return html;
-    },
-
     //待支付订单的计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
@@ -58,8 +147,6 @@ Paipai.prototype = {
         timerList.push(timer);
         //return timePrompt;
     },
-
-
 }
 
 
@@ -91,14 +178,16 @@ var commonCompt = {
         }
         $('#confirm').fadeIn();
         $('#confirm .action .cancel').click(function(){
-            objPara.leftBtnClick();
+            var inputVal = $('#confirm .input input').val();
+            objPara.leftBtnClick(inputVal);
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
 
         })
         $('#confirm .action .certain').click(function(){
-            objPara.rightBtnClick();
+            var inputVal = $('#confirm .input input').val();
+            objPara.rightBtnClick(inputVal);
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
@@ -366,7 +455,7 @@ var commonCompt = {
     },
 
     //验证手机号
-    verifyPhone: function(remainTime,title,hasCloseBtn){
+    verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
         var html =  '<div id="registerWrap">'+
                         '<div class="register">'+
                             '<i class="verify_close"></i>'+
@@ -394,21 +483,71 @@ var commonCompt = {
             }else if(!_that.checkPhone($phoneNum)){
                 _that.popPrompt("错误的手机号码");
             }else {
-                _that.timeCount(remainTime,$(this));
-                //$.ajax({})
+                $.ajax({
+                    url: GETCODE,
+                    data: {
+                        phone: $phoneNum,
+                        type: 1
+                    },
+                    type:'POST',
+                    dataType:'json',
+                    //async:false,
+                    success:function(data){
+                        console.log(data);
+                        console.log({
+                            phone: $phoneNum,
+                            type: 1
+                        });
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            _that.timeCount(remainTime,$('.verify button'));
+                            _that.popPrompt("验证码已发送");
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
             }
         })
 
         $('#regSubmit').on('click', function(){
-            console.log("提交中...");
             var $phoneNum = $('#phoneNum').val();
-            console.log($phoneNum);
             if(!$phoneNum){
                 _that.popPrompt("手机号不能为空");
             }else if(!_that.checkPhone($phoneNum)){
                 _that.popPrompt("错误的手机号码");
             }else {
-                //$.ajax({})
+                $.ajax({
+                    url: UPDATEPHONE,
+                    data: {
+                        phone: $phoneNum,
+                        checkCode: $('#code').val()
+                    },
+                    type:'POST',
+                    dataType:'json',
+                    //async:false,
+                    success:function(data){
+                        console.log(data);
+                        console.log({
+                            phone: $phoneNum,
+                            checkCode: $('#code').val()
+                        });
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            _that.popPrompt(submitPrompt);
+                            if(callBack){
+                                callBack($phoneNum);
+                            }
+                            $('#registerWrap').fadeOut(300,function(){
+                                $('#registerWrap').remove();
+                            });
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
             }
         })
 
@@ -417,6 +556,15 @@ var commonCompt = {
                 $('#registerWrap').remove();
             });
         })
+    },
+
+    //小数较精确的加法
+    accAdd: function(arg1,arg2){
+        var r1,r2,m;
+        try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0};
+        try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0};
+        m=Math.pow(10,Math.max(r1,r2));
+        return (arg1*m+arg2*m)/m;
     },
 
     //小数较精确的减法运算
@@ -437,6 +585,22 @@ var commonCompt = {
         m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
         n = (r1 >= r2) ? r1 : r2;
         return ((arg1 * m - arg2 * m) / m).toFixed(n);
+    },
+
+    //获取地址栏参数
+    GetUrlPara: function(name) {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    },
+
+    //数组包含
+    isContained: function(a,b){
+        if(a.length < b.length) return false;
+        for(var i = 0, len = b.length; i < len; i++){
+            if(a.indexOf(b[i]) == -1) return false;
+        }
+        return true;
     }
 
 }

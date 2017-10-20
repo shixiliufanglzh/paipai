@@ -45,10 +45,10 @@
     </div>
     <div class="single_option clearfix">
         <span class="left">性别</span>
-        <select class="right">
+        <select class="right" id="gender">
             <option value selected disabled>性别</option>
             <option value="男">男</option>
-            <option value="男">女</option>
+            <option value="女">女</option>
         </select>
     </div>
 </div>
@@ -67,19 +67,25 @@
 <script>
 
     $(function(){
-        $('#birth').date();
-
-
-
+        $('#birth').date(null,function(str){
+            console.log(str);
+            changMsg({birthday: str}, "修改生日成功",function(){
+                $('#birth').val(str);
+            });
+        });
     })
 
-    $('.single_option').change(function(){
-
+    $('#gender').change(function(){
+        changMsg({userSex: $(this).val()}, "修改性别成功",function(){
+        });
     })
 
     $('#phone').click(function(){
-        commonCompt.verifyPhone(60,"更改绑定的手机号",true);
+        commonCompt.verifyPhone(60,"更改绑定的手机号",true,1,"修改成功",function(phoneNum){
+            $('#phone .right').html(phoneNum.substr(0,3) + "****" + (phoneNum.substr(7,4)));
+        });
     })
+
     $('#nickname').click(function(){
         commonCompt.Confirm({
             hasTitle: true,
@@ -89,15 +95,18 @@
             cancleText: "取消",
             certainText: "确认",
             inputPlace: "新昵称",
-            rightBtnClick: function(){
-                var changeVal = $('#confirm input').val() ;
-                if(!commonCompt.nameVerify(changeVal)){
-                    changeVal = changeVal.replace(/(^\s*)|(\s*$)/g, "");
+            rightBtnClick: function(val){
+                if(!commonCompt.nameVerify(val)){
+                    val = val.replace(/(^\s*)|(\s*$)/g, "");
                 }
-                if(!changeVal){
+                console.log(val);
+                if(!val){
                     commonCompt.popPrompt("不能为空");
                 }else {
-//                    $.ajax({})
+                    var dataPara = {nikeName: val};
+                    changMsg(dataPara, "修改昵称成功", function () {
+                        $('#nickname .right').html(val);
+                    })
                 }
             },
             leftBtnClick: function(){
@@ -114,15 +123,17 @@
             cancleText: "取消",
             certainText: "确认",
             inputPlace: "姓名",
-            rightBtnClick: function(){
-                var changeVal = $('#confirm input').val() ;
-                if(!commonCompt.nameVerify(changeVal)){
-                    changeVal = changeVal.replace(/(^\s*)|(\s*$)/g, "");
+            rightBtnClick: function(val){
+                if(!commonCompt.nameVerify(val)){
+                    val = val.replace(/(^\s*)|(\s*$)/g, "");
                 }
-                if(!changeVal){
+                if(!val){
                     commonCompt.popPrompt("不能为空");
                 }else {
-//                    $.ajax({})
+                    var dataPara = {userName: val};
+                    changMsg(dataPara,"修改姓名成功",function(){
+                        $('#name .right').html(val);
+                    })
                 }
             },
             leftBtnClick: function(){
@@ -130,6 +141,43 @@
         })
     })
 
+    $('body').on('click','#mainNav button',function(){
+        if($(this).attr('class') == 'home'){
+            window.location.href = '../index.html'
+        }else if($(this).attr('class') == 'collection'){
+            window.location.href = 'collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'personal.html'
+        }
+    })
+
+    //更改信息的请求
+    function changMsg(dataPara,promptStr,callBack){
+        $.ajax({
+            url: UPDATEBASEINFO,
+            data: dataPara,
+            type:'POST',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    commonCompt.popPrompt(promptStr);
+                    if(callBack){
+                        callBack();
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+    }
 
 
 

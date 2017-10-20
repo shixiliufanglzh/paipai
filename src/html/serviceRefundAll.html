@@ -63,9 +63,9 @@
         <div class="form_group clearfix">
             <span class="required">*</span>
             <label>退款金额：</label>
-            <span class="content">￥<span class="count">3999.00</span></span>
+            <span class="content">￥<input type="number" class="count total_count"></span>
         </div>
-        <p class="count_prompt">最多退款￥<span class="most_count">3999.00</span>，包含快递费￥<span class="postage">0.00</span></p>
+        <p class="count_prompt">最多退款￥<span class="most_count">0.00</span>，包含快递费￥<span class="postage">0.00</span></p>
     </div>
 
     <div id="uploadPics" class="clearfix">
@@ -94,9 +94,46 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+    var $curOrderId = commonCompt.GetUrlPara('orderId');
+    var $curGoodId = commonCompt.GetUrlPara('goodsId');
+    var $orderGoodsId = commonCompt.GetUrlPara('orderGoodsId');
+    var $refundMoney = 0;
+    var $commitStatus = 1;
 
     $(function(){
-
+        $.ajax({
+            url: GETORDERGOODS,
+            data: {
+                orderGoodsId: $orderGoodsId
+            },
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var goodMsg = data.data;
+                    $('.good_msg .img').css({
+                        'background': 'url("'+ goodMsg.goodsPic +'") center center no-repeat',
+                        'background-size': 'cover',
+                        '-webkit-background-size': 'cover'
+                    });
+                    $('.good_msg .name').html(goodMsg.goodsName);
+                    $('.good_msg .parameter').html(goodMsg.goodsSpu);
+                    $('.good_msg .price_now').html('￥' + goodMsg.buyPrice);
+                    $('.good_msg .price_primary').html(goodMsg.salePrice);
+                    $('.good_msg .count').html('×' + goodMsg.goodsAmount);
+                    $refundMoney = goodMsg.totalPrice;
+                    $('.most_count').html($refundMoney);
+                    $('.total_count').val($refundMoney);
+                    $commitStatus = goodMsg.relateStatus;
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
     })
 
     var imgListBase64 = [];
@@ -106,11 +143,11 @@
     })
 
     $('#pics_box').on('click', '.picture i',function(){
-        console.log("删除前：",imgListBase64);
+//        console.log("删除前：",imgListBase64);
 //        console.log($(this).parent().index());
         imgListBase64.splice($(this).parent().index(),1);
 //        imgListUrl.splice($(this).parent().index(),1);
-        console.log("删除后：",imgListBase64);
+//        console.log("删除后：",imgListBase64);
         $(this).parent().remove();
         imgListBase64,$('#pics_box').html('');
         for(var i=0;i<imgListBase64.length;i++){
@@ -122,22 +159,52 @@
     })
 
     $('#msgSubmit').click(function(){
-//        console.log("待提交：",imgListBase64);
-        var $reason = $('.reason_sel').val();
-        if(!$reason){
-            commonCompt.popPrompt("请选择退款原因");
+        if($commitStatus == 1){
+            var $reason = $('.reason_sel').val();
+            var imgsObj = {};
+            for(var i=0; i<imgListBase64.length; i++){
+                imgsObj[i] = imgListBase64[i];
+            }
+            if(!$reason){
+                commonCompt.popPrompt("请选择退款原因");
+            }else {
+                var dataPara = {
+                    orderId: $curOrderId,
+                    goodsId: $curGoodId,
+                    refundType: 2,
+                    refundReason: $reason,
+                    refundMoney: $('input.total_count').val(),
+                    refundDesc: $('#addition textarea').val(),
+                    picfile: imgsObj
+
+                };
+                console.log(dataPara);
+                $.ajax({
+                    url: APPLYSERVER,
+                    data: dataPara,
+                    type:'post',
+                    dataType:'json',
+//                async:false,
+                    success:function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已提交申请');
+                            setTimeout(function(){
+                                window.location.href = 'order.html';
+                            },2000)
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
+            }
         }else {
-//            $.ajax({
-//                url:'http://yiyayiya.0lz.net/verify_phone',
-//                data: {
-//
-//                },
-//                type:'post',
-//                dataType:'json',
-////                async:false,
-//                success:function(data){},
-//                error: function(err){}
-//            })
+            commonCompt.popPrompt('您已经提交过评价了哦');
+            setTimeout(function(){
+                window.location.href = 'order.html';
+            },2000)
         }
     })
 

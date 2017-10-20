@@ -85,9 +85,42 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+    var $curOrderId = commonCompt.GetUrlPara('orderId');
+    var $curGoodId = commonCompt.GetUrlPara('goodsId');
+    var $orderGoodsId = commonCompt.GetUrlPara('orderGoodsId');
+    var $commitStatus = 1;
 
     $(function(){
-
+        $.ajax({
+            url: GETORDERGOODS,
+            data: {
+                orderGoodsId: $orderGoodsId
+            },
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var goodMsg = data.data;
+                    $('.good_msg .img').css({
+                        'background': 'url("'+ goodMsg.goodsPic +'") center center no-repeat',
+                        'background-size': 'cover',
+                        '-webkit-background-size': 'cover'
+                    });
+                    $('.good_msg .name').html(goodMsg.goodsName);
+                    $('.good_msg .parameter').html(goodMsg.goodsSpu);
+                    $('.good_msg .price_now').html('￥' + goodMsg.buyPrice);
+                    $('.good_msg .price_primary').html(goodMsg.salePrice);
+                    $('.good_msg .count').html('×' + goodMsg.goodsAmount);
+                    $commitStatus = goodMsg.relateStatus;
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
     })
 
     var imgListBase64 = [];
@@ -113,22 +146,52 @@
     })
 
     $('#msgSubmit').click(function(){
-//        console.log("待提交：",imgListBase64);
-        var $reason = $('.reason_sel').val();
-        if(!$reason){
-            commonCompt.popPrompt("请选择退款原因");
+        if($commitStatus == 1){
+            var $reason = $('.reason_sel').val();
+            var imgsObj = {};
+            for(var i=0; i<imgListBase64.length; i++){
+                imgsObj[i] = imgListBase64[i];
+            }
+            if(!$reason){
+                commonCompt.popPrompt("请选择退款原因");
+            }else {
+                var dataPara = {
+                    orderId: $curOrderId,
+                    goodsId: $curGoodId,
+                    refundType: 3,
+                    refundReason: $reason,
+                    refundMoney: 0,
+                    refundDesc: $('#addition textarea').val(),
+                    picfile: imgsObj
+
+                };
+                console.log(dataPara);
+                $.ajax({
+                    url: APPLYSERVER,
+                    data: dataPara,
+                    type:'post',
+                    dataType:'json',
+//                async:false,
+                    success:function(data){
+                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已提交申请');
+                            setTimeout(function(){
+                                window.location.href = 'order.html';
+                            },2000)
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
+            }
         }else {
-//            $.ajax({
-//                url:'http://yiyayiya.0lz.net/verify_phone',
-//                data: {
-//
-//                },
-//                type:'post',
-//                dataType:'json',
-////                async:false,
-//                success:function(data){},
-//                error: function(err){}
-//            })
+            commonCompt.popPrompt('您已经提交过评价了哦');
+            setTimeout(function(){
+                window.location.href = 'order.html';
+            },2000)
         }
     })
 

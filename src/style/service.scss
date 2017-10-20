@@ -101,6 +101,22 @@
         line-height: 0.3rem;
         .count {
           color: $paiRed;
+          border: none;
+          padding-left: 0.04rem;
+          &::-webkit-input-placeholder { /* WebKit browsers */
+            color: $paiRed;
+          }
+          &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: $paiRed;
+            opacity:  1;
+          }
+          &::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: $paiRed;
+            opacity:  1;
+          }
+          &:-ms-input-placeholder { /* Internet Explorer 10+ */
+            color: $paiRed;
+          }
         }
       }
       select {

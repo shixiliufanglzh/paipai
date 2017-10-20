@@ -32,7 +32,7 @@
             <p class="name">昵称</p>
             <p class="count">我的拍币余额<span>20</span></p>
         </div>
-        <button>拍币记录</button>
+        <button id="purseDetail">拍币记录</button>
     </div>
 
     <div id="column">
@@ -64,23 +64,28 @@
 
     })
 
-    $('.single_collect').on('click','.close',function(){
-        commonCompt.Confirm({
-            hasTitle: false,
-            title: "",
-            contentText: "确认删除该商品吗？",
-            cancleText: "取消",
-            certainText: "确认",
-            rightBtnClick: function(){
-
+    $('#bottomBtn .like').click(function(){
+        $.ajax({
+            url: SIGN,
+            type:'POST',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    commonCompt.popPrompt('签到成功！');
+                }
             },
-            leftBtnClick: function(){
-
+            error: function(err){
+                console.log(err);
             }
         })
     })
 
-
+    $('#purseDetail').click(function(){
+        window.location.href = 'personalPurseChange.html';
+    })
 
 
 </script>
