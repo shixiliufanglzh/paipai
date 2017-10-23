@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>待收货订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -30,8 +31,8 @@
             <i class="car"></i>
             <div class="order_state">
                 <h3>待收货</h3>
-                <p>XXXXXXXXXX</p>
-                <p>XXXXXXXXX<span class="time_left">xxxxxxxx</span></p>
+                <p>卖家已发货</p>
+                <p>请耐心的等待货物的送达哦~</p>
             </div>
         </div>
 
@@ -68,8 +69,9 @@
         <div id="logistics">
             <h3><i></i>物流信息</h3>
             <div class="detail">
-                <p>物流公司：<span class="express_name">快递</span></p>
-                <p>物流编号：<span class="express_num">0000000000</span></p>
+                <p>物流公司：<span class="express_name"></span></p>
+                <p>物流编号：<span class="express_num"></span></p>
+                <p>物流信息：</p>
             </div>
         </div>
 
@@ -90,7 +92,6 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
@@ -154,28 +155,36 @@
             }
         })
 
+        $.ajax({
+            url: QUERYFORTRACKING,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    console.log(data);
+                    var $expressMsg = data.data;
+                    if($expressMsg.length > 0){
+                        $('.express_name').html($expressMsg.com);
+                        $('.express_num').html($expressMsg.nu);
+                        for(var i=0; i<$expressMsg.data.length; i++){
+                            $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                        }
+                    }else {
+                        $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
+                    }
+
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+
     })
 
-    $.ajax({
-        url: QUERYFORTRACKING,
-        type:'GET',
-        dataType:'json',
-        data: {orderId: $curOrderId},
-        success: function(data){
-            apiResponse(data.responseCode,data.responseDesc);
-            if(data.responseCode == 2000){
-                var $expressMsg = data.data;
-                $('.express_name').html($expressMsg.com);
-                $('.express_num').html($expressMsg.nu);
-                for(var i=0; i<$expressMsg.data.length; i++){
-                    $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
-                }
-            }
-        },
-        error: function(err){
-            console.log(err);
-        }
-    })
+
 
     //确认收货
     $('.order_edit.receive').on('click', function(){

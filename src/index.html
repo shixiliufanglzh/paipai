@@ -133,6 +133,24 @@
 
     $(function(){
 
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    if(!data.data.userTel || data.data.userTel.length <= 0){
+                        commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
         //如果是未绑定手机号的用户
         if(false){
             commonCompt.verifyPhone(60,"新用户注册",false);
@@ -148,26 +166,29 @@
             dataType:'json',
 //            async:false,
             success: function(data){
-                labels = data.data;
-                labels.unshift({
-                    id: 0,
-                    labelName: "全部类型"
-                })
-                //商品类型筛选列表生成
-                var sortListHtml = "";
-                sortListHtml += '<li data-sort-id="'+ labels[0].id +'" class="current">'+ labels[0].labelName +'</li>'
-                for(var i=1; i< labels.length; i++){
-                    sortListHtml += '<li data-sort-id="'+ labels[i].id +'">'+ labels[i].labelName +'</li>'
-                }
-                $('#sortsWrap ul').html(sortListHtml);
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000) {
+                    labels = data.data;
+                    labels.unshift({
+                        id: 0,
+                        labelName: "全部类型"
+                    })
+                    //商品类型筛选列表生成
+                    var sortListHtml = "";
+                    sortListHtml += '<li data-sort-id="' + labels[0].id + '" class="current">' + labels[0].labelName + '</li>'
+                    for (var i = 1; i < labels.length; i++) {
+                        sortListHtml += '<li data-sort-id="' + labels[i].id + '">' + labels[i].labelName + '</li>'
+                    }
+                    $('#sortsWrap ul').html(sortListHtml);
 
-                //商品状态筛选列表生成
-                var stateListHtml = "";
-                stateListHtml += '<li data-state-id="'+ states[0].id +'" class="current">'+ states[0].state_name +'</li>'
-                for(var i=1; i<states.length; i++){
-                    stateListHtml += '<li data-state-id="'+ states[i].id +'">'+ states[i].state_name +'</li>'
+                    //商品状态筛选列表生成
+                    var stateListHtml = "";
+                    stateListHtml += '<li data-state-id="' + states[0].id + '" class="current">' + states[0].state_name + '</li>'
+                    for (var i = 1; i < states.length; i++) {
+                        stateListHtml += '<li data-state-id="' + states[i].id + '">' + states[i].state_name + '</li>'
+                    }
+                    $('#statesWrap ul').html(stateListHtml);
                 }
-                $('#statesWrap ul').html(stateListHtml);
             },
             error: function(err){
                 console.log(err);
@@ -195,8 +216,10 @@
                         data: {goodsId:goodsList[i].id,goodsIssueno:goodsList[i].goodsIssueno},
                         async:false,
                         success: function(data){
-                            console.log(data);
-                            goodsList[i] = data.data;
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000) {
+                                goodsList[i] = data.data;
+                            }
                         },
                         error: function(err){
                             console.log(err);
@@ -369,36 +392,39 @@
             dataType:'json',
             data: paraData,
             success: function(data){
-                console.log(data);
-                var addGoods = data.data;
-                goodsList = goodsList.concat(addGoods);
-                var goodsListHtml = "";
-                for(var i=0; i<addGoods.length; i++){
-                    var cur_state;
-                    if(addGoods[i].saleStatus == 1){
-                        var timestamp=new Date().getTime();
-                        var todayTimestamp = timestamp % 86400000;
-                        if(todayTimestamp > 57600000){
-                            cur_state = "out_time";
-                        }else {
-                            cur_state = "salling_cut";
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000) {
+                    console.log(data);
+                    var addGoods = data.data;
+                    goodsList = goodsList.concat(addGoods);
+                    var goodsListHtml = "";
+                    for (var i = 0; i < addGoods.length; i++) {
+                        var cur_state;
+                        if (addGoods[i].saleStatus == 1) {
+                            var timestamp = new Date().getTime();
+                            var todayTimestamp = timestamp % 86400000;
+                            if (todayTimestamp > 57600000) {
+                                cur_state = "out_time";
+                            } else {
+                                cur_state = "salling_cut";
+                            }
+                        } else if (addGoods[i].saleStatus == 2) {
+                            cur_state = "pre_sale";
+                        } else if (addGoods[i].saleStatus == 3) {
+                            cur_state = "sold_out";
                         }
-                    }else if(addGoods[i].saleStatus == 2){
-                        cur_state = "pre_sale";
-                    }else if(addGoods[i].saleStatus == 3){
-                        cur_state = "sold_out";
+                        goodsListHtml += '<div class="single_good" data-goods-id="' + addGoods[i].id + '">' +
+                                '<div class="item_img" style="background: url(' + addGoods[i].goodsPic + ') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>' +
+                                '<div class="about">' +
+                                '<p class="desc">' + addGoods[i].goodsDesc + '</p>' +
+                                '<div class="price">' +
+                                '<span class="price_now">￥' + addGoods[i].nowPrice + '</span>' +
+                                '<span class="price_primary">' + addGoods[i].salePrice + '</span>' +
+                                '<i class="sales_state ' + cur_state + '"></i>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>'
                     }
-                    goodsListHtml+= '<div class="single_good" data-goods-id="'+ addGoods[i].id +'">'+
-                            '<div class="item_img" style="background: url('+ addGoods[i].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
-                            '<div class="about">'+
-                            '<p class="desc">'+ addGoods[i].goodsDesc +'</p>'+
-                            '<div class="price">'+
-                            '<span class="price_now">￥'+ addGoods[i].nowPrice +'</span>'+
-                            '<span class="price_primary">'+ addGoods[i].salePrice +'</span>'+
-                            '<i class="sales_state '+ cur_state +'"></i>'+
-                            '</div>'+
-                            '</div>'+
-                            '</div>'
                 }
 
                 $('#goods').append(goodsListHtml);

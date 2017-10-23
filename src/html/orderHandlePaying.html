@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>待支付订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -81,7 +82,6 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;

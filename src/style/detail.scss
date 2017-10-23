@@ -8,7 +8,7 @@
     height: 7.5rem;
     overflow: hidden;
     .swiper-slide {
-      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      background: url("../imgs/placeholder.jpg") center center no-repeat;
       -webkit-background-size: cover;
       background-size: cover;
     }
@@ -313,7 +313,7 @@
             font-size: 0;
             span {
               @include smallBlock(1rem,1rem);
-              background: url("../imgs/detail_01.jpg");
+              background: url("../imgs/placeholder.jpg");
               -webkit-background-size: cover;
               background-size: cover;
               border-radius: 0.1rem;
@@ -358,7 +358,7 @@
       width: 2.2rem;
       height: 2.2rem;
       border: 3px solid #fff;
-      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      background: url("../imgs/placeholder.jpg") center center no-repeat;
       -webkit-background-size: cover;
       background-size: cover;
       position: absolute;

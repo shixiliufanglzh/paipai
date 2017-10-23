@@ -106,7 +106,6 @@
                     defaultCode: isDefault
                 },
                 success: function(data){
-                    console.log(data);
                     apiResponse(data.responseCode,data.responseDesc);
                     if(data.responseCode == 2000){
                         commonCompt.popPrompt('添加成功');

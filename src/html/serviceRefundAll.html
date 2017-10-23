@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>退货退款</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -110,7 +111,6 @@
             dataType:'json',
             async:false,
             success:function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     var goodMsg = data.data;
@@ -184,9 +184,7 @@
                     data: dataPara,
                     type:'post',
                     dataType:'json',
-//                async:false,
                     success:function(data){
-                        console.log(data);
                         apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已提交申请');

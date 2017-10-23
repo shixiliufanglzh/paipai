@@ -21,7 +21,6 @@ var DEFAULTADRESS = apiHost + "address/defaultAddress.jhtml";  //设置默认地
 var DELUSERADDRESS = apiHost + "address/delUserAddress.jhtml";  //删除用户地址列表
 var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用户地址
 var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
-
 var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
 var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
 var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
@@ -35,12 +34,12 @@ var GETORDERGOODS = apiHost + "order/getOrderGoods.jhtml";  //获取订单指定
 var ADDCOMMENT = apiHost + "order/addComment.jhtml";  //添加订单商品评论
 var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
 var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
-
 var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
 var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
 var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
 var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
+var GETUSERINFO = apiHost + "user/getUserInfo.jhtml";  //获取用户信息
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -50,7 +49,9 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             break;
         case "4000":
             commonCompt.popPrompt("请先登录");
-            window.location.href = redirectUrl;
+            if(redirectUrl){
+                window.location.href = redirectUrl;
+            }
             break;
         case "4001":
             commonCompt.popPrompt(responseDesc);
@@ -114,12 +115,9 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
     }
 }
 
-var Paipai = function(){
-
-}
-
+var Paipai = function(){}
 Paipai.prototype = {
-    //待支付订单的计时器列表创建
+    //待计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
         timer = setInterval(function(){
@@ -159,7 +157,7 @@ var commonCompt = {
                             '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
                             '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
                             '<div class="input" style="display:none;font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+
-                                '<input type="text" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.4rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
+                                '<input type="text" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.6rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
                             '</div>'+
                             '<div class="action" style="font-size:0;">'+
                                 '<button class="cancel" style="width:50%;background-color:#fff;border:none;outline:none;text-align:center;border-right:1px solid #c5c5c5;color:#858585;line-height:0.66rem;">'+objPara.cancleText+'</button>'+

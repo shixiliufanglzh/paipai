@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -191,7 +192,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -235,7 +236,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -279,7 +280,7 @@
                         orderId: $curOrder.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已确认收货');
                             location.reload(true);
@@ -331,7 +332,6 @@
             dataType:'json',
             data: paraData,
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     var orders = data.data;

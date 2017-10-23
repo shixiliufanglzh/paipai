@@ -21,7 +21,7 @@
     .filtersWrap {
       display: flex;
       flex-wrap: nowrap;
-      border-bottom: 1px solid #858585;
+      border-bottom: 1px solid #ddd;
       .filter {
         text-align: center;
         flex-grow: 1;
@@ -72,7 +72,7 @@
       .item_img {
         width: 100%;
         height: 3.45rem;
-        background: url("../imgs/detail_01.jpg") center center no-repeat;
+        background: url("../imgs/placeholder.jpg") center center no-repeat;
         -webkit-background-size: cover;
         background-size: cover;
       }

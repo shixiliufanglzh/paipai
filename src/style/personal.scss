@@ -14,7 +14,7 @@ body {
     overflow: hidden;
     .avatar {
       @include smallBlock(1.68rem,1.68rem);
-      background: url("../imgs/detail_03.jpg") center center no-repeat;
+      background: url("../imgs/placeholder.jpg") center center no-repeat;
       -webkit-background-size: cover;
       background-size: cover;
       border-radius: 50%;
@@ -106,7 +106,7 @@ body {
     position: relative;
     .img {
       @include smallBlock(1.92rem,1.92rem);
-      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      background: url("../imgs/placeholder.jpg") center center no-repeat;
       -webkit-background-size: cover;
       background-size: cover;
       position: absolute;
@@ -198,7 +198,7 @@ body {
     min-height: 1.8rem;
     .avatar {
       @include smallBlock(1.16rem,1.16rem);
-      background: url("../imgs/detail_02.jpg") center center no-repeat;
+      background: url("../imgs/placeholder.jpg") center center no-repeat;
       -webkit-background-size: cover;
       background-size: cover;
       border-radius: 50%;
@@ -459,9 +459,10 @@ body {
       appearance:none;
       font-size: 0.24rem;
       line-height: 0.84rem;
-      //width: 5rem;
+      height: 0.84rem;
       color: #858585;
       text-align: right;
+      background-color: #fff;
     }
     #birth {
       border: none;

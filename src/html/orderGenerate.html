@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>确认订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -37,16 +38,6 @@
 
     <section id="orderDetail">
         <div class="grab_list">
-            <!--<div class="single_good" data-good-id="11">-->
-                <!--<h4><i class="contain_state"></i><span>正价购买</span><i class="delete"></i></h4>-->
-                <!--<div class="good_detail">-->
-                    <!--<div class="img"></div>-->
-                    <!--<p class="product">哈哈速度和放款速度快解放军卡布斯的好三级地方i家回复啊哈就看阿松抛开打破呕的..</p>-->
-                    <!--<p class="parameter">颜色：土豪金&nbsp;&nbsp;&nbsp;&nbsp;尺寸：5.0寸</p>-->
-                    <!--<p class="price_start">起拍价：<span class="price">￥3999.00</span></p>-->
-                    <!--<p class="price_now">中标价：<span class="price">￥3999.00</span><span class="count">×2</span></p>-->
-                <!--</div>-->
-            <!--</div>-->
 
         </div>
 
@@ -104,7 +95,6 @@
             dataType:'json',
             async: false,
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     var address = data.data;
@@ -136,7 +126,6 @@
             dataType:'json',
             async: false,
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
                     goodsList = data.data;
@@ -229,7 +218,6 @@
                         cartId: $cartId
                     },
                     success: function(data){
-                        console.log(data);
                         apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             location.reload(true);
@@ -290,7 +278,6 @@
                     addressId: $selAddrId
                 },
                 success: function(data){
-                    console.log(data);
                     apiResponse(data.responseCode,data.responseDesc);
                     if(data.responseCode == 2000){
                         window.location.href= 'orderHandlePaying.html?order_id='+ data.data.orderId;

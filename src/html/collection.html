@@ -154,7 +154,7 @@
                         storeId: curGood.attr('data-store-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc);
                         if(data.responseCode == 2000){
                             curGood.remove();
                             goodsList.splice(curGood.index(),1);
@@ -211,50 +211,51 @@
                 pageSize: $pageSize
             },
             success: function(data){
-                console.log(data);
-                if(data.data.length > 0){
-                    $('#blank').hide();
-                    var collectionList = data.data;
-                    for(var i=0; i<collectionList.length; i++){
-                        goodsList.push(collectionList[i]);
-                        var collectionHtml = '';
-                        var state = "";
-                        var stateHtml = "";
-                        if(collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 1){
-                            state = "grab";
-                            stateHtml = '<button>立即抢拍</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 2){
-                            state = "primary";
-                            stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>'+
-                                    '<button>正价购买</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 2){
-                            state = "primary";
-                            stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>'+
-                                    '<button>正价购买</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 3){
-                            state = "sold_out";
-                            stateHtml = '<button>销售告罄</button>'+
-                                    '</div>'
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000) {
+                    if (data.data.length > 0) {
+                        $('#blank').hide();
+                        var collectionList = data.data;
+                        for (var i = 0; i < collectionList.length; i++) {
+                            goodsList.push(collectionList[i]);
+                            var collectionHtml = '';
+                            var state = "";
+                            var stateHtml = "";
+                            if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 1) {
+                                state = "grab";
+                                stateHtml = '<button>立即抢拍</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 2) {
+                                state = "primary";
+                                stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
+                                        '<button>正价购买</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 2) {
+                                state = "primary";
+                                stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
+                                        '<button>正价购买</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 3) {
+                                state = "sold_out";
+                                stateHtml = '<button>销售告罄</button>' +
+                                        '</div>'
+                            }
+
+                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '">' +
+                                    '<span class="img" style="background: url(' + collectionList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
+                                    '<div class="content">' +
+                                    '<p class="title">' + collectionList[i].goodsDesc + '</p>' +
+                                    '<div class="para"><span class="detail">' + collectionList[i].goodsSpu + '</span><br><span class="store">库存：' + collectionList[i].stockNum + '</span></div>' +
+                                    '<div class="price"><span class="price_now">￥' + collectionList[i].nowPrice + '</span><span class="price_primary">￥' + collectionList[i].salePrice + '</span></div>' +
+                                    '</div>' +
+                                    '<i class="close"></i>' +
+                                    '<span class="count">×' + collectionList[i].goodsAmount + '</span>' + stateHtml;
+
+
+                            $('#collection').append(collectionHtml);
                         }
-
-                        collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ collectionList[i].storeId +'" data-good-id="'+ goodsList[i].goodsId +'">'+
-                                '<span class="img" style="background: url('+ collectionList[i].goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
-                                '<div class="content">'+
-                                '<p class="title">'+ collectionList[i].goodsDesc +'</p>'+
-                                '<div class="para"><span class="detail">'+ collectionList[i].goodsSpu +'</span><br><span class="store">库存：'+ collectionList[i].stockNum +'</span></div>'+
-                                '<div class="price"><span class="price_now">￥'+ collectionList[i].nowPrice +'</span><span class="price_primary">￥'+ collectionList[i].salePrice +'</span></div>'+
-                                '</div>'+
-                                '<i class="close"></i>'+
-                                '<span class="count">×'+ collectionList[i].goodsAmount +'</span>'+stateHtml;
-
-
-                        $('#collection').append(collectionHtml);
                     }
                 }
-
 
                 if(collectionList.length < $pageSize || !collectionList){
                     finishLoading =true
@@ -279,49 +280,51 @@
             data: {goodsId:goodPara.goodsId,goodsIssueno:goodPara.goodsIssueno},
             async:false,
             success: function(data){
-                console.log(data);
-                goodPara.saleStatus = data.data.saleStatus;
-                goodPara.timeStatus = data.data.timeStatus;
-                goodPara.goodsIdd = data.data.goodsId;
-                goodPara.goodsDesc = data.data.goodsDesc;
-                goodPara.nowPrice = data.data.nowPrice;
-                goodPara.salePrice = data.data.salePrice;
-                var collectionHtml = '';
-                var state = "";
-                var stateHtml = "";
-                if(goodPara.saleStatus == 1 && goodPara.timeStatus == 1){
-                    state = "grab";
-                    stateHtml = '<button>立即抢拍</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 1 && goodPara.timeStatus == 2){
-                    state = "primary";
-                    stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>'+
-                                '<button>正价购买</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 2){
-                    state = "primary";
-                    stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>'+
-                                '<button>正价购买</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 3){
-                    state = "sold_out";
-                    stateHtml = '<button>销售告罄</button>'+
-                            '</div>'
-                }
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000) {
+                    goodPara.saleStatus = data.data.saleStatus;
+                    goodPara.timeStatus = data.data.timeStatus;
+                    goodPara.goodsIdd = data.data.goodsId;
+                    goodPara.goodsDesc = data.data.goodsDesc;
+                    goodPara.nowPrice = data.data.nowPrice;
+                    goodPara.salePrice = data.data.salePrice;
+                    var collectionHtml = '';
+                    var state = "";
+                    var stateHtml = "";
+                    if (goodPara.saleStatus == 1 && goodPara.timeStatus == 1) {
+                        state = "grab";
+                        stateHtml = '<button>立即抢拍</button>' +
+                                '</div>'
+                    } else if (goodPara.saleStatus == 1 && goodPara.timeStatus == 2) {
+                        state = "primary";
+                        stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
+                                '<button>正价购买</button>' +
+                                '</div>'
+                    } else if (goodPara.saleStatus == 2) {
+                        state = "primary";
+                        stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
+                                '<button>正价购买</button>' +
+                                '</div>'
+                    } else if (goodPara.saleStatus == 3) {
+                        state = "sold_out";
+                        stateHtml = '<button>销售告罄</button>' +
+                                '</div>'
+                    }
 
-                collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ goodPara.storeId +'" data-good-id="'+ goodPara.goodsId +'">'+
-                                        '<span class="img" style="background: url('+ goodPara.goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
-                                        '<div class="content">'+
-                                            '<p class="title">'+ goodPara.goodsDesc +'</p>'+
-                                            '<div class="para"><span class="detail">'+ goodPara.goodsSpu +'</span><br><span class="store">库存：'+ goodPara.stockNum +'</span></div>'+
-                                            '<div class="price"><span class="price_now">￥'+ goodPara.nowPrice +'</span><span class="price_primary">￥'+ goodPara.salePrice +'</span></div>'+
-                                        '</div>'+
-                                        '<i class="close"></i>'+
-                                        '<span class="count">×'+ goodPara.goodsAmount +'</span>'+stateHtml;
+                    collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + goodPara.storeId + '" data-good-id="' + goodPara.goodsId + '">' +
+                            '<span class="img" style="background: url(' + goodPara.goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
+                            '<div class="content">' +
+                            '<p class="title">' + goodPara.goodsDesc + '</p>' +
+                            '<div class="para"><span class="detail">' + goodPara.goodsSpu + '</span><br><span class="store">库存：' + goodPara.stockNum + '</span></div>' +
+                            '<div class="price"><span class="price_now">￥' + goodPara.nowPrice + '</span><span class="price_primary">￥' + goodPara.salePrice + '</span></div>' +
+                            '</div>' +
+                            '<i class="close"></i>' +
+                            '<span class="count">×' + goodPara.goodsAmount + '</span>' + stateHtml;
 
 
-                goodDom.replaceWith(collectionHtml);
+                    goodDom.replaceWith(collectionHtml);
 //                collectionHtml.replaceAll(goodDom);
+                }
             },
             error: function(err){
                 console.log(err);

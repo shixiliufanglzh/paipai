@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>支付确认</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -90,16 +91,14 @@
                 payType: 2
             },
             success: function (data) {
-                console.log(data);
+//                console.log('请求参数:',$curOrderId,2,'返回',data);
                 apiResponse(data.responseCode,data.responseDesc);
-                alert(data);
                 if(data.responseCode == 2000){
-
+                    $('body').html(data.data);
                 }
             },
             error: function (err) {
-                console.log(err);
-                alert(err);
+//                console.log('请求参数:',$curOrderId,2,'返回',err);
             }
         })
     })
