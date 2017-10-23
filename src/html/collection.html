@@ -201,6 +201,7 @@
     function showCollectionList(pageNum){
         if(pageNum <= 1){
             $('#collection').html('');
+            $('body').css('background-color','#fff');
         }
         $.ajax({
             url: GETSTORE,
@@ -215,6 +216,8 @@
                 if(data.responseCode == 2000) {
                     if (data.data.length > 0) {
                         $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+
                         var collectionList = data.data;
                         for (var i = 0; i < collectionList.length; i++) {
                             goodsList.push(collectionList[i]);

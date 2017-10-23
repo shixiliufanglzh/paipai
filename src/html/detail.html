@@ -150,7 +150,7 @@
 
             <div class="consume">
                 <h4>消耗</h4>
-                <p>1拍币（剩余23拍币）</p>
+                <p><span class="consume_count">1</span>拍币（剩余<span class="current_left">111</span>拍币）</p>
             </div>
         </div>
 
@@ -160,6 +160,7 @@
         </div>
     </div>
 </div>
+
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
@@ -190,6 +191,7 @@
             dataType:'json',
             data: {goodsId: $goodId},
             success: function(data){
+                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000) {
                     goodsPara = data.data;
@@ -202,7 +204,7 @@
                     $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice);
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice);
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
-                    $('#sortsList .consume p').html(goodsPara.token_consume + '拍币（剩余' + goodsPara.token_left + '拍币）');
+                    $('#sortsList .consume_count').html(goodsPara.pieNum);
 
                     if (goodsPara.limitNum > 0) {
                         $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
@@ -653,37 +655,42 @@
 
     //立即购买
     $('#bottomBtn .purchase').click(function() {
-        if(userSel.spu_id.length >= paraList.length) {
-            if(userSel.count > 0){
-                var paraData = {
+        //如果是未绑定手机号的用户
+        if(false){
+            commonCompt.verifyPhone(60,"新用户注册",false);
+        }else {
+            if (userSel.spu_id.length >= paraList.length) {
+                if (userSel.count > 0) {
+                    var paraData = {
                         goodsId: $goodId,
                         mixId: userSel.mixId,
                         goodsAmount: userSel.count,
                         goodsIssueno: goodsPara.goodsIssueno
                     }
-                console.log(paraData);
-                $.ajax({
-                    url: ADDCART,
-                    type: 'POST',
-                    dataType: 'json',
-                    data: paraData,
-                    success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000){
-                            window.location.href = 'orderGenerate.html';
-                        }
+                    console.log(paraData);
+                    $.ajax({
+                        url: ADDCART,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: paraData,
+                        success: function (data) {
+                            apiResponse(data.responseCode, data.responseDesc);
+                            if (data.responseCode == 2000) {
+                                window.location.href = 'orderGenerate.html';
+                            }
 
-                    },
-                    error: function (err) {
-                        console.log(err);
-                        commonCompt.popPrompt("购买失败，请刷新后再尝试");
-                    }
-                });
-            }else {
-                commonCompt.popPrompt('请选择数量');
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            commonCompt.popPrompt("购买失败，请刷新后再尝试");
+                        }
+                    });
+                } else {
+                    commonCompt.popPrompt('请选择数量');
+                }
+            } else {
+                commonCompt.popPrompt('请选择参数');
             }
-        }else {
-            commonCompt.popPrompt('请选择参数');
         }
     })
 

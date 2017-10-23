@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>联系我们</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <style>
+        #q_a {
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            font-weight: 500;
+            font-size: 0.3rem;
+            margin-bottom: 0.16rem;
+            margin-top: 0;
+        }
+        h3 {
+            font-weight: 500;
+            font-size: 0.28rem;
+            margin: 0.06rem 0;
+        }
+        p {
+            font-size: 0.2rem;
+            text-align: justify;
+            margin-top: 0.02rem;
+            margin-bottom: 0.06rem;
+        }
+        #q_a p {
+            border-bottom: 1px solid #858585;
+            padding-bottom: 0.16rem;
+        }
+        span {
+            color: #FF4242;
+        }
+    </style>
+</head>
+<body style="background-color: #fff; padding: 0.24rem">
+<div id="q_a">
+    <h2>一、常见问题汇总</h2>
+    <h3><span>Q:</span>减价拍商城是什么？</h3>
+    <p><span>A:</span>减价拍商城致力于打造一种全新的商品竞拍售卖模式，通过商品“正价减拍，先拍先得”的运营模式，达到商品快速成交的目的，商品最终售价由买家做主，只有当商品售价降低到买家认可的价格时，买家再出手抢拍购买。由于商品都是从正常售价（即秒杀价、折后价等优惠后的促销价格）开始减价拍卖，首先出价抢拍的买家获得以当前价格购买商品的权利，所以，拍到就是赚到，如果减价过程中，一直没有买家出价竞拍，商品可以一直减价到0元，当然，这种概率还是比较低的，总归有不贪婪的买家率先出价抢拍的。</p>
+
+    <h3><span>Q:</span>商城为什么可以做到低价甚至赔本销售，是不是骗人的？</h3>
+    <p><span>A:</span>减价拍商城的商品虽然都是从正常售价（即秒杀价、折后价等优惠后的促销价格）开始减价拍卖，甚至可以一直减价到0元购买，但是这种概率是很低的，因为竞拍规则是“先拍先得”，你不出价抢拍，总归会有不贪婪的人觉得价格已经降低到可以接受的程度了，就会率先出价抢拍，而你只能重新参加此商品的减价拍卖。同时，由于商品正价和成本之间有一定的减价空间，有的商品赔了，有的商品赚了，总体来看亏损还是在可控范围内的，而由此吸引聚集的人气和流量，又可以给我们带来额外的附加价值。所以，减价竞拍模式完全符合商业逻辑，完全没有必要骗人。</p>
+</div>
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+
+<script>
+
+</script>
+</html>

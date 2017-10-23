@@ -37,43 +37,18 @@
 
     <div class="change_detail clearfix">
         <div class="left">
-            <h4>系统随机赠送拍币</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right plus">+2</div>
-    </div>
-
-    <div class="change_detail clearfix">
-        <div class="left">
-            <h4>签到拍币</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right plus">+1</div>
-    </div>
-
-    <div class="change_detail clearfix">
-        <div class="left">
             <h4>竞拍商品</h4>
             <p>2017-08-17 20:02:07</p>
         </div>
         <div class="right">-1</div>
     </div>
+</div>
 
-    <div class="change_detail clearfix">
-        <div class="left">
-            <h4>互动拍币</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right plus">+2</div>
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_order.png" alt="">
     </div>
-
-    <div class="change_detail clearfix">
-        <div class="left">
-            <h4>竞拍商品</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right">-1</div>
-    </div>
+    <h6>还没有拍币记录呢~</h6>
 </div>
 
 
@@ -82,11 +57,93 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+    var $pageNum = 1;
+    var $pageSize = 20;
+    var finishLoading = true;
 
     $(function(){
+        //没有订单时的显示
+        if($('.change_detail').length <= 0){
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+        }
 
+        bindRecordsList($pageNum);
     })
 
+
+    //获取商品列表
+    function bindRecordsList(pageNum){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.records_list').html('');
+        }
+
+        //请求数据
+        $.ajax({
+            url: GETUSERPOINTRECORD,
+            type:'GET',
+            dataType:'json',
+            data: {
+                pageNum: $pageNum,
+                pageSize:$pageSize
+            },
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc);
+                if(data.responseCode == 2000){
+                    var records = data.data;
+                    console.log(records);
+                    if(records.length > 0){
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+                    }
+                    var recordsListHtml = "";
+                    for(var i=0; i<records.length; i++){
+                        var changeNum = '', changeState = '';
+                        if(records[i].point_type == -1){
+                            changeNum = '-' + records[i].point_amount;
+                            changeState = '';
+                        }else if(records[i].point_type == 2 || records[i].point_type){
+                            changeNum = '+' + records[i].point_amount;
+                            changeState = 'plus';
+                        }
+
+                        recordsListHtml +=  '<div class="change_detail clearfix">'+
+                                                '<div class="left">'+
+                                                    '<h4>' + records[i].point_desc + '</h4>'+
+                                                    '<p>' + records[i].createDate + '</p>'+
+                                                '</div>'+
+                                                '<div class="right ' + changeState + '">' + changeNum + '</div>'+
+                                            '</div>'
+                    }
+                    $('#purseChange').append(recordsListHtml);
+
+                    if(records.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+//            setTimeout(function(){
+            bindRecordsList($pageNum);
+//            },1000)
+        }
+    })
 
 
 

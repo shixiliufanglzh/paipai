@@ -68,6 +68,23 @@
 <script>
 
     $(function(){
+
+        if(true){
+            commonCompt.Confirm({
+                hasTitle: true,
+                title: "重要提示",
+                contentText: "为保证帐号安全，请尽快完善会员信息",
+                cancleText: "下次提示",
+                certainText: "立即完善",
+                rightBtnClick: function(){
+
+                },
+                leftBtnClick: function(){
+
+                }
+            })
+        }
+
         $('#birth').date(null,function(str){
             console.log(str);
             changMsg({birthday: str}, "修改生日成功",function(){

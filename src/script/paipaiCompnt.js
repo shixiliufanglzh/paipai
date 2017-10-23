@@ -40,6 +40,8 @@ var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
 var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
 var GETUSERINFO = apiHost + "user/getUserInfo.jhtml";  //获取用户信息
+var GETUSERPOINTRECORD = apiHost + "activity/getUserPointRecord.jhtml";  //获取用户派币记录
+var JSSDKCONFIG = apiHost + "util/jssdkConfig.jhtml";  //获取js-skd config接口注入权限验证配置
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -84,10 +86,19 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             },2000)
             break;
         case "4006":
-            commonCompt.popPrompt("商品已被竞拍");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
+            commonCompt.Confirm({
+                hasTitle: true,
+                title: "提示",
+                contentText: responseDesc,
+                cancleText: "取消",
+                certainText: "确认",
+                rightBtnClick: function(){
+                    location.reload(true);
+                },
+                leftBtnClick: function(){
+
+                }
+            });
             break;
         case "4007":
             commonCompt.popPrompt("拍币不足");

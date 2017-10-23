@@ -46,6 +46,12 @@
 
 <div id="newAddr"><button>添加新地址</button></div>
 
+<div id="blank" class="blank_addr">
+    <div class="img">
+        <img src="../imgs/blank_address.png" alt="">
+    </div>
+    <h6>您还没有地址</h6>
+</div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
@@ -54,6 +60,11 @@
 <script>
     $(function(){
 
+        if($('.single_addr').length <= 0){
+            $('#blank').show();
+            $('body').css('background-color','#fff');
+        }
+
         $.ajax({
             url: GETUSERADDRESS,
             type:'GET',
@@ -61,25 +72,30 @@
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc);
                 if(data.responseCode == 2000){
-                    var addressList = data.data;
-                    for(var i=0; i<addressList.length; i++){
-                        var isDeault = addressList[i].defaultCode ? "set_default" : "";
-                        var addressHtml =   '<div class="single_addr '+ isDeault +'" data-addr-id="'+ addressList[i].id +'">'+
-                                                '<div class="info">'+
-                                                    '<div class="base clearfix">'+
-                                                        '<span class="name">'+ addressList[i].name +'</span>'+
-                                                        '<span class="phone">'+ addressList[i].tel +'</span>'+
-                                                    '</div>'+
-                                                    '<p class="addr">'+ addressList[i].area.split(',').join('') + addressList[i].address +'</p>'+
-                                                '</div>'+
-                                                '<div class="change clearfix">'+
-                                                    '<span class="default"><i></i>设为默认</span>'+
-                                                    '<button class="delete">删除</button>'+
-                                                    '<button class="edit">编辑</button>'+
-                                                '</div>'+
-                                            '</div>'
+                    if(data.data.length > 0) {
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
 
-                        $('#receiveInfo').append(addressHtml);
+                        var addressList = data.data;
+                        for (var i = 0; i < addressList.length; i++) {
+                            var isDeault = addressList[i].defaultCode ? "set_default" : "";
+                            var addressHtml =   '<div class="single_addr ' + isDeault + '" data-addr-id="' + addressList[i].id + '">' +
+                                                    '<div class="info">' +
+                                                        '<div class="base clearfix">' +
+                                                            '<span class="name">' + addressList[i].name + '</span>' +
+                                                            '<span class="phone">' + addressList[i].tel + '</span>' +
+                                                        '</div>' +
+                                                        '<p class="addr">' + addressList[i].area.split(',').join('') + addressList[i].address + '</p>' +
+                                                    '</div>' +
+                                                    '<div class="change clearfix">' +
+                                                        '<span class="default"><i></i>设为默认</span>' +
+                                                        '<button class="delete">删除</button>' +
+                                                        '<button class="edit">编辑</button>' +
+                                                    '</div>' +
+                                                '</div>'
+
+                            $('#receiveInfo').append(addressHtml);
+                        }
                     }
                 }
 
@@ -126,6 +142,11 @@
 
             }
         })
+
+        if($('.single_addr').length <= 0){
+            $('#blank').show();
+            $('body').css('background-color','#fff');
+        }
     });
 
     $('#receiveInfo').on('click','.edit',function(){

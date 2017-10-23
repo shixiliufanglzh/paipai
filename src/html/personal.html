@@ -80,21 +80,6 @@
     })
 
 
-
-    commonCompt.Confirm({
-        hasTitle: true,
-        title: "重要提示",
-        contentText: "为保证帐号安全，请尽快完善会员信息",
-        cancleText: "下次提示",
-        certainText: "立即完善",
-        rightBtnClick: function(){
-
-        },
-        leftBtnClick: function(){
-
-        }
-    })
-
     $('body').on('click','#mainNav button',function(){
         if($(this).attr('class') == 'home'){
             window.location.href = '../index.html'
@@ -119,14 +104,18 @@
         }else if($(this).hasClass('loc_address')){
             window.location.href = 'address.html?from=0';
         }else if($(this).hasClass('loc_service')){
-//            window.location.href = 'services.html';
+            window.location.href = 'contact.html';
         }else if($(this).hasClass('loc_help')){
-//            window.location.href = 'order.html';
+            window.location.href = 'Q&A.html.html';
         }
     })
 
     $('#zoneHeader').click(function(){
-        window.location.href = 'personalInfo.html';
+        if(false){
+            commonCompt.verifyPhone(60,"新用户注册",false);
+        }else {
+            window.location.href = 'personalInfo.html';
+        }
     })
 
 
