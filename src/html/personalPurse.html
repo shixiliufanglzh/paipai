@@ -53,16 +53,48 @@
     </div>
 </div>
 
+<div id="sharePrompt">
+    <div class="guide">
+        <img src="../imgs/share_prompt.png" alt="">
+    </div>
+</div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
     $(function(){
-
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userPortrait){
+                        $('#header .avatar').css({
+                            'background': 'url('+ data.data.userPortrait +') center center no-repeat',
+                            'background-size': 'cover',
+                            '-webkit-background-size': 'cover'
+                        });
+                    }
+                    if(data.data.userName){
+                        $('#header .name').html(data.data.userName);
+                    }
+                    if(data.data.userPoint){
+                        $('#header .count span').html(data.data.userPoint);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
     })
 
     $('#bottomBtn .like').click(function(){
@@ -73,7 +105,7 @@
             async:false,
             success:function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     commonCompt.popPrompt('签到成功！');
                 }
@@ -84,9 +116,18 @@
         })
     })
 
+    $('#bottomBtn .purchase').click(function(){
+        $('#sharePrompt').fadeIn();
+    })
+    $('#sharePrompt').click(function (){
+        $('#sharePrompt').fadeOut();
+    });
+
+
     $('#purseDetail').click(function(){
         window.location.href = 'personalPurseChange.html';
     })
+
 
 
 </script>

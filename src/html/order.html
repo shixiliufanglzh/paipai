@@ -68,6 +68,8 @@
             $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
             $('body').css('background-color','#fff');
             $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
         }
 
         //生成底部导航
@@ -192,7 +194,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -236,7 +238,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -280,7 +282,7 @@
                         orderId: $curOrder.attr('data-order-id')
                     },
                     success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已确认收货');
                             location.reload(true);
@@ -332,7 +334,7 @@
             dataType:'json',
             data: paraData,
             success: function(data){
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orders = data.data;
                     if(orders.length > 0){

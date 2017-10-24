@@ -27,21 +27,21 @@
 </head>
 <body style="background-color: #fff;">
 <div id="purseChange">
-    <div class="change_detail clearfix">
-        <div class="left">
-            <h4>签到拍币</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right plus">+1</div>
-    </div>
+    <!--<div class="change_detail clearfix">-->
+        <!--<div class="left">-->
+            <!--<h4>签到拍币</h4>-->
+            <!--<p>2017-08-17 20:02:07</p>-->
+        <!--</div>-->
+        <!--<div class="right plus">+1</div>-->
+    <!--</div>-->
 
-    <div class="change_detail clearfix">
-        <div class="left">
-            <h4>竞拍商品</h4>
-            <p>2017-08-17 20:02:07</p>
-        </div>
-        <div class="right">-1</div>
-    </div>
+    <!--<div class="change_detail clearfix">-->
+        <!--<div class="left">-->
+            <!--<h4>竞拍商品</h4>-->
+            <!--<p>2017-08-17 20:02:07</p>-->
+        <!--</div>-->
+        <!--<div class="right">-1</div>-->
+    <!--</div>-->
 </div>
 
 <div id="blank">
@@ -76,7 +76,7 @@
     function bindRecordsList(pageNum){
         //如果是获取第一页，就应该先清空订单列表
         if(pageNum <= 1){
-            $('.records_list').html('');
+            $('#purseChange').html('');
         }
 
         //请求数据
@@ -89,7 +89,7 @@
                 pageSize:$pageSize
             },
             success: function(data){
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var records = data.data;
                     console.log(records);

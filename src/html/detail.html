@@ -178,12 +178,54 @@
     var finishLoading = true;
     var $pageSize = 6, $pageNum = 1;
     var $curAbout = 0;
+    var hasPhone = false;
 
 
     $(function(){
         $('.loading').hide();
 
         $goodId = commonCompt.GetUrlPara('good_id');
+
+//        $.ajax({
+//            url: GETUSERINFO,
+//            type: 'GET',
+//            dataType: 'json',
+//            success: function (data) {
+//                console.log(data);
+//                apiResponse(data.responseCode,data.responseDesc,data.data);
+//                if(data.responseCode == 2000){
+//                    if(!data.data.userTel || data.data.userTel.length <= 0){
+//                        commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+//                    }
+//                }
+//            },
+//            error: function (err) {
+//                console.log(err);
+//            }
+//        })
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userTel){
+                        hasPhone = true;
+                    }
+                    if(data.data.userPoint){
+                        $('.current_left').html(data.data.userPoint);
+                    }else {
+                        $('.current_left').html(0);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         $.ajax({
             url: GETGODDSDETAIL,
@@ -192,7 +234,7 @@
             data: {goodsId: $goodId},
             success: function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     goodsPara = data.data;
                     //价格、库存等信息展示
@@ -288,7 +330,7 @@
             data: {goodsId: $goodId},
             success: function(data){
                 //商品规格参数展示
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     paraList = data.data;
                     for (var i = 0; i < paraList.length; i++) {
@@ -437,7 +479,7 @@
                     mixSkuId: $mixSkuId
                 },
                 success: function(data){
-                    apiResponse(data.responseCode,data.responseDesc);
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000) {
                         var reloadMsg = data.data;
                         userSel.mixId = reloadMsg.mixId
@@ -507,7 +549,7 @@
             },
             success: function(data){
                 //商品规格参数展示
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var commentsList = data.data;
                     var commentsHtml = "";
@@ -561,7 +603,7 @@
             },
             success: function(data){
                 //商品规格参数展示
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var dealsList = data.data;
                     var dealsHtml = "";
@@ -633,7 +675,7 @@
                     dataType: 'json',
                     data: paraData,
                     success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt("已添加关注");
                         }else {
@@ -656,8 +698,8 @@
     //立即购买
     $('#bottomBtn .purchase').click(function() {
         //如果是未绑定手机号的用户
-        if(false){
-            commonCompt.verifyPhone(60,"新用户注册",false);
+        if(!hasPhone){
+            commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
         }else {
             if (userSel.spu_id.length >= paraList.length) {
                 if (userSel.count > 0) {
@@ -674,7 +716,7 @@
                         dataType: 'json',
                         data: paraData,
                         success: function (data) {
-                            apiResponse(data.responseCode, data.responseDesc);
+                            apiResponse(data.responseCode, data.responseDesc,data.data);
                             if (data.responseCode == 2000) {
                                 window.location.href = 'orderGenerate.html';
                             }

@@ -94,6 +94,8 @@
 
         if($('.single_collect').length <= 0){
             $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
         }
 
         //生成底部导航
@@ -154,7 +156,7 @@
                         storeId: curGood.attr('data-store-id')
                     },
                     success: function (data) {
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             curGood.remove();
                             goodsList.splice(curGood.index(),1);
@@ -166,6 +168,11 @@
                                 setTimeout(function(){
                                     showCollectionList($pageNum);
                                 },1000);
+                            }
+                            if($('.single_collect').length <= 0){
+                                $('#blank').show();
+                                finishLoading =true
+                                $('.loading').hide();
                             }
                         }
                     },
@@ -212,7 +219,7 @@
                 pageSize: $pageSize
             },
             success: function(data){
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     if (data.data.length > 0) {
                         $('#blank').hide();
@@ -257,16 +264,16 @@
 
                             $('#collection').append(collectionHtml);
                         }
+                        if(collectionList.length < $pageSize || !collectionList){
+                            finishLoading =true
+                            $('.loading').hide();
+                        }else {
+                            $('.loading').show();
+                            finishLoading = false;
+                        }
                     }
                 }
 
-                if(collectionList.length < $pageSize || !collectionList){
-                    finishLoading =true
-                    $('.loading').hide();
-                }else {
-                    $('.loading').show();
-                    finishLoading = false;
-                }
             },
             error: function(err){
                 console.log(err);
@@ -283,7 +290,7 @@
             data: {goodsId:goodPara.goodsId,goodsIssueno:goodPara.goodsIssueno},
             async:false,
             success: function(data){
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     goodPara.saleStatus = data.data.saleStatus;
                     goodPara.timeStatus = data.data.timeStatus;

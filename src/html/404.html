@@ -29,11 +29,11 @@
             margin-bottom: 2rem;
         }
         .logo {
-            width: 2.02rem;
-            height: 2.02rem;
+            width: 2.1rem;
+            height: 1.83rem;
             position: relative;
             left: 50%;
-            margin-left: -1.01rem;
+            margin-left: -1.05rem;
             margin-top: 2rem;
         }
         .logo img {
@@ -41,32 +41,36 @@
             height: 100%;
             display: block;
         }
-        .version h3 {
-            font-weight: 500;
-            font-size: 0.3rem;
-            margin-bottom: 0.04rem;
-        }
         .version p {
-            font-size: 0.2rem;
-            margin-top: 0;
-        }
-        .contact_detail {
             font-size: 0.3rem;
+            margin-top: 0.4rem;
+        }
+        button {
+            background-color: #E02532;
+            border-radius: 0.06rem;
+            border: none;
+            outline: none;
+            width: 3rem;
+            margin-top: 1.2rem;
+        }
+        button a {
+            text-decoration: none;;
+            display: inline-block;
+            width: 100%;
+            line-height: 0.7rem;
+            color: #f0f0f0;
         }
     </style>
 </head>
 <body style="background-color: #fff; padding: 0.24rem;margin: 0">
-<div id="contact">
+<div id="notFound">
     <div class="version">
         <div class="logo">
-            <img src="../imgs/logo.png" alt="">
+            <img src="../imgs/404.png" alt="">
         </div>
-        <h3>减价拍</h3>
-        <p>版本1.0.0</p>
+        <p>额~~404<br>您访问的页面不存在或被删除</p>
+        <button><a href="../index.html">返回首页</a></button>
     </div>
-    <p class="contact_detail">客服热线：<span>021-54438577</span></p>
-    <p class="contact_detail">电子邮箱：<span>jianjiabid@126.com</span></p>
-    <p class="contact_detail">公司地址：<span>上海市莲花路1555号漕河泾科技园1号楼</span></p>
 </div>
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>

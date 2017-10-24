@@ -62,7 +62,7 @@
             data: {orderId: $curOrderId},
             success: function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
                     $('.addressee .name').html(orderMsg.name);
@@ -92,7 +92,7 @@
             },
             success: function (data) {
 //                console.log('请求参数:',$curOrderId,2,'返回',data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     $('body').html(data.data);
                 }

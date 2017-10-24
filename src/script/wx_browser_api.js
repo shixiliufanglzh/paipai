@@ -27,7 +27,7 @@ $(function(){
                         title: '咿呀咿呀宝宝海选报名开始啦！！', // 分享标题
                         desc: '想让您的宝宝上电视吗？快来参加吧！', // 分享描述
                         link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                        imgUrl: 'http://yiyayiya.0lz.net/imgs/share/haixuan.jpg', // 分享图标
+                        imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         type: '', // 分享类型,music、video或link，不填默认为link
                         dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                         success: function () {
@@ -43,7 +43,7 @@ $(function(){
                     wx.onMenuShareTimeline({
                         title: '咿呀咿呀宝宝海选报名开始啦！！', // 分享标题
                         link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                        imgUrl: 'http://yiyayiya.0lz.net/imgs/share/haixuan.jpg', // 分享图标
+                        imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
@@ -56,7 +56,7 @@ $(function(){
                         title: '', // 分享标题
                         desc: '', // 分享描述
                         link: data.data.url, // 分享链接
-                        imgUrl: '', // 分享图标
+                        imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
@@ -69,7 +69,7 @@ $(function(){
                         title: '', // 分享标题
                         desc: '', // 分享描述
                         link: data.data.url, // 分享链接
-                        imgUrl: '', // 分享图标
+                        imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
@@ -82,7 +82,7 @@ $(function(){
                         title: '', // 分享标题
                         desc: '', // 分享描述
                         link: data.data.url, // 分享链接
-                        imgUrl: '', // 分享图标
+                        imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
@@ -91,9 +91,9 @@ $(function(){
                         }
                     });
 
-                    wx.hideMenuItems({
-                        menuList: ['menuItem:copyUrl'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
-                    });
+                    //wx.hideMenuItems({
+                    //    menuList: ['menuItem:copyUrl'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+                    //});
 
                 });
             }

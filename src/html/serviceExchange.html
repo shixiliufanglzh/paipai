@@ -101,7 +101,7 @@
             dataType:'json',
             async:false,
             success:function(data){
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var goodMsg = data.data;
                     $('.good_msg .img').css({
@@ -172,7 +172,7 @@
                     type:'post',
                     dataType:'json',
                     success:function(data){
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已提交申请');
                             setTimeout(function(){

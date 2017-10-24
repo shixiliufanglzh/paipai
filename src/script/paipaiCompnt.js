@@ -2,7 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://116.62.116.5/app/";
+//var apiHost = "http://116.62.116.5/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
@@ -50,9 +51,9 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             return true;
             break;
         case "4000":
-            commonCompt.popPrompt("请先登录");
+            //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                window.location.href = redirectUrl;
+                //window.location.href = redirectUrl;
             }
             break;
         case "4001":

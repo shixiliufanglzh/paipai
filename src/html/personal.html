@@ -30,8 +30,8 @@
     <div id="zoneHeader">
         <span class="avatar"></span>
         <div class="info">
-            <span class="name">昵称名称</span><br>
-            <span class="phone">136****5342</span>
+            <span class="name">未填写</span><br>
+            <span class="phone">未绑定手机号</span>
         </div>
         <i class="detail_enter"></i>
     </div>
@@ -39,7 +39,7 @@
     <div id="selection">
         <ul>
             <li class="single_btn loc_purse">
-                <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money">20拍币</span>
+                <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money">0拍币</span>
             </li>
 
             <li class="single_btn loc_order">
@@ -72,8 +72,43 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+    var hasPhone = false;
 
     $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userPortrait){
+                        $('#zoneHeader .avatar').css({
+                            'background': 'url('+ data.data.userPortrait +') center center no-repeat',
+                            'background-size': 'cover',
+                            '-webkit-background-size': 'cover'
+                        });
+                    }
+                    if(data.data.userTel){
+                        hasPhone = true;
+                        $('#zoneHeader .phone').html(data.data.userTel);
+                    }
+                    if(data.data.userName){
+                        $('#zoneHeader .name').html(data.data.userName);
+                    }else if(data.data.nikeName){
+                        $('#zoneHeader .name').html(data.data.nikeName);
+                    }
+                    if(data.data.userPoint){
+                        $('.money').html(data.data.userPoint + '拍币');
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         //生成底部导航
         commonCompt.mainNav(5);
@@ -106,13 +141,13 @@
         }else if($(this).hasClass('loc_service')){
             window.location.href = 'contact.html';
         }else if($(this).hasClass('loc_help')){
-            window.location.href = 'Q&A.html.html';
+            window.location.href = 'Q&A.html';
         }
     })
 
     $('#zoneHeader').click(function(){
-        if(false){
-            commonCompt.verifyPhone(60,"新用户注册",false);
+        if(!hasPhone){
+            commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
         }else {
             window.location.href = 'personalInfo.html';
         }
