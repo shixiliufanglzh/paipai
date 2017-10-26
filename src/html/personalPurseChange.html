@@ -45,8 +45,8 @@
 </div>
 
 <div id="blank">
-    <div class="img">
-        <img src="../imgs/blank_order.png" alt="">
+    <div class="img" >
+        <img src="../imgs/blank_order.png" alt="" style="height: 1.83rem;width: 2.73rem">
     </div>
     <h6>还没有拍币记录呢~</h6>
 </div>
@@ -100,17 +100,17 @@
                     var recordsListHtml = "";
                     for(var i=0; i<records.length; i++){
                         var changeNum = '', changeState = '';
-                        if(records[i].point_type == -1){
-                            changeNum = '-' + records[i].point_amount;
+                        if(records[i].pointType == -1){
+                            changeNum = '-' + records[i].pointAmount;
                             changeState = '';
-                        }else if(records[i].point_type == 2 || records[i].point_type){
-                            changeNum = '+' + records[i].point_amount;
+                        }else if(records[i].pointType == 2 || records[i].pointType){
+                            changeNum = '+' + records[i].pointAmount;
                             changeState = 'plus';
                         }
 
                         recordsListHtml +=  '<div class="change_detail clearfix">'+
                                                 '<div class="left">'+
-                                                    '<h4>' + records[i].point_desc + '</h4>'+
+                                                    '<h4>' + records[i].pointDesc + '</h4>'+
                                                     '<p>' + records[i].createDate + '</p>'+
                                                 '</div>'+
                                                 '<div class="right ' + changeState + '">' + changeNum + '</div>'+

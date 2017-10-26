@@ -9,19 +9,31 @@
       font-size: 0.3rem;
       color: #2f2f2f;
       position: relative;
-      span {
-        margin-right: 0.2rem;
+      .has_addr {
+        span {
+          margin-right: 0.2rem;
+        }
+        .address {
+          font-size: 0.24rem;
+          color: #4b4b4b;
+          margin-top: 0.16rem;
+        }
+        i {
+          @include smallIcon(0.14rem,0.22rem,url("../imgs/icon_arrow.png"));
+          position: absolute;
+          right: 0.24rem;
+          top: 0.64rem;
+        }
       }
-      .address {
-        font-size: 0.24rem;
-        color: #4b4b4b;
-        margin-top: 0.16rem;
-      }
-      i {
-        @include smallIcon(0.14rem,0.22rem,url("../imgs/icon_arrow.png"));
-        position: absolute;
-        right: 0.24rem;
-        top: 0.64rem;
+      .no_addr {
+        display: none;
+        h4 {
+          font-weight: 500;
+          text-align: center;
+          font-size: 0.30rem;
+          line-height:0.6rem;
+          margin-bottom: 0.09rem;
+        }
       }
     }
     .bottom_img {

@@ -2,7 +2,7 @@
  * Created by 是昔流芳 on 2017/10/23.
  */
 $(function(){
-
+    var shareUrl = '';
     $.ajax({
         url: JSSDKCONFIG,
         type: 'post',
@@ -10,9 +10,10 @@ $(function(){
         data: {'url': window.location.href},
         // async: false,
         success:function(data){
-            console.log(data);
             apiResponse(data.responseCode,data.responseDesc);
             if(data.responseCode == 2000) {
+                shareUrl = data.data.url;
+                //alert(shareUrl);
                 wx.config({
                     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                     appId: data.data.appId, // 必填，公众号的唯一标识
@@ -26,7 +27,7 @@ $(function(){
                     wx.onMenuShareAppMessage({
                         title: '咿呀咿呀宝宝海选报名开始啦！！', // 分享标题
                         desc: '想让您的宝宝上电视吗？快来参加吧！', // 分享描述
-                        link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         type: '', // 分享类型,music、video或link，不填默认为link
                         dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
@@ -42,7 +43,7 @@ $(function(){
 
                     wx.onMenuShareTimeline({
                         title: '咿呀咿呀宝宝海选报名开始啦！！', // 分享标题
-                        link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数

@@ -31,14 +31,14 @@
         <span class="avatar"></span>
         <div class="msg">
             <p class="name">昵称</p>
-            <p class="count">我的拍币余额<span>20</span></p>
+            <p class="count">我的拍币余额<span>0</span></p>
         </div>
         <button id="purseDetail">拍币记录</button>
     </div>
 
     <div id="column">
         <h4><i class="rule"></i>使用规则</h4>
-        <p class="content">1. 每次竞拍商品需要消耗一定数量的拍币<br>2. 竞拍商品成功后，未能及时支付，导致订单取消，消耗的拍
+        <p class="content">1. 每次竞拍商品需要消耗一定数量的拍币每次竞拍商品需要消耗一定数量的拍币每次竞拍商品需要消耗一定数量的拍币<br>2. 竞拍商品成功后，未能及时支付，导致订单取消，消耗的拍
             币则不返还<br>3. 须通过正常途径获得拍币，不得通过软件、程序等方式获取拍币</p>
     </div>
 
@@ -89,6 +89,11 @@
                     if(data.data.userPoint){
                         $('#header .count span').html(data.data.userPoint);
                     }
+                    if(!data.data.isSign){
+                        $('#bottomBtn .like').attr('disabled','disabled');
+                        $('#bottomBtn .like').css('background-color', '#999');
+                        $('#bottomBtn .like').html('已签到');
+                    }
                 }
             },
             error: function (err) {
@@ -108,6 +113,7 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     commonCompt.popPrompt('签到成功！');
+                    $('#header .count span').html(data.data.userPoint + 1);
                 }
             },
             error: function(err){

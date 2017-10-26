@@ -133,6 +133,11 @@
 
     $(function(){
 
+        if($('.single_good').length <=0 ){
+            finishLoading =true
+            $('.loading').hide();
+        }
+
         //生成底部导航
         commonCompt.mainNav(1);
 
@@ -184,26 +189,28 @@
 
         timer = setInterval(function(){
             for(var i=0; i<$('.single_good').length; i++){
-                goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice);
-                if(goodsList[i].nowPrice <= goodsList[i].limitPrice){
-                    $.ajax({
-                        url: REFRESHGOODS,
-                        type:'GET',
-                        dataType:'json',
-                        data: {goodsId:goodsList[i].id,goodsIssueno:goodsList[i].goodsIssueno},
-                        async:false,
-                        success: function(data){
-                            apiResponse(data.responseCode,data.responseDesc);
-                            if(data.responseCode == 2000) {
-                                goodsList[i] = data.data;
+                if(goodsList[i].saleStatus == 1) {
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice);
+                    if (goodsList[i].nowPrice <= goodsList[i].limitPrice) {
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc);
+                                if (data.responseCode == 2000) {
+                                    goodsList[i] = data.data;
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
                             }
-                        },
-                        error: function(err){
-                            console.log(err);
-                        }
-                    });
-                }else {
-                    $('.single_good').eq(i).find('.price_now').html('￥'+goodsList[i].nowPrice);
+                        });
+                    } else {
+                        $('.single_good').eq(i).find('.price_now').html('￥' + goodsList[i].nowPrice.toFixed(2));
+                    }
                 }
             }
         },1000);
@@ -275,6 +282,10 @@
 
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
+
+        $(document).scrollTop(0);
+        $('#statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
     })
 
     //价格升序/降序
@@ -298,6 +309,10 @@
 
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
+
+        $(document).scrollTop(0);
+        $('#statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
     })
 
     //点击其他部分隐藏
@@ -337,6 +352,7 @@
         //如果是获取第一页，就应该先清空商品列表
         if(pageNum <= 1){
             $('#goods').html('');
+            goodsList = [];
         }
 
         //设置商品列表请求参数
@@ -368,6 +384,7 @@
             type:'GET',
             dataType:'json',
             data: paraData,
+            async:false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
@@ -393,10 +410,10 @@
                         goodsListHtml += '<div class="single_good" data-goods-id="' + addGoods[i].id + '">' +
                                 '<div class="item_img" style="background: url(' + addGoods[i].goodsPic + ') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>' +
                                 '<div class="about">' +
-                                '<p class="desc">' + addGoods[i].goodsDesc + '</p>' +
+                                '<p class="desc">' + addGoods[i].goodsName + '</p>' +
                                 '<div class="price">' +
-                                '<span class="price_now">￥' + addGoods[i].nowPrice + '</span>' +
-                                '<span class="price_primary">' + addGoods[i].salePrice + '</span>' +
+                                '<span class="price_now">￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
+                                '<span class="price_primary">' + addGoods[i].salePrice.toFixed(2) + '</span>' +
                                 '<i class="sales_state ' + cur_state + '"></i>' +
                                 '</div>' +
                                 '</div>' +
@@ -418,6 +435,10 @@
                 console.log(err);
             }
         });
+
+        if(goodsList.length <= 0){
+            commonCompt.popPrompt('暂无商品');
+        }
     }
 
     $('#goods').on('click','.single_good',function(){

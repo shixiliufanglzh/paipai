@@ -128,8 +128,8 @@
         <i class="close"></i>
         <div class="good_img"></div>
         <div class="basic_para">
-            <div class="cur_price">当前价：<span>￥39990.00</span></div>
-            <div class="start_price">起拍价：<span>￥39990.00</span></div>
+            <div class="cur_price">当前价：<span>￥0.00</span></div>
+            <div class="start_price">起拍价：<span>￥0.00</span></div>
             <div class="left_price">库&nbsp;&nbsp;&nbsp;存：<span>154564件</span></div>
         </div>
 
@@ -143,7 +143,7 @@
                 <div class="limit">购买数量<span>（限购3件）</span></div>
                 <div class="count">
                     <i class="minus"></i>
-                    <span class="count_num">0</span>
+                    <span class="count_num">1</span>
                     <i class="plus"></i>
                 </div>
             </div>
@@ -166,10 +166,11 @@
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script>
-    var goodsPara,paraList;
+    var goodsPara,paraList,reloadMsg;
     var summaryTimer = null;
+    var spuTimer = null;
     var userSel = {
-        count: 0,
+        count: 1,
         sku_id: [],
         spu_id: [],
         mixId: null
@@ -185,24 +186,6 @@
         $('.loading').hide();
 
         $goodId = commonCompt.GetUrlPara('good_id');
-
-//        $.ajax({
-//            url: GETUSERINFO,
-//            type: 'GET',
-//            dataType: 'json',
-//            success: function (data) {
-//                console.log(data);
-//                apiResponse(data.responseCode,data.responseDesc,data.data);
-//                if(data.responseCode == 2000){
-//                    if(!data.data.userTel || data.data.userTel.length <= 0){
-//                        commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-//                    }
-//                }
-//            },
-//            error: function (err) {
-//                console.log(err);
-//            }
-//        })
 
         $.ajax({
             url: GETUSERINFO,
@@ -239,12 +222,12 @@
                     goodsPara = data.data;
                     //价格、库存等信息展示
                     $('#summary .desc').html(goodsPara.goodsDesc);
-                    $('#summary .primary_range').html('￥' + goodsPara.salePrice);
-                    $('#summary .market_range').html('￥' + goodsPara.marketPrice);
+                    $('#summary .primary_range').html('￥' + goodsPara.salePrice.toFixed(2));
+                    $('#summary .market_range').html('￥' + goodsPara.marketPrice.toFixed(2));
                     $('#summary .sold_count').html(goodsPara.saleNum + '件');
-                    $('#summary .cur_price').html('￥' + goodsPara.nowPrice);
-                    $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice);
-                    $('#sortsList .start_price span').html('￥' + goodsPara.salePrice);
+                    $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
+                    $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice.toFixed(2));
+                    $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                     $('#sortsList .consume_count').html(goodsPara.pieNum);
 
@@ -291,9 +274,54 @@
                         }
 
                         summaryTimer = setInterval(function () {
+
+                            if(goodsPara.nowPrice <= goodsPara.limitPrice){
+                                $.ajax({
+                                    url: REFRESHGOODS,
+                                    type:'GET',
+                                    dataType:'json',
+                                    data: {goodsId:$goodId,goodsIssueno:goodsPara.goodsIssueno},
+                                    async:false,
+                                    success: function(data){
+                                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                                        if(data.responseCode == 2000) {
+//                    alert(JSON.stringify(data.data));
+                                            goodsPara.saleStatus = data.data.saleStatus;
+                                            goodsPara.timeStatus = data.data.timeStatus;
+                                            goodsPara.goodsId = data.data.goodsId;
+                                            goodsPara.goodsDesc = data.data.goodsDesc;
+                                            goodsPara.nowPrice = data.data.nowPrice;
+                                            goodsPara.salePrice = data.data.salePrice;
+                                            goodsPara.limitPrice = data.data.limitPrice;
+                                            goodsPara.goodsIssueno = data.data.goodsIssueno;
+                                            goodsPara.stockNum = data.data.stockNum;
+                                            goodsPara.saleNum = data.data.saleNum;
+                                            goodsPara.limitNum = data.data.limitNum;
+                                            goodsPara.totalLimitNum = data.data.totalLimitNum;
+                                        }
+                                    },
+                                    error: function(err){
+                                        console.log(err);
+                                    }
+                                });
+                            }
                             goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice);
-                            $('#summary .cur_price').html('￥' + goodsPara.nowPrice);
-                            $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice);
+                            $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
+                            //$('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
+                            $('#summary .sold_count').html(goodsPara.saleNum + '件');
+                            if (goodsPara.limitNum > 0) {
+                                $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
+                                $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
+
+                            } else {
+                                $('#summary .store_count').html(goodsPara.stockNum + '件');
+                            }
+                            if(paraList.length <= 0 || (paraList.length > 0 && userSel.spu_id.length < paraList.length)){
+                                $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice.toFixed(2));
+                                $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
+                                $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
+                            }
+
                         }, 1000);
 
                     } else if (goodsPara.saleStatus == 2) {
@@ -310,8 +338,7 @@
                         $('#sortsList .purchase').html('已售罄');
                         $('.purchase').css('background-color', '#858585');
                         $('.rate').hide();
-                    }
-                    ;
+                    };
 
                     for (var i = 0; i < goodsPara.goodsDetailPics.length; i++) {
                         $('.about_sorts .good_detail').append('<img src="' + goodsPara.goodsDetailPics[i].goodsPic + '">')
@@ -481,27 +508,49 @@
                 success: function(data){
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000) {
-                        var reloadMsg = data.data;
+                        reloadMsg = data.data;
                         userSel.mixId = reloadMsg.mixId
 
                         //价格、库存等信息展示
-                        $('#summary .primary_range').html('￥' + reloadMsg.salePrice);
-                        $('#summary .market_range').html('￥' + reloadMsg.marketPrice);
-//                    $('#summary .sold_count').html(reloadMsg.saleNum +'件');
-                        $('#summary .cur_price').html('￥' + reloadMsg.nowPrice);
-                        $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice);
-                        $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice);
+                        $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
+                        $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
-//                    $('#sortsList .consume p').html(reloadMsg.token_consume +'拍币（剩余'+ reloadMsg.token_left +'拍币）');
 
-                        if (goodsPara.limitNum > 0) {
-                            $('#summary .store_count').html(reloadMsg.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-                            $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-
-                        } else {
-                            $('#summary .store_count').html(reloadMsg.stockNum + '件');
-                        }
                     }
+
+//                    spuTimer = setInterval(function () {
+//
+//                        if(reloadMsg.nowPrice <= reloadMsg.limitPrice){
+//                            $.ajax({
+//                                url: GETGOODSMIXSKU,
+//                                type:'GET',
+//                                dataType:'json',
+//                                data: {
+//                                    goodsId: $goodId,
+//                                    mixSkuId: $mixSkuId
+//                                },
+//                                success: function(data){
+//                                    apiResponse(data.responseCode,data.responseDesc,data.data);
+//                                    if(data.responseCode == 2000) {
+//                                        reloadMsg.nowPrice = data.data.nowPrice;
+//                                        reloadMsg.salePrice = data.data.salePrice;
+//                                        reloadMsg.limitPrice = data.data.limitPrice;
+//                                        reloadMsg.stockNum = data.data.stockNum;
+//                                    }
+//                                },
+//                                error: function(err){
+//                                    console.log(err);
+//                                }
+//                            });
+//                        }
+//                        reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, reloadMsg.reducePrice);
+//
+//                        $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
+//                        $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
+//                        $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
+//
+//
+//                    }, 1000);
 
                 },
                 error: function(err){
@@ -535,6 +584,10 @@
 
     //评论列表展示
     function showComments(pageNum){
+
+        finishLoading = true;
+        $('.loading').hide();
+
         if(pageNum <= 1){
             $('.evaluate_list').html('');
         }
@@ -551,33 +604,37 @@
                 //商品规格参数展示
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-                    var commentsList = data.data;
-                    var commentsHtml = "";
-                    for(var i=0; i<commentsList.length; i++){
-                        commentsHtml += '<div class="single_evaluate">'+
-                                '<div class="evaluate_msg"><span class="name">'+ commentsList[i].userTel +'</span><span class="time">'+ commentsList[i].createDate +'</span></div>'+
-                                '<p class="evaluate_content">'+ commentsList[i].content +'</p>'+
-                                '<div class="imgs">';
-                        var comentsNum = commentsList[i].commentPic.length;
-                        if(comentsNum > 0){
-                            for(var j=0; j<comentsNum; j++){
-                                commentsHtml += '<span style="background:url('+ commentsList[i].commentPic[j].picUrl +') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></span>'
-                            }
-                        };
+                    if(data.data && data.data.length > 0) {
+                        var commentsList = data.data;
+                        var commentsHtml = "";
+                        for (var i = 0; i < commentsList.length; i++) {
+                            commentsHtml += '<div class="single_evaluate">' +
+                                    '<div class="evaluate_msg"><span class="name">' + commentsList[i].userTel + '</span><span class="time">' + commentsList[i].createDate + '</span></div>' +
+                                    '<p class="evaluate_content">' + commentsList[i].content + '</p>' +
+                                    '<div class="imgs">';
+                            var comentsNum = commentsList[i].commentPic.length;
+                            if (comentsNum > 0) {
+                                for (var j = 0; j < comentsNum; j++) {
+                                    commentsHtml += '<span style="background:url(' + commentsList[i].commentPic[j].picUrl + ') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></span>'
+                                }
+                            };
 
-                        commentsHtml +=     '</div>'+
-                                '<p class="good_para">'+ commentsList[i].goodsSpu +'</p>'+
-                                '</div>';
-                    }
+                            commentsHtml += '</div>' +
+                                    '<p class="good_para">' + commentsList[i].goodsSpu + '</p>' +
+                                    '</div>';
+                        }
 
-                    $('.evaluate_list').append(commentsHtml);
+                        $('.evaluate_list').append(commentsHtml);
 
-                    if(commentsList.length < $pageSize){
-                        finishLoading =true
-                        $('.loading').hide();
+                        if (commentsList.length < $pageSize) {
+                            finishLoading = true;
+                            $('.loading').hide();
+                        } else {
+                            $('.loading').show();
+                            finishLoading = false;
+                        }
                     }else {
-                        $('.loading').show();
-                        finishLoading = false;
+                        $('.evaluate_list').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无评论</h4>')
                     }
                 }
             },
@@ -589,6 +646,10 @@
 
     //成交列表展示
     function showDeals(pageNum){
+
+        finishLoading = true;
+        $('.loading').hide();
+
         if(pageNum <= 1){
             $('.deal_record').html('');
         }
@@ -605,27 +666,31 @@
                 //商品规格参数展示
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-                    var dealsList = data.data;
-                    var dealsHtml = "";
-                    for(var i=0; i<dealsList.length; i++){
-                        dealsHtml +=    '<div class="single_deal">'+
-                                            '<div class="deal_msg"><span class="name">'+ dealsList[i].userTel +'</span><span class="time">'+ dealsList[i].createDate +'</span></div>'+
-                                            '<div class="deal_detail">'+
-                                                '<span class="deal_price">￥'+ dealsList[i].totalPrice +'</span>'+
-                                                '<p class="parameter">'+ dealsList[i].goodsSpu +'</p>'+
-                                                '<p class="count">数量：'+ dealsList[i].goodsAmount +'</p>'+
-                                            '</div>'+
-                                        '</div>'
-                    }
+                    if(data.data && data.data.length > 0) {
+                        var dealsList = data.data;
+                        var dealsHtml = "";
+                        for (var i = 0; i < dealsList.length; i++) {
+                            dealsHtml += '<div class="single_deal">' +
+                                    '<div class="deal_msg"><span class="name">' + dealsList[i].userTel + '</span><span class="time">' + dealsList[i].createDate + '</span></div>' +
+                                    '<div class="deal_detail">' +
+                                    '<span class="deal_price">￥' + dealsList[i].totalPrice.toFixed(2) + '</span>' +
+                                    '<p class="parameter">' + dealsList[i].goodsSpu + '</p>' +
+                                    '<p class="count">数量：' + dealsList[i].goodsAmount + '</p>' +
+                                    '</div>' +
+                                    '</div>'
+                        }
 
-                    $('.deal_record').append(dealsHtml);
+                        $('.deal_record').append(dealsHtml);
 
-                    if(dealsList.length < $pageSize){
-                        finishLoading =true
-                        $('.loading').hide();
+                        if (dealsList.length < $pageSize) {
+                            finishLoading = true
+                            $('.loading').hide();
+                        } else {
+                            $('.loading').show();
+                            finishLoading = false;
+                        }
                     }else {
-                        $('.loading').show();
-                        finishLoading = false;
+                        $('.deal_record').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无交易记录</h4>')
                     }
                 }
 
@@ -675,11 +740,10 @@
                     dataType: 'json',
                     data: paraData,
                     success: function (data) {
+                        console.log(data);
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt("已添加关注");
-                        }else {
-                            commonCompt.popPrompt("关注失败");
                         }
 
                     },
@@ -718,7 +782,19 @@
                         success: function (data) {
                             apiResponse(data.responseCode, data.responseDesc,data.data);
                             if (data.responseCode == 2000) {
-                                window.location.href = 'orderGenerate.html';
+                                commonCompt.Confirm({
+                                    hasTitle: true,
+                                    title: "提示",
+                                    contentText: "恭喜您获得了这件商品的购买权",
+                                    cancleText: "继续抢拍",
+                                    certainText: "查看拍得",
+                                    rightBtnClick: function(){
+                                        window.location.href = 'orderGenerate.html';
+                                    },
+                                    leftBtnClick: function(){
+                                        window.location.href = '../index.html';
+                                    }
+                                });
                             }
 
                         },
@@ -734,6 +810,10 @@
                 commonCompt.popPrompt('请选择参数');
             }
         }
+    })
+
+    $('.action_wrap .chat').click(function(){
+        window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
     })
 
 //    function filterParas($curClickParent){

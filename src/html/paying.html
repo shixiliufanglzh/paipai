@@ -69,7 +69,7 @@
                     $('.addressee .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
                     $('.addressee .address').html(orderMsg.area.split(',').join('') + orderMsg.address);
 
-                    $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice);
+                    $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice.toFixed(2));
                     $('#payingDetail .order_num').html(orderMsg.orderNum);
                 }
             },
@@ -87,8 +87,8 @@
             type: 'GET',
             dataType: 'json',
             data: {
-                orderId: $curOrderId,
-                payType: 2
+                payType: 2,
+                orderId: $curOrderId
             },
             success: function (data) {
 //                console.log('请求参数:',$curOrderId,2,'返回',data);

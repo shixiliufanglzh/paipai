@@ -53,38 +53,23 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
         case "4000":
             //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                //window.location.href = redirectUrl;
+                window.location.href = redirectUrl;
             }
             break;
         case "4001":
             commonCompt.popPrompt(responseDesc);
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4002":
             commonCompt.popPrompt("微信授权登录失败");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4003":
             commonCompt.popPrompt("用户已存在");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4004":
             commonCompt.popPrompt("未找到资源");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4005":
             commonCompt.popPrompt("未关注平台公众号");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4006":
             commonCompt.Confirm({
@@ -103,27 +88,15 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             break;
         case "4007":
             commonCompt.popPrompt("拍币不足");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "5001":
             commonCompt.popPrompt("找不到可使用的公众号");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         default:
             commonCompt.popPrompt("未知错误");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
     }
 }
 
@@ -594,7 +567,7 @@ var commonCompt = {
         }
         m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
         n = (r1 >= r2) ? r1 : r2;
-        return ((arg1 * m - arg2 * m) / m).toFixed(n);
+        return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
     },
 
     //获取地址栏参数

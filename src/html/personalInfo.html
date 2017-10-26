@@ -76,6 +76,7 @@
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
+//                    alert(JSON.stringify(data));
                     if(data.data.nikeName){
                         $('#nickname .right').html(data.data.nikeName)
                     }
@@ -88,11 +89,11 @@
                     if(data.data.birthday){
                         $('#birth').val(data.data.birthday);
                     }
-                    if(data.data.user_sex){
-                        $('#gender').val(data.data.user_sex);
+                    if(data.data.userSex){
+                        $('#gender').val(data.data.userSex);
                     }
 
-                    if(!data.data || !data.data.userName || !data.data.birthday || !data.data.user_sex ){
+                    if(!data.data || !data.data.userName || !data.data.birthday || !data.data.userSex ){
                         commonCompt.Confirm({
                             hasTitle: true,
                             title: "重要提示",
