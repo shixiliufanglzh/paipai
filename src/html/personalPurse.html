@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的拍币</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -30,16 +31,14 @@
         <span class="avatar"></span>
         <div class="msg">
             <p class="name">昵称</p>
-            <p class="count">我的拍币余额<span>20</span></p>
+            <p class="count">我的拍币余额<span>0</span></p>
         </div>
         <button id="purseDetail">拍币记录</button>
     </div>
 
     <div id="column">
         <h4><i class="rule"></i>使用规则</h4>
-        <p class="content">1. 每次竞拍商品需要消耗1个拍币<br>2. 竞拍商品成功后，未能及时支付，导致订单取消，消耗的拍
-            币则不返还<br>3. 须通过正常途径获得拍币，不得通过软件、程序等方式获取
-            拍币</p>
+        <p class="content">1. 每次竞拍商品需要消耗一定数量的拍币<br>2. 竞拍商品成功后，未能及时支付，导致订单取消，消耗的拍币则不予退还<br>3. 须通过正常途径获得拍币，不得通过软件、程序等方式获取拍币</p>
     </div>
 
     <div id="column">
@@ -53,15 +52,53 @@
     </div>
 </div>
 
+<div id="sharePrompt">
+    <div class="guide">
+        <img src="../imgs/share_prompt.png" alt="">
+    </div>
+</div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
     $(function(){
-
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userPortrait){
+                        $('#header .avatar').css({
+                            'background': 'url('+ data.data.userPortrait +') center center no-repeat',
+                            'background-size': 'cover',
+                            '-webkit-background-size': 'cover'
+                        });
+                    }
+                    if(data.data.userName){
+                        $('#header .name').html(data.data.userName);
+                    }
+                    if(data.data.userPoint){
+                        $('#header .count span').html(data.data.userPoint);
+                    }
+                    if(data.data.isSign){
+                        $('#bottomBtn .like').attr('disabled','disabled');
+                        $('#bottomBtn .like').css('background-color', '#999');
+                        $('#bottomBtn .like').html('签到完成');
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
     })
 
     $('#bottomBtn .like').click(function(){
@@ -72,9 +109,13 @@
             async:false,
             success:function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     commonCompt.popPrompt('签到成功！');
+                    $('#header .count span').html(data.data.userPoint + 1);
+                    $('#bottomBtn .like').attr('disabled','disabled');
+                    $('#bottomBtn .like').css('background-color', '#999');
+                    $('#bottomBtn .like').html('签到完成');
                 }
             },
             error: function(err){
@@ -83,9 +124,18 @@
         })
     })
 
+    $('#bottomBtn .purchase').click(function(){
+        $('#sharePrompt').fadeIn();
+    })
+    $('#sharePrompt').click(function (){
+        $('#sharePrompt').fadeOut();
+    });
+
+
     $('#purseDetail').click(function(){
         window.location.href = 'personalPurseChange.html';
     })
+
 
 
 </script>

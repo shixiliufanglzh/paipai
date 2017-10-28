@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>支付确认</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -61,14 +62,14 @@
             data: {orderId: $curOrderId},
             success: function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
                     $('.addressee .name').html(orderMsg.name);
                     $('.addressee .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
                     $('.addressee .address').html(orderMsg.area.split(',').join('') + orderMsg.address);
 
-                    $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice);
+                    $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice.toFixed(2));
                     $('#payingDetail .order_num').html(orderMsg.orderNum);
                 }
             },
@@ -86,23 +87,45 @@
             type: 'GET',
             dataType: 'json',
             data: {
-                orderId: $curOrderId,
-                payType: 2
+                payType: 2,
+                orderId: $curOrderId
             },
             success: function (data) {
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
-                alert(data);
+//                console.log('请求参数:',$curOrderId,2,'返回',data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-
+                    $('body').html(data.data);
                 }
             },
             error: function (err) {
-                console.log(err);
-                alert(err);
+//                console.log('请求参数:',$curOrderId,2,'返回',err);
             }
         })
     })
+
+    $('.wechat').click(function(){
+        $.ajax({
+            url: ORDERPAY,
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                payType: 1,
+                orderId: $curOrderId
+            },
+            success: function (data) {
+//                console.log('请求参数:',$curOrderId,2,'返回',data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+//                    $('body').html(data.data);
+                    alert(JSON.stringify(data));
+                }
+            },
+            error: function (err) {
+//                console.log('请求参数:',$curOrderId,2,'返回',err);
+            }
+        })
+    })
+
 
 
 

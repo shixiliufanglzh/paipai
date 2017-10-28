@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>商品评价</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -77,8 +78,7 @@
             dataType:'json',
             async:false,
             success:function(data){
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var goodMsg = data.data;
                     $commentStatus = goodMsg.commentStatus;
@@ -114,9 +114,9 @@
                 imgsObj[i] = imgListBase64[i];
             }
             var textContent = $('#addition textarea').val();
-            if($grade <= 0){
+            if(!$grade && $grade <= 0){
                 commonCompt.popPrompt("请选择评分等级");
-            }else if(textContent.length <= 0){
+            }else if(!textContent && textContent.length <= 0){
                 commonCompt.popPrompt("请填写评价内容");
             }else {
                 var dataPara = {
@@ -128,15 +128,14 @@
                     picfile: imgsObj
 
                 };
-                console.log(dataPara);
+                alert(JSON.stringify(dataPara));
                 $.ajax({
                     url: ADDCOMMENT,
                     data: dataPara,
                     type:'POST',
                     dataType:'json',
                     success:function(data){
-                        console.log(data);
-                        apiResponse(data.responseCode,data.responseDesc);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已提交申请');
                             setTimeout(function(){

@@ -106,12 +106,11 @@
                     defaultCode: isDefault
                 },
                 success: function(data){
-                    console.log(data);
-                    apiResponse(data.responseCode,data.responseDesc);
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
                         commonCompt.popPrompt('添加成功');
                         setTimeout(function(){
-                            window.location.href = 'address.html';
+                            window.location.href = document.referrer;
                         },2000);
                     }
 

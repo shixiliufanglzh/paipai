@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>售后服务</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -87,7 +88,7 @@
             async:false,
             success:function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var goodMsg = data.data;
                     $('.good_msg .img').css({

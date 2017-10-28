@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>个人信息修改</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -28,25 +29,25 @@
 <div id="persoanlInfo">
     <div class="single_option clearfix" id="nickname">
         <span class="left">昵称</span>
-        <span class="right">是昔流芳</span>
+        <span class="right">无</span>
     </div>
     <div class="single_option clearfix" id="phone">
         <span class="left">手机</span>
-        <span class="right">136****5342</span>
+        <span class="right">未绑定</span>
     </div>
     <div class="single_option clearfix" id="name">
         <span class="left">姓名</span>
-        <span class="right">王者荣耀</span>
+        <span class="right">未填写</span>
     </div>
     <div class="single_option clearfix">
         <span class="left">生日</span>
-        <input id="birth" placeholder="生日" class="right">
+        <input id="birth" placeholder="未填写" class="right">
         <!--<span class="right">1994-09-01</span>-->
     </div>
     <div class="single_option clearfix">
         <span class="left">性别</span>
         <select class="right" id="gender">
-            <option value selected disabled>性别</option>
+            <option value selected disabled>未填写</option>
             <option value="男">男</option>
             <option value="女">女</option>
         </select>
@@ -67,6 +68,54 @@
 <script>
 
     $(function(){
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+//                    alert(JSON.stringify(data));
+                    if(data.data.nikeName){
+                        $('#nickname .right').html(data.data.nikeName)
+                    }
+                    if(data.data.userName){
+                        $('#name .right').html(data.data.userName);
+                    }
+                    if(data.data.userTel){
+                        $('#phone .right').html(data.data.userTel);
+                    }
+                    if(data.data.birthday){
+                        $('#birth').val(data.data.birthday);
+                    }
+                    if(data.data.userSex){
+                        $('#gender').val(data.data.userSex);
+                    }
+
+                    if(!data.data || !data.data.userName || !data.data.birthday || !data.data.userSex ){
+                        commonCompt.Confirm({
+                            hasTitle: true,
+                            title: "重要提示",
+                            contentText: "为保证帐号安全，请尽快完善会员信息",
+                            cancleText: "下次提示",
+                            certainText: "立即完善",
+                            rightBtnClick: function(){
+
+                            },
+                            leftBtnClick: function(){
+
+                            }
+                        })
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
+
         $('#birth').date(null,function(str){
             console.log(str);
             changMsg({birthday: str}, "修改生日成功",function(){
@@ -165,7 +214,7 @@
             async:false,
             success:function(data){
                 console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     commonCompt.popPrompt(promptStr);
                     if(callBack){

@@ -138,12 +138,13 @@
                     defaultCode: isDefault
                 },
                 success: function(data){
-                    console.log(data);
-                    apiResponse(data.responseCode,data.responseDesc);
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
                         commonCompt.popPrompt('修改成功');
                         setTimeout(function(){
-                            window.location.href = 'address.html';
+//                            window.location.href = document.referrer;
+                            window.history.go(-1);
+
                         },2000);
                     }
                 },

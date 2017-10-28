@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -46,7 +47,7 @@
         <img src="../imgs/blank_order.png" alt="">
     </div>
     <h6>还没有订单呢~</h6>
-    <button>去抢拍</button>
+    <button onclick="window.location.href='../index.html'">去抢拍</button>
 </div>
 
 </body>
@@ -62,39 +63,41 @@
     var finishLoading = true;
 
     $(function(){
-        //没有订单时的显示
-        if($('.singleOrder').length <= 0){
-            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
-            $('body').css('background-color','#fff');
-            $('#blank').show();
-        }
-
         //生成底部导航
         commonCompt.mainNav(4);
 
         bindOrdersList($pageNum,$orderStatus);
 
+        //没有订单时的显示
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+
         timer = setInterval(function(){
             for(var i=0; i<ordersListAll.length; i++){
                 if(ordersListAll[i].orderStatus == 2){
-                    ordersListAll[i].effectiveTime --;
+                    ordersListAll[i].remainEffectiveTime --;
                     var timePrompt = "";
-                    var cal_time = ordersListAll[i].effectiveTime;
+                    var cal_time = ordersListAll[i].remainEffectiveTime;
                     if(cal_time >= 86400){
                         timePrompt += Math.floor(cal_time/86400) + "天";
-                        cal_time = ordersListAll[i].effectiveTime % 86400;
+                        cal_time = ordersListAll[i].remainEffectiveTime % 86400;
                     }
                     if(cal_time >= 3600){
                         timePrompt += Math.floor(cal_time/3600) + "小时";
-                        cal_time = ordersListAll[i].effectiveTime % 3600;
+                        cal_time = ordersListAll[i].remainEffectiveTime % 3600;
                     }
                     if(cal_time >= 60){
                         timePrompt += Math.floor(cal_time/60) + "分";
-                        cal_time = ordersListAll[i].effectiveTime % 60;
+                        cal_time = ordersListAll[i].remainEffectiveTime % 60;
                     }
                     timePrompt += cal_time + "秒";
                     $('.singleOrder').eq(i).find('.time_left').html(timePrompt);
-                    if(ordersListAll[i].effectiveTime === 0){
+                    if(ordersListAll[i].remainEffectiveTime === 0){
                         location.reload(true);
                     }
                 }
@@ -121,6 +124,14 @@
             $orderStatus = 6;
         }
         bindOrdersList($pageNum,$orderStatus);
+
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
     })
 
     $('body').on('click','#mainNav button',function(){
@@ -191,7 +202,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -210,6 +221,14 @@
                         console.log(err);
                     }
                 })
+
+                if($('.singleOrder').length <= 0){
+                    $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+                    $('body').css('background-color','#fff');
+                    $('#blank').show();
+                    finishLoading =true
+                    $('.loading').hide();
+                }
             },
             leftBtnClick: function(){
 
@@ -235,7 +254,7 @@
                         orderId: $curOrde.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             $curOrde.remove();
                             ordersListAll.splice($curOrde.index(),1);
@@ -279,7 +298,7 @@
                         orderId: $curOrder.attr('data-order-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已确认收货');
                             location.reload(true);
@@ -330,13 +349,14 @@
             type:'GET',
             dataType:'json',
             data: paraData,
+            async:false,
             success: function(data){
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orders = data.data;
                     if(orders.length > 0){
                         $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
                     }
                     ordersListAll = ordersListAll.concat(orders);
                     var ordersListHtml = "";
@@ -371,12 +391,14 @@
                                                             '<p class="name">'+ orders[i].goods[j].goodsName +'</p>'+
                                                             '<p class="parameter">'+ orders[i].goods[j].goodsSpu +'</p>'+
                                                         '</div>'+
-                                                        '<div class="price"><span class="price_now">￥'+ orders[i].goods[j].buyPrice +'</span><br><span class="price_primary">'+ orders[i].goods[j].salePrice +'</span><br><span class="count">×'+ orders[i].goods[j].goodsAmount +'</span></div>'+
+                                                        '<div class="price"><span class="price_now">￥'+ orders[i].goods[j].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ orders[i].goods[j].salePrice.toFixed(2) +'</span><br><span class="count">×'+ orders[i].goods[j].goodsAmount +'</span></div>'+
                                                     '</div>'
                         }
 
                         ordersListHtml +=       '</div>' +
-                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥'+ orders[i].totalPrice +'</span>（含运费<span class="postage">￥'+ orders[i].freight +'</span>）</p>'
+                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
+                                                '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'
+
 
                         if(orders[i].orderStatus == 1) {
                             ordersListHtml +=   '<button class="order_edit red before_send">催一下</button>' +
@@ -393,7 +415,7 @@
                                                 '<button class="order_edit logistics"  data-order-status="'+ orders[i].orderStatus +'">查看物流</button>' +
                                             '</div>'
                         }else if(orders[i].orderStatus == 6) {
-                            ordersListHtml +=   '<button class="order_edit red evaluate">去评价</button>'+
+                            ordersListHtml +=   //'<button class="order_edit red evaluate">去评价</button>'+
                                                 '<button class="order_edit red view"  data-order-status="'+ orders[i].orderStatus +'">查看订单</button>' +
                                             '</div>'
                         }

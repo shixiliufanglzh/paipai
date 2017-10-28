@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>待收货订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -30,8 +31,8 @@
             <i class="car"></i>
             <div class="order_state">
                 <h3>待收货</h3>
-                <p>XXXXXXXXXX</p>
-                <p>XXXXXXXXX<span class="time_left">xxxxxxxx</span></p>
+                <p>卖家已发货</p>
+                <p>请耐心的等待货物的送达哦~</p>
             </div>
         </div>
 
@@ -68,8 +69,9 @@
         <div id="logistics">
             <h3><i></i>物流信息</h3>
             <div class="detail">
-                <p>物流公司：<span class="express_name">快递</span></p>
-                <p>物流编号：<span class="express_num">0000000000</span></p>
+                <p>物流公司：<span class="express_name"></span></p>
+                <p>物流编号：<span class="express_num"></span></p>
+                <p>物流信息：</p>
             </div>
         </div>
 
@@ -90,8 +92,7 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             success: function(data){
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
                     $('.receiver .name').html(orderMsg.name);
@@ -131,7 +132,7 @@
                                 '<p class="name">'+ goods[i].goodsName +'</p>'+
                                 '<p class="parameter">'+ goods[i].goodsSpu +'</p>'+
                                 '</div>'+
-                                '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice +'</span><br><span class="price_primary">'+ goods[i].salePrice +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
+                                '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ goods[i].salePrice.toFixed(2) +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
                                 '</div>'+
                                 '<div class="manipu clearfix">'+ refundBtn +
                                 '</div>'+
@@ -139,11 +140,12 @@
                     }
                     $('.good_list').html(goodsHtml);
 
-                    $('.count_detail.primary').html("￥"+ $primaryPriceSum);
-                    $('.count_detail.now').html("￥"+ $dealPriceSum);
-                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice);
-                    $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum));
-                    $('.count_detail.freight').html("￥"+ orderMsg.freight);
+                    $('.count_detail.primary').html("￥"+ $primaryPriceSum.toFixed(2));
+                    $('.count_detail.now').html("￥"+ $dealPriceSum.toFixed(2));
+                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice.toFixed(2));
+                    $('.price_total .count').html(totalCount);
+                    $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
+                    $('.count_detail.freight').html("￥"+ orderMsg.freight.toFixed(2));
 
                     $('#orderNum .num').html(orderMsg.orderNum);
                     $('#orderNum .create_time').html(orderMsg.createDate);
@@ -154,28 +156,40 @@
             }
         })
 
+        $.ajax({
+            url: QUERYFORTRACKING,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    console.log(data);
+                    if(data.data){
+                        var $expressMsg = data.data;
+                        $('.express_name').html($expressMsg.com);
+                        $('.express_num').html($expressMsg.nu);
+                        if($expressMsg.data.length > 0){
+                            for(var i=0; i<$expressMsg.data.length; i++){
+                                $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                            }
+                        }else {
+                            $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
+                        }
+                    }else {
+                        $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
+                    }
+
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        })
+
     })
 
-    $.ajax({
-        url: QUERYFORTRACKING,
-        type:'GET',
-        dataType:'json',
-        data: {orderId: $curOrderId},
-        success: function(data){
-            apiResponse(data.responseCode,data.responseDesc);
-            if(data.responseCode == 2000){
-                var $expressMsg = data.data;
-                $('.express_name').html($expressMsg.com);
-                $('.express_num').html($expressMsg.nu);
-                for(var i=0; i<$expressMsg.data.length; i++){
-                    $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
-                }
-            }
-        },
-        error: function(err){
-            console.log(err);
-        }
-    })
+
 
     //确认收货
     $('.order_edit.receive').on('click', function(){
@@ -194,7 +208,7 @@
                         orderId: $curOrderId
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已确认收货');
                             window.location.href = document.referrer;

@@ -27,42 +27,42 @@
 </head>
 <body style="background-color:#fff;padding-bottom: 1.1rem;">
 <div id="collection">
-    <div class="single_collect sold_out" data-good-id="11">
-        <span class="img"></span>
-        <div class="content">
-            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
-            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
-            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
-        </div>
-        <i class="close"></i>
-        <span class="count">×1</span>
-        <button>销售告罄</button>
-    </div>
+    <!--<div class="single_collect sold_out" data-good-id="11">-->
+        <!--<span class="img"></span>-->
+        <!--<div class="content">-->
+            <!--<p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>-->
+            <!--<div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>-->
+            <!--<div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>-->
+        <!--</div>-->
+        <!--<i class="close"></i>-->
+        <!--<span class="count">×1</span>-->
+        <!--<button>销售告罄</button>-->
+    <!--</div>-->
 
-    <div class="single_collect grab" data-good-id="22">
-        <span class="img"></span>
-        <div class="content">
-            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
-            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
-            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
-        </div>
-        <i class="close"></i>
-        <span class="count">×1</span>
-        <button>立即抢拍</button>
-    </div>
+    <!--<div class="single_collect grab" data-good-id="22">-->
+        <!--<span class="img"></span>-->
+        <!--<div class="content">-->
+            <!--<p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>-->
+            <!--<div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>-->
+            <!--<div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>-->
+        <!--</div>-->
+        <!--<i class="close"></i>-->
+        <!--<span class="count">×1</span>-->
+        <!--<button>立即抢拍</button>-->
+    <!--</div>-->
 
-    <div class="single_collect primary" data-good-id="33">
-        <span class="img"></span>
-        <div class="content">
-            <p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>
-            <div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>
-            <div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>
-        </div>
-        <i class="close"></i>
-        <span class="count">×1</span>
-        <span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>
-        <button>正价购买</button>
-    </div>
+    <!--<div class="single_collect primary" data-good-id="33">-->
+        <!--<span class="img"></span>-->
+        <!--<div class="content">-->
+            <!--<p class="title">某低级搜集冬季加大技术敖东瓶塞哦思考pop哦外婆fsasjdiis..</p>-->
+            <!--<div class="para"><span class="detail">中国红 32G</span><br><span class="store">库存：0</span></div>-->
+            <!--<div class="price"><span class="price_now">￥3999.26</span><span class="price_primary">￥4999.00</span></div>-->
+        <!--</div>-->
+        <!--<i class="close"></i>-->
+        <!--<span class="count">×1</span>-->
+        <!--<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>-->
+        <!--<button>正价购买</button>-->
+    <!--</div>-->
 </div>
 <div class="loading"><i></i><span>加载中...</span></div>
 
@@ -81,19 +81,41 @@
 <script src="../script/paipaiCompnt.js"></script>
 
 <script>
+
     var $pageNum = 1,$pageSize = 5;
     var finishLoading = true;
     var timerList = [];
     var timer = null;
     var goodsList = [];
+    var hasPhone = false;
 
     $(function(){
 
         showCollectionList($pageNum);
 
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userTel){
+                        hasPhone = true;
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
 
         if($('.single_collect').length <= 0){
             $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
         }
 
         //生成底部导航
@@ -101,13 +123,17 @@
 
         timer = setInterval(function(){
             for(var i=0; i<$('.single_collect').length; i++){
+                //alert("i "+i+" nowPrice "+goodsList[i].nowPrice + " limitPrice " + goodsList[i].limitPrice+" saleStatus "+goodsList[i].saleStatus);
                 if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1){
                     goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice);
-                    if(goodsList[i].nowPrice <= goodsList[i].limitPrice){
-                        reloadSingleGood(goodsList[i],$('.single_collect')[i]);
+                    if(goodsList[i].nowPrice <= 0){
+                        goodsList[i].nowPrice = 0;
+                    };
+                    if(goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
+                        reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }else {
-                        $('.single_collect').eq(i).find('.price_now').html('￥'+goodsList[i].nowPrice);
-                    }
+                        $('.single_collect').eq(i).find('.price_now').html('￥'+goodsList[i].nowPrice.toFixed(2));
+                    };
                 }else if(goodsList[i].saleStatus == 2){
                     goodsList[i].restTime --;
                     var timePrompt = "";
@@ -126,7 +152,7 @@
                     }
                     timePrompt += cal_time + "秒";
                     $('.single_collect').eq(i).find('.time_left').html(timePrompt);
-                    if(goodsList[i].restTime === 0){
+                    if(goodsList[i].restTime <= 0 || goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
                         reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }
                 }
@@ -154,7 +180,7 @@
                         storeId: curGood.attr('data-store-id')
                     },
                     success: function (data) {
-                        console.log(data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             curGood.remove();
                             goodsList.splice(curGood.index(),1);
@@ -166,6 +192,11 @@
                                 setTimeout(function(){
                                     showCollectionList($pageNum);
                                 },1000);
+                            }
+                            if($('.single_collect').length <= 0){
+                                $('#blank').show();
+                                finishLoading =true
+                                $('.loading').hide();
                             }
                         }
                     },
@@ -180,8 +211,60 @@
         })
     })
 
+    $('#collection').on('click', '.single_collect.grab,.single_collect.primary', function(e){
+        if ($(e.target).is('button') || $(e.target).is('.close')){
+            return;
+        }else {
+//            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id')+'&count='+$(this).attr('data-count')+'&mix_spu='+$(this).attr('data-mix-spu');
+            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id');
+        }
+    })
+
     $('#collection').on('click', '.single_collect.grab button,.single_collect.primary button', function(){
-        window.location.href = 'detail.html?good_id='+$(this).parents('.single_collect').attr('data-good-id');
+        var $selParent = $(this).parents('.single_collect');
+        //alert('detail.html?good_id='+$selParent.attr('data-good-id')+'&count='+$selParent.attr('data-count')+'&mix_spu='+$selParent.attr('data-mix-spu')+'&goodsIssueno='+$selParent.attr('data-goodsIssueno'));
+
+        //如果是未绑定手机号的用户
+        if(!hasPhone){
+            hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+        }else {
+            var paraData = {
+                goodsId: $selParent.attr('data-good-id'),
+                mixId: $selParent.attr('data-mix-spu'),
+                goodsAmount: $selParent.attr('data-count'),
+                goodsIssueno: $selParent.attr('data-goodsIssueno')
+            }
+            //alert(JSON.stringify(paraData));
+            $.ajax({
+                url: ADDCART,
+                type: 'POST',
+                dataType: 'json',
+                data: paraData,
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc,data.data);
+                    if (data.responseCode == 2000) {
+                        commonCompt.Confirm({
+                            hasTitle: true,
+                            title: "提示",
+                            contentText: "恭喜您获得了这件商品的购买权",
+                            cancleText: "继续抢拍",
+                            certainText: "查看拍得",
+                            rightBtnClick: function(){
+                                window.location.href = 'orderGenerate.html';
+                            },
+                            leftBtnClick: function(){
+                                window.location.href = '../index.html';
+                            }
+                        });
+                    }
+
+                },
+                error: function (err) {
+                    console.log(err);
+                    commonCompt.popPrompt("购买失败，请刷新后再尝试");
+                }
+            });
+        }
     })
 
     $('body').on('click','#mainNav button',function(){
@@ -201,6 +284,7 @@
     function showCollectionList(pageNum){
         if(pageNum <= 1){
             $('#collection').html('');
+            $('body').css('background-color','#fff');
         }
         $.ajax({
             url: GETSTORE,
@@ -210,59 +294,64 @@
                 pageNum: pageNum,
                 pageSize: $pageSize
             },
+            async:false,
             success: function(data){
-                console.log(data);
-                if(data.data.length > 0){
-                    $('#blank').hide();
-                    var collectionList = data.data;
-                    for(var i=0; i<collectionList.length; i++){
-                        goodsList.push(collectionList[i]);
-                        var collectionHtml = '';
-                        var state = "";
-                        var stateHtml = "";
-                        if(collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 1){
-                            state = "grab";
-                            stateHtml = '<button>立即抢拍</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 2){
-                            state = "primary";
-                            stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>'+
-                                    '<button>正价购买</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 2){
-                            state = "primary";
-                            stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>'+
-                                    '<button>正价购买</button>'+
-                                    '</div>'
-                        }else if(collectionList[i].saleStatus == 3){
-                            state = "sold_out";
-                            stateHtml = '<button>销售告罄</button>'+
-                                    '</div>'
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000) {
+                    if (data.data.length > 0) {
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+
+                        var collectionList = data.data;
+                        for (var i = 0; i < collectionList.length; i++) {
+//                            alert(collectionList[i].limitPrice);
+                            goodsList.push(collectionList[i]);
+                            var collectionHtml = '';
+                            var state = "";
+                            var stateHtml = "";
+                            if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 1) {
+                                state = "grab";
+                                stateHtml = '<button>立即抢拍</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 2) {
+                                state = "primary";
+                                stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
+                                        '<button>正价购买</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 2) {
+                                state = "primary";
+                                stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
+                                        '<button>正价购买</button>' +
+                                        '</div>'
+                            } else if (collectionList[i].saleStatus == 3) {
+                                state = "sold_out";
+                                stateHtml = '<button>销售告罄</button>' +
+                                        '</div>'
+                            }
+
+                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '" ' + ' data-count="' + collectionList[i].goodsAmount + '" data-mix-spu="' + collectionList[i].mixSpuId + '" data-goodsIssueno="' + collectionList[i].goodsIssueno + '">' +
+                                    '<span class="img" style="background: url(' + collectionList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
+                                    '<div class="content">' +
+                                    '<p class="title">' + collectionList[i].goodsDesc + '</p>' +
+                                    '<div class="para"><span class="detail">' + collectionList[i].goodsSpu + '</span><br><span class="store">库存：' + collectionList[i].stockNum + '</span></div>' +
+                                    '<div class="price"><span class="price_now">￥' + collectionList[i].nowPrice.toFixed(2) + '</span><span class="price_primary">￥' + collectionList[i].salePrice.toFixed(2) + '</span></div>' +
+                                    '</div>' +
+                                    '<i class="close"></i>' +
+                                    '<span class="count">×' + collectionList[i].goodsAmount + '</span>' + stateHtml;
+
+
+                            $('#collection').append(collectionHtml);
                         }
-
-                        collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ collectionList[i].storeId +'" data-good-id="'+ goodsList[i].goodsId +'">'+
-                                '<span class="img" style="background: url('+ collectionList[i].goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
-                                '<div class="content">'+
-                                '<p class="title">'+ collectionList[i].goodsDesc +'</p>'+
-                                '<div class="para"><span class="detail">'+ collectionList[i].goodsSpu +'</span><br><span class="store">库存：'+ collectionList[i].stockNum +'</span></div>'+
-                                '<div class="price"><span class="price_now">￥'+ collectionList[i].nowPrice +'</span><span class="price_primary">￥'+ collectionList[i].salePrice +'</span></div>'+
-                                '</div>'+
-                                '<i class="close"></i>'+
-                                '<span class="count">×'+ collectionList[i].goodsAmount +'</span>'+stateHtml;
-
-
-                        $('#collection').append(collectionHtml);
+                        if(collectionList.length < $pageSize || !collectionList){
+                            finishLoading =true
+                            $('.loading').hide();
+                        }else {
+                            $('.loading').show();
+                            finishLoading = false;
+                        }
                     }
                 }
 
-
-                if(collectionList.length < $pageSize || !collectionList){
-                    finishLoading =true
-                    $('.loading').hide();
-                }else {
-                    $('.loading').show();
-                    finishLoading = false;
-                }
             },
             error: function(err){
                 console.log(err);
@@ -279,49 +368,69 @@
             data: {goodsId:goodPara.goodsId,goodsIssueno:goodPara.goodsIssueno},
             async:false,
             success: function(data){
-                console.log(data);
-                goodPara.saleStatus = data.data.saleStatus;
-                goodPara.timeStatus = data.data.timeStatus;
-                goodPara.goodsIdd = data.data.goodsId;
-                goodPara.goodsDesc = data.data.goodsDesc;
-                goodPara.nowPrice = data.data.nowPrice;
-                goodPara.salePrice = data.data.salePrice;
-                var collectionHtml = '';
-                var state = "";
-                var stateHtml = "";
-                if(goodPara.saleStatus == 1 && goodPara.timeStatus == 1){
-                    state = "grab";
-                    stateHtml = '<button>立即抢拍</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 1 && goodPara.timeStatus == 2){
-                    state = "primary";
-                    stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>'+
-                                '<button>正价购买</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 2){
-                    state = "primary";
-                    stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>'+
-                                '<button>正价购买</button>'+
-                            '</div>'
-                }else if(goodPara.saleStatus == 3){
-                    state = "sold_out";
-                    stateHtml = '<button>销售告罄</button>'+
-                            '</div>'
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000) {
+//                    alert(JSON.stringify(goodPara));
+                    goodPara.goodsIssueno = data.data.goodsIssueno;
+                    $.ajax({
+                        url: GETGOODSMIXSKU,
+                        type:'GET',
+                        dataType:'json',
+                        data: {
+                            goodsId: goodPara.goodsId,
+                            mixSkuId: goodPara.mixSpuId
+                        },
+                        success: function(data){
+                            apiResponse(data.responseCode,data.responseDesc,data.data);
+                            if(data.responseCode == 2000) {
+                                //alert(JSON.stringify(data));
+                                reloadMsg = data.data;
+                                //价格、库存等信息展示
+                                goodPara.stockNum = reloadMsg.stockNum;
+                                goodPara.nowPrice = reloadMsg.nowPrice;
+                                goodPara.salePrice = reloadMsg.salePrice;
+
+                                var collectionHtml = '';
+                                var state = "";
+                                var stateHtml = "";
+                                if (goodPara.saleStatus == 1 && goodPara.timeStatus == 1) {
+                                    state = "grab";
+                                    stateHtml = '<button>立即抢拍</button>'
+                                } else if (goodPara.saleStatus == 1 && goodPara.timeStatus == 2) {
+                                    state = "primary";
+                                    stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
+                                            '<button>正价购买</button>'
+                                } else if (goodPara.saleStatus == 2) {
+                                    state = "primary";
+                                    stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
+                                            '<button>正价购买</button>'
+                                } else if (goodPara.saleStatus == 3) {
+                                    state = "sold_out";
+                                    stateHtml = '<button>销售告罄</button>'
+                                }
+
+                                collectionHtml +='<span class="img" style="background: url(' + goodPara.goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
+                                        '<div class="content">' +
+                                        '<p class="title">' + goodPara.goodsDesc + '</p>' +
+                                        '<div class="para"><span class="detail">' + goodPara.goodsSpu + '</span><br><span class="store">库存：' + goodPara.stockNum + '</span></div>' +
+                                        '<div class="price"><span class="price_now">￥' + goodPara.nowPrice.toFixed(2) + '</span><span class="price_primary">￥' + goodPara.salePrice.toFixed(2) + '</span></div>' +
+                                        '</div>' +
+                                        '<i class="close"></i>' +
+                                        '<span class="count">×' + goodPara.goodsAmount + '</span>' + stateHtml;
+
+
+                                goodDom.html(collectionHtml);
+                                goodDom.attr('data-goodsIssueno',goodPara.goodsIssueno);
+
+                            }
+
+
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    });
                 }
-
-                collectionHtml +=   '<div class="single_collect '+ state +'" data-store-id="'+ goodPara.storeId +'" data-good-id="'+ goodPara.goodsId +'">'+
-                                        '<span class="img" style="background: url('+ goodPara.goodsPic +') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>'+
-                                        '<div class="content">'+
-                                            '<p class="title">'+ goodPara.goodsDesc +'</p>'+
-                                            '<div class="para"><span class="detail">'+ goodPara.goodsSpu +'</span><br><span class="store">库存：'+ goodPara.stockNum +'</span></div>'+
-                                            '<div class="price"><span class="price_now">￥'+ goodPara.nowPrice +'</span><span class="price_primary">￥'+ goodPara.salePrice +'</span></div>'+
-                                        '</div>'+
-                                        '<i class="close"></i>'+
-                                        '<span class="count">×'+ goodPara.goodsAmount +'</span>'+stateHtml;
-
-
-                goodDom.replaceWith(collectionHtml);
-//                collectionHtml.replaceAll(goodDom);
             },
             error: function(err){
                 console.log(err);
@@ -342,7 +451,6 @@
             }
         }
     })
-
 
 </script>
 </html>

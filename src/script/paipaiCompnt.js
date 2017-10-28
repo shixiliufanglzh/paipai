@@ -2,7 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://116.62.116.5/app/";
+//var apiHost = "http://116.62.116.5/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
@@ -21,7 +22,6 @@ var DEFAULTADRESS = apiHost + "address/defaultAddress.jhtml";  //设置默认地
 var DELUSERADDRESS = apiHost + "address/delUserAddress.jhtml";  //删除用户地址列表
 var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用户地址
 var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
-
 var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
 var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
 var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
@@ -35,12 +35,14 @@ var GETORDERGOODS = apiHost + "order/getOrderGoods.jhtml";  //获取订单指定
 var ADDCOMMENT = apiHost + "order/addComment.jhtml";  //添加订单商品评论
 var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
 var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
-
 var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
 var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
 var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
 var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
+var GETUSERINFO = apiHost + "user/getUserInfo.jhtml";  //获取用户信息
+var GETUSERPOINTRECORD = apiHost + "activity/getUserPointRecord.jhtml";  //获取用户派币记录
+var JSSDKCONFIG = apiHost + "util/jssdkConfig.jhtml";  //获取js-skd config接口注入权限验证配置
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -49,77 +51,58 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             return true;
             break;
         case "4000":
-            commonCompt.popPrompt("请先登录");
-            window.location.href = redirectUrl;
+            //commonCompt.popPrompt("请先登录");
+            if(redirectUrl){
+                window.location.href = redirectUrl;
+            }
             break;
         case "4001":
             commonCompt.popPrompt(responseDesc);
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4002":
             commonCompt.popPrompt("微信授权登录失败");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4003":
             commonCompt.popPrompt("用户已存在");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4004":
             commonCompt.popPrompt("未找到资源");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4005":
             commonCompt.popPrompt("未关注平台公众号");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "4006":
-            commonCompt.popPrompt("商品已被竞拍");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
+            commonCompt.Confirm({
+                hasTitle: true,
+                title: "提示",
+                contentText: responseDesc,
+                cancleText: "取消",
+                certainText: "确认",
+                rightBtnClick: function(){
+                    location.reload(true);
+                },
+                leftBtnClick: function(){
+                    location.reload(true);
+                }
+            });
             break;
         case "4007":
             commonCompt.popPrompt("拍币不足");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         case "5001":
             commonCompt.popPrompt("找不到可使用的公众号");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
             break;
         default:
             commonCompt.popPrompt("未知错误");
-            setTimeout(function(){
-                location.reload(true);
-            },2000)
     }
 }
 
-var Paipai = function(){
-
-}
-
+var Paipai = function(){}
 Paipai.prototype = {
-    //待支付订单的计时器列表创建
+    //待计时器列表创建
     addOrderTimer: function(timeLeft,domPosition,timerList){
         var timer = null;
         timer = setInterval(function(){
@@ -149,6 +132,28 @@ Paipai.prototype = {
     },
 }
 
+//监听后台运行返回事件
+document.addEventListener('visibilitychange',function() {
+    if(document.visibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('webkitvisibilitychange',function() {
+    if(document.webkitVisibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('mozvisibilitychange',function() {
+    if(document.mozVisibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('msvisibilitychange',function() {
+    if(document.msVisibilityState=='visible') {
+        location.reload();
+    }
+})
+
 
 var commonCompt = {
 
@@ -159,7 +164,7 @@ var commonCompt = {
                             '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
                             '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
                             '<div class="input" style="display:none;font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+
-                                '<input type="text" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.4rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
+                                '<input type="text" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.6rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
                             '</div>'+
                             '<div class="action" style="font-size:0;">'+
                                 '<button class="cancel" style="width:50%;background-color:#fff;border:none;outline:none;text-align:center;border-right:1px solid #c5c5c5;color:#858585;line-height:0.66rem;">'+objPara.cancleText+'</button>'+
@@ -456,6 +461,7 @@ var commonCompt = {
 
     //验证手机号
     verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
+        var bool_result = false;
         var html =  '<div id="registerWrap">'+
                         '<div class="register">'+
                             '<i class="verify_close"></i>'+
@@ -542,6 +548,8 @@ var commonCompt = {
                             $('#registerWrap').fadeOut(300,function(){
                                 $('#registerWrap').remove();
                             });
+
+                            bool_result = true;
                         }
                     },
                     error: function(err){
@@ -556,6 +564,8 @@ var commonCompt = {
                 $('#registerWrap').remove();
             });
         })
+
+        return bool_result;
     },
 
     //小数较精确的加法
@@ -584,7 +594,7 @@ var commonCompt = {
         }
         m = Math.pow(10, Math.max(r1, r2)); //last modify by deeka //动态控制精度长度
         n = (r1 >= r2) ? r1 : r2;
-        return ((arg1 * m - arg2 * m) / m).toFixed(n);
+        return parseFloat(((arg1 * m - arg2 * m) / m).toFixed(n));
     },
 
     //获取地址栏参数
@@ -601,6 +611,23 @@ var commonCompt = {
             if(a.indexOf(b[i]) == -1) return false;
         }
         return true;
+    },
+
+    //区间随机数
+    randomNum: function(num){
+        var trueNum = parseFloat(num);
+        if(trueNum < 100){
+            trueNum *=  (1 + 0.1*Math.random());
+        }else if(trueNum >= 100 && trueNum < 500){
+            trueNum *=  (1 + 0.05*Math.random());
+        }else if(trueNum >= 500 && trueNum < 1000){
+            trueNum *=  (1 + 0.03*Math.random());
+        }else if(trueNum >= 1000 && trueNum < 3000){
+            trueNum *=  (1 + 0.02*Math.random());
+        }else if(trueNum >= 3000){
+            trueNum *=  (1 + 0.01*Math.random());
+        }
+        return parseFloat(trueNum.toFixed(2));
     }
 
 }

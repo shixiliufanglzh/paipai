@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>待支付订单</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -81,8 +82,7 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             success: function(data){
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
                     $('.receiver .name').html(orderMsg.name);
@@ -106,17 +106,18 @@
                                 '<p class="name">'+ goods[i].goodsName +'</p>'+
                                 '<p class="parameter">'+ goods[i].goodsSpu +'</p>'+
                                 '</div>'+
-                                '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice +'</span><br><span class="price_primary">'+ goods[i].salePrice +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
+                                '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ goods[i].salePrice.toFixed(2) +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
                                 '</div>'+
                                 '</div>'
                     }
                     $('.good_list').html(goodsHtml);
 
-                    $('.count_detail.primary').html("￥"+ $primaryPriceSum);
-                    $('.count_detail.now').html("￥"+ $dealPriceSum);
-                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice);
-                    $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum));
-                    $('.count_detail.freight').html("￥"+ orderMsg.freight);
+                    $('.count_detail.primary').html("￥"+ $primaryPriceSum.toFixed(2));
+                    $('.count_detail.now').html("￥"+ $dealPriceSum.toFixed(2));
+                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice.toFixed(2));
+                    $('.price_total .count').html(totalCount);
+                    $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
+                    $('.count_detail.freight').html("￥"+ orderMsg.freight.toFixed(2));
 
                     $('#orderNum .num').html(orderMsg.orderNum);
                     $('#orderNum .create_time').html(orderMsg.createDate);
@@ -151,7 +152,7 @@
                         orderId: $curOrderId
                     },
                     success: function (data) {
-                        console.log(data);
+                        piResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
 //                            window.history.go(-1);
                             window.location.href = document.referrer;
