@@ -170,16 +170,22 @@
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-                    var $expressMsg = data.data;
-                    if($expressMsg.length > 0){
+                    console.log(data);
+                    if(data.data){
+                        var $expressMsg = data.data;
                         $('.express_name').html($expressMsg.com);
                         $('.express_num').html($expressMsg.nu);
-                        for(var i=0; i<$expressMsg.data.length; i++){
-                            $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                        if($expressMsg.data.length > 0){
+                            for(var i=0; i<$expressMsg.data.length; i++){
+                                $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                            }
+                        }else {
+                            $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
                         }
                     }else {
                         $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
                     }
+
                 }
             },
             error: function(err){

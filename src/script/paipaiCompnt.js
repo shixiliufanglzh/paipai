@@ -82,7 +82,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
                     location.reload(true);
                 },
                 leftBtnClick: function(){
-
+                    location.reload(true);
                 }
             });
             break;
@@ -131,6 +131,28 @@ Paipai.prototype = {
         //return timePrompt;
     },
 }
+
+//监听后台运行返回事件
+document.addEventListener('visibilitychange',function() {
+    if(document.visibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('webkitvisibilitychange',function() {
+    if(document.webkitVisibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('mozvisibilitychange',function() {
+    if(document.mozVisibilityState=='visible') {
+        location.reload();
+    }
+})
+document.addEventListener('msvisibilitychange',function() {
+    if(document.msVisibilityState=='visible') {
+        location.reload();
+    }
+})
 
 
 var commonCompt = {
@@ -439,6 +461,7 @@ var commonCompt = {
 
     //验证手机号
     verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
+        var bool_result = false;
         var html =  '<div id="registerWrap">'+
                         '<div class="register">'+
                             '<i class="verify_close"></i>'+
@@ -525,6 +548,8 @@ var commonCompt = {
                             $('#registerWrap').fadeOut(300,function(){
                                 $('#registerWrap').remove();
                             });
+
+                            bool_result = true;
                         }
                     },
                     error: function(err){
@@ -539,6 +564,8 @@ var commonCompt = {
                 $('#registerWrap').remove();
             });
         })
+
+        return bool_result;
     },
 
     //小数较精确的加法
@@ -584,6 +611,23 @@ var commonCompt = {
             if(a.indexOf(b[i]) == -1) return false;
         }
         return true;
+    },
+
+    //区间随机数
+    randomNum: function(num){
+        var trueNum = parseFloat(num);
+        if(trueNum < 100){
+            trueNum *=  (1 + 0.1*Math.random());
+        }else if(trueNum >= 100 && trueNum < 500){
+            trueNum *=  (1 + 0.05*Math.random());
+        }else if(trueNum >= 500 && trueNum < 1000){
+            trueNum *=  (1 + 0.03*Math.random());
+        }else if(trueNum >= 1000 && trueNum < 3000){
+            trueNum *=  (1 + 0.02*Math.random());
+        }else if(trueNum >= 3000){
+            trueNum *=  (1 + 0.01*Math.random());
+        }
+        return parseFloat(trueNum.toFixed(2));
     }
 
 }

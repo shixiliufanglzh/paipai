@@ -17,7 +17,6 @@
                             docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
                         }
                     };
-
             if (!doc.addEventListener) return;
             win.addEventListener(resizeEvt, recalc, false);
             doc.addEventListener('DOMContentLoaded', recalc, false);
@@ -112,49 +111,6 @@
 
         //生成底部导航
         commonCompt.mainNav(3);
-        //地址信息
-        console.log($addrId);
-        $.ajax({
-            url: GETUSERADDRESS,
-            type:'GET',
-            dataType:'json',
-            async: false,
-            success: function(data){
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-//                    alert(data.data.length);
-                    var address = data.data;
-                    var $index = 0;
-                    if(address.length > 0){
-
-                        $('.no_addr').hide();
-                        $('.has_addr').show();
-
-                        $hasAddress = true;
-                        for(var i=0; i<address.length; i++){
-                            if(address[i].id == $addrId){
-                                $index = i;
-                            }
-                        }
-                        $selAddrId = address[$index].id;
-                        $freeFreightPrice = address[$index].freePrice;
-                        $feeFreight = address[$index].freight;
-                        $('#addrMsg .addressee .name').html(address[$index].name);
-                        $('#addrMsg .addressee .phone').html(address[$index].tel);
-                        $('#addrMsg .addressee .address').html(address[$index].area.split(',').join('') + address[$index].address);
-                    }else {
-                        $hasAddress = false;
-                        $('.no_addr').show();
-                        $('.has_addr').hide();
-                    }
-
-                }
-
-            },
-            error: function(err){
-                console.log(err);
-            }
-        });
 
         //商品列表
         $.ajax({
@@ -196,6 +152,51 @@
                 console.log(err);
             }
         });
+
+        //地址信息
+        console.log($addrId);
+        $.ajax({
+            url: GETUSERADDRESS,
+            type:'GET',
+            dataType:'json',
+//            async: false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+//                    alert(data.data.length);
+                    var address = data.data;
+                    var $index = 0;
+                    if(address.length > 0){
+
+                        $('.no_addr').hide();
+                        $('.has_addr').show();
+
+                        $hasAddress = true;
+                        for(var i=0; i<address.length; i++){
+                            if(address[i].id == $addrId){
+                                $index = i;
+                            }
+                        }
+                        $selAddrId = address[$index].id;
+                        $freeFreightPrice = address[$index].freePrice;
+                        $feeFreight = address[$index].freight;
+                        $('#addrMsg .addressee .name').html(address[$index].name);
+                        $('#addrMsg .addressee .phone').html(address[$index].tel);
+                        $('#addrMsg .addressee .address').html(address[$index].area.split(',').join('') + address[$index].address);
+                    }else {
+                        $hasAddress = false;
+                        $('.no_addr').show();
+                        $('.has_addr').hide();
+                    }
+
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
 
         timer = setInterval(function(){
             for(var i=0; i<goodsList.length; i++){
@@ -370,12 +371,16 @@
         $('.save_fee').html("￥"+commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
 
         $distance = commonCompt.accSub($freeFreightPrice,$accFreeFreightPrice);
-        if($distance > 0){
+        if($distance > 0 && $distance < $freeFreightPrice){
             $('.logistics_discount span').html("再拍"+ $distance +"元，即可免运费");
             $('.freight').html('￥'+ $feeFreight);
             $payTotal = commonCompt.accAdd($dealPriceSum,$feeFreight);
-        }else {
+        }else if($accFreeFreightPrice > $freeFreightPrice){
             $('.logistics_discount span').html("金额达到免运费标准，已自动帮您免去运费");
+            $('.freight').html('￥0.00');
+            $payTotal = $dealPriceSum;
+        }else if($accFreeFreightPrice <= 0){
+            $('.logistics_discount span').html("无需物流，免运费");
             $('.freight').html('￥0.00');
             $payTotal = $dealPriceSum;
         }

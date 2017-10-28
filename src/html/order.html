@@ -63,6 +63,11 @@
     var finishLoading = true;
 
     $(function(){
+        //生成底部导航
+        commonCompt.mainNav(4);
+
+        bindOrdersList($pageNum,$orderStatus);
+
         //没有订单时的显示
         if($('.singleOrder').length <= 0){
             $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
@@ -71,11 +76,6 @@
             finishLoading =true
             $('.loading').hide();
         }
-
-        //生成底部导航
-        commonCompt.mainNav(4);
-
-        bindOrdersList($pageNum,$orderStatus);
 
         timer = setInterval(function(){
             for(var i=0; i<ordersListAll.length; i++){
@@ -349,6 +349,7 @@
             type:'GET',
             dataType:'json',
             data: paraData,
+            async:false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
@@ -414,7 +415,7 @@
                                                 '<button class="order_edit logistics"  data-order-status="'+ orders[i].orderStatus +'">查看物流</button>' +
                                             '</div>'
                         }else if(orders[i].orderStatus == 6) {
-                            ordersListHtml +=   '<button class="order_edit red evaluate">去评价</button>'+
+                            ordersListHtml +=   //'<button class="order_edit red evaluate">去评价</button>'+
                                                 '<button class="order_edit red view"  data-order-status="'+ orders[i].orderStatus +'">查看订单</button>' +
                                             '</div>'
                         }

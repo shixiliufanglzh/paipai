@@ -103,6 +103,30 @@
         })
     })
 
+    $('.wechat').click(function(){
+        $.ajax({
+            url: ORDERPAY,
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                payType: 1,
+                orderId: $curOrderId
+            },
+            success: function (data) {
+//                console.log('请求参数:',$curOrderId,2,'返回',data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+//                    $('body').html(data.data);
+                    alert(JSON.stringify(data));
+                }
+            },
+            error: function (err) {
+//                console.log('请求参数:',$curOrderId,2,'返回',err);
+            }
+        })
+    })
+
+
 
 
 

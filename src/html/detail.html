@@ -36,7 +36,7 @@
     </div>
 
     <section id="summary">
-        <p class="desc">某低级搜集冬季加大技术敖东瓶塞哦思技术敖东瓶塞哦思考pop、 哦外婆fsasjdiiss似懂非懂</p>
+        <p class="desc">加载中...</p>
         <div class="price_now">
             <span class="cur_price">￥0.00</span>
             <!--<span class="rate">减价频率：1次/S&nbsp;&nbsp;&nbsp;&nbsp;减价幅度：0.01元/次</span>-->
@@ -61,7 +61,7 @@
     </section>
 
     <section id="production">
-        <div class="sorts_sel"><span>选择颜色分类</span><i></i></div>
+        <div class="sorts_sel"><span>选择分类</span><i></i></div>
         <div class="rule">
             <h5>抢拍规则</h5>
             <div class="rule_content">
@@ -70,7 +70,7 @@
                     <p>商品由正价开始减价，每隔一段时间减价一次</p>
                 </div>
                 <div class="single_rule">
-                    <h6><i class="two"></i><span>一拍即中</span></h6>
+                    <h6><i class="two"></i><span>先拍先得</span></h6>
                     <p>商品减价过程中，首个抢拍的买家，即以当前价成交</p>
                 </div>
                 <div class="single_rule">
@@ -140,7 +140,7 @@
             </div>
 
             <div class="count_sel clearfix">
-                <div class="limit">购买数量<span>（限购3件）</span></div>
+                <div class="limit">购买数量<span></span></div>
                 <div class="count">
                     <i class="minus"></i>
                     <span class="count_num">1</span>
@@ -167,8 +167,7 @@
 <script src="../script/paipaiCompnt.js"></script>
 <script>
     var goodsPara,paraList,reloadMsg;
-    var summaryTimer = null;
-    var spuTimer = null;
+    var timer = null;
     var userSel = {
         count: 1,
         sku_id: [],
@@ -177,7 +176,7 @@
     };
     var $goodId;
     var finishLoading = true;
-    var $pageSize = 6, $pageNum = 1;
+    var $pageSize = 12, $pageNum = 1;
     var $curAbout = 0;
     var hasPhone = false;
 
@@ -231,9 +230,9 @@
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                     $('#sortsList .consume_count').html(goodsPara.pieNum);
 
-                    if (goodsPara.limitNum > 0) {
-                        $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-                        $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
+                    if (goodsPara.limitNum > 0 && goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
+                        $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
+                        $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
 
                     } else {
                         $('#summary .store_count').html(goodsPara.stockNum + '件');
@@ -263,66 +262,17 @@
                     //判断是否在减价拍时间范围内
                     if (goodsPara.saleStatus == 1) {
                         if (goodsPara.timeStatus == 1) {
-                            $('.action_wrap .purchase span').html('减价拍');
+                            $('.action_wrap .purchase span').html('减价抢拍');
                             $('#sortsList .purchase').html('立即抢拍');
                             $('.rate').html('减价频率：1次/S&nbsp;&nbsp;&nbsp;&nb' +
                                     'sp;减价幅度：' + goodsPara.reducePrice + '元/次');
                         } else {
-                            $('.action_wrap .purchase span').html('正价拍');
+                            $('.action_wrap .purchase span').html('正价购买');
                             $('#sortsList .purchase').html('正价购买');
                             $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
                         }
 
-                        summaryTimer = setInterval(function () {
 
-                            if(goodsPara.nowPrice <= goodsPara.limitPrice){
-                                $.ajax({
-                                    url: REFRESHGOODS,
-                                    type:'GET',
-                                    dataType:'json',
-                                    data: {goodsId:$goodId,goodsIssueno:goodsPara.goodsIssueno},
-                                    async:false,
-                                    success: function(data){
-                                        apiResponse(data.responseCode,data.responseDesc,data.data);
-                                        if(data.responseCode == 2000) {
-//                    alert(JSON.stringify(data.data));
-                                            goodsPara.saleStatus = data.data.saleStatus;
-                                            goodsPara.timeStatus = data.data.timeStatus;
-                                            goodsPara.goodsId = data.data.goodsId;
-                                            goodsPara.goodsDesc = data.data.goodsDesc;
-                                            goodsPara.nowPrice = data.data.nowPrice;
-                                            goodsPara.salePrice = data.data.salePrice;
-                                            goodsPara.limitPrice = data.data.limitPrice;
-                                            goodsPara.goodsIssueno = data.data.goodsIssueno;
-                                            goodsPara.stockNum = data.data.stockNum;
-                                            goodsPara.saleNum = data.data.saleNum;
-                                            goodsPara.limitNum = data.data.limitNum;
-                                            goodsPara.totalLimitNum = data.data.totalLimitNum;
-                                        }
-                                    },
-                                    error: function(err){
-                                        console.log(err);
-                                    }
-                                });
-                            }
-                            goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice);
-                            $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
-                            //$('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-                            $('#summary .sold_count').html(goodsPara.saleNum + '件');
-                            if (goodsPara.limitNum > 0) {
-                                $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-                                $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,总共限拍' + goodsPara.totalLimitNum + '件）');
-
-                            } else {
-                                $('#summary .store_count').html(goodsPara.stockNum + '件');
-                            }
-                            if(paraList.length <= 0 || (paraList.length > 0 && userSel.spu_id.length < paraList.length)){
-                                $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice.toFixed(2));
-                                $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
-                                $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
-                            }
-
-                        }, 1000);
 
                     } else if (goodsPara.saleStatus == 2) {
                         //倒计时
@@ -333,9 +283,9 @@
                         $('#sortsList .purchase').html('正价购买');
 
                     } else if (goodsPara.saleStatus == 3) {
-                        $('.action_wrap .purchase span').html('已售罄');
+                        $('.action_wrap .purchase span').html('销售告罄');
                         $('.purchase').attr('disabled', 'disabled');
-                        $('#sortsList .purchase').html('已售罄');
+                        $('#sortsList .purchase').html('销售告罄');
                         $('.purchase').css('background-color', '#858585');
                         $('.rate').hide();
                     };
@@ -383,15 +333,76 @@
             }
         });
 
+        timer = setInterval(function () {
+            if (goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
+                if (goodsPara.nowPrice <= commonCompt.randomNum(goodsPara.limitPrice)) {
+                    $.ajax({
+                        url: REFRESHGOODS,
+                        type: 'GET',
+                        dataType: 'json',
+                        data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
+                        async: false,
+                        success: function (data) {
+                            apiResponse(data.responseCode, data.responseDesc, data.data);
+                            if (data.responseCode == 2000) {
+                                location.reload(true);
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    });
+                }
+                goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice);
+                if(goodsPara.nowPrice <= 0){
+                    goodsPara.nowPrice = 0;
+                };
+                $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
+                $('#summary .sold_count').html(goodsPara.saleNum + '件');
+                if (goodsPara.limitNum > 0 && goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
+                    $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
+                    $('#sortsList .count_sel .limit span').html('（限购' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
+
+                } else {
+                    $('#summary .store_count').html(goodsPara.stockNum + '件');
+                }
+                if (paraList.length <= 0 || (paraList.length > 0 && userSel.spu_id.length < paraList.length)) {
+                    $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice.toFixed(2));
+                    $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
+                    $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
+                }
+                if(reloadMsg){
+                    reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice);
+                    if(reloadMsg.nowPrice <= 0){
+                        reloadMsg.nowPrice = 0;
+                    };
+                    $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
+                    $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
+                    $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
+                }
+            }
+
+        }, 1000);
     })
 
-
+    //开启/关闭 规格参数信息
     $('.action_wrap .like,.action_wrap .purchase,#production .sorts_sel').click(function(){
         $('#sortsList').fadeIn(300);
     })
     $('.close').click(function(){
         $('#sortsList').fadeOut(300);
     })
+    $('#sortsList').click(function(e){
+        if ($(e.target).is('.sorts_wrap')){
+            return;
+        }else {
+            $('#sortsList').fadeOut(300);
+        }
+    })
+    $('.sorts_wrap').click(function (e){
+        e.stopPropagation();
+    })
+
 
 
 
@@ -489,7 +500,6 @@
                     }
                 }
             }
-
         }
 
         console.log(userSel.spu_id);
@@ -515,42 +525,11 @@
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
-
+                        if (!goodsPara.timeStatus || goodsPara.timeStatus != 1) {
+                            goodsPara.limitNum = reloadMsg.stockNum;
+                        }
                     }
 
-//                    spuTimer = setInterval(function () {
-//
-//                        if(reloadMsg.nowPrice <= reloadMsg.limitPrice){
-//                            $.ajax({
-//                                url: GETGOODSMIXSKU,
-//                                type:'GET',
-//                                dataType:'json',
-//                                data: {
-//                                    goodsId: $goodId,
-//                                    mixSkuId: $mixSkuId
-//                                },
-//                                success: function(data){
-//                                    apiResponse(data.responseCode,data.responseDesc,data.data);
-//                                    if(data.responseCode == 2000) {
-//                                        reloadMsg.nowPrice = data.data.nowPrice;
-//                                        reloadMsg.salePrice = data.data.salePrice;
-//                                        reloadMsg.limitPrice = data.data.limitPrice;
-//                                        reloadMsg.stockNum = data.data.stockNum;
-//                                    }
-//                                },
-//                                error: function(err){
-//                                    console.log(err);
-//                                }
-//                            });
-//                        }
-//                        reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, reloadMsg.reducePrice);
-//
-//                        $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
-//                        $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
-//                        $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
-//
-//
-//                    }, 1000);
 
                 },
                 error: function(err){
@@ -572,11 +551,14 @@
         $(this).addClass('current');
         $('.about_sorts>div').hide();
         $('.about_sorts>div').eq(curIndex).show();
+        $('.about_sorts').css({'padding':'0'});
 
         if($(this).hasClass('tab_evaluate_list')){
+            $('.about_sorts').css({'padding':'0.1rem 0.24rem'});
             $('.loading').show();
             showComments($pageNum);
         }else if($(this).hasClass('tab_deal_record')){
+            $('.about_sorts').css({'padding':'0.1rem 0.24rem'});
             $('.loading').show();
             showDeals($pageNum);
         }
@@ -763,7 +745,7 @@
     $('#bottomBtn .purchase').click(function() {
         //如果是未绑定手机号的用户
         if(!hasPhone){
-            commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
         }else {
             if (userSel.spu_id.length >= paraList.length) {
                 if (userSel.count > 0) {
@@ -773,7 +755,7 @@
                         goodsAmount: userSel.count,
                         goodsIssueno: goodsPara.goodsIssueno
                     }
-                    console.log(paraData);
+//                    alert(JSON.stringify(paraData));
                     $.ajax({
                         url: ADDCART,
                         type: 'POST',
@@ -816,32 +798,6 @@
         window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
     })
 
-//    function filterParas($curClickParent){
-//        var paraDomList = $('.single_para_container .sorts span');
-//        for(var j=0; j<paraDomList.length; j++){
-//
-//            var notSameParent = [];
-//            for(var m=0; m<userSel.sku_id.length; m++){
-//                if(userSel.sku_id[m] != paraDomList.eq(j).parents('.single_para_container').attr('data-sku-id')){
-//                    notSameParent.push(userSel.spu_id[m]);
-//                }
-//            }
-//
-//            var paraCombi = goodsPara.goodsSkuMix;
-//
-//            for(var k=0; k<paraCombi.length; k++) {
-//                if (commonCompt.isContained(paraCombi[k].mixSpuId,userSel.spu_id)
-//                        && !commonCompt.isContained(paraCombi[k].mixSpuId,paraDomList.eq(j).attr('data-spu-id'))
-//                        && ($curClickParent.attr('data-sku-id') != paraDomList.eq(j).parents('.single_para_container').attr('data-sku-id'))) {
-//                    paraDomList.eq(j).addClass('short');
-//                }
-//                if(commonCompt.isContained(paraCombi[k].mixSpuId,notSameParent)
-//                        && commonCompt.isContained(paraCombi[k].mixSpuId,paraDomList.eq(j).attr('data-spu-id'))){
-//                    paraDomList.eq(j).removeClass('short');
-//                }
-//            }
-//        }
-//    }
 
 </script>
 </html>

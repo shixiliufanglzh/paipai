@@ -43,6 +43,7 @@
         <!--<div class="right">-1</div>-->
     <!--</div>-->
 </div>
+<div class="loading"><i></i><span>加载中...</span></div>
 
 <div id="blank">
     <div class="img" >
@@ -58,17 +59,18 @@
 
 <script>
     var $pageNum = 1;
-    var $pageSize = 20;
+    var $pageSize = 12;
     var finishLoading = true;
 
     $(function(){
+        bindRecordsList($pageNum);
+
         //没有订单时的显示
         if($('.change_detail').length <= 0){
             $('body').css('background-color','#fff');
             $('#blank').show();
         }
 
-        bindRecordsList($pageNum);
     })
 
 
@@ -84,6 +86,7 @@
             url: GETUSERPOINTRECORD,
             type:'GET',
             dataType:'json',
+            async: false,
             data: {
                 pageNum: $pageNum,
                 pageSize:$pageSize
