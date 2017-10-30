@@ -2,6 +2,7 @@
 @import "_common.scss";
 
 #paying {
+  display: none;
   #addrMsg {
     border-bottom: 0.2rem solid #f0f0f0;
     .addressee {

@@ -111,7 +111,7 @@
                     $('.good_msg .count').html('×' + goodMsg.goodsAmount);
                     $refundMoney = goodMsg.totalPrice;
                     $('.total_count,.most_count').html($refundMoney);
-                    $commitStatus = goodMsg.commentStatus;
+                    $commitStatus = goodMsg.relateStatus;
 
                 }
             },
@@ -159,7 +159,7 @@
                 })
             }
         }else {
-            commonCompt.popPrompt('您已经提交过评价了哦');
+            commonCompt.popPrompt('您已经提交过了');
             setTimeout(function(){
                 window.location.href = 'order.html';
             },2000)

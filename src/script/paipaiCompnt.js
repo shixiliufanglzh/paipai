@@ -53,7 +53,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
         case "4000":
             //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                window.location.href = redirectUrl;
+                //window.location.href = redirectUrl;
             }
             break;
         case "4001":
@@ -131,28 +131,6 @@ Paipai.prototype = {
         //return timePrompt;
     },
 }
-
-//监听后台运行返回事件
-document.addEventListener('visibilitychange',function() {
-    if(document.visibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('webkitvisibilitychange',function() {
-    if(document.webkitVisibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('mozvisibilitychange',function() {
-    if(document.mozVisibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('msvisibilitychange',function() {
-    if(document.msVisibilityState=='visible') {
-        location.reload();
-    }
-})
 
 
 var commonCompt = {
@@ -366,15 +344,15 @@ var commonCompt = {
                     canvas.height=h;
 
 
-                    if(cw>1920&&cw>ch){
-                        w=1920;
-                        h=(1920*ch)/cw;
+                    if(cw>960&&cw>ch){
+                        w=960;
+                        h=(960*ch)/cw;
                         canvas.width=w;
                         canvas.height=h;
                     }
-                    if(ch>1920&&ch>cw){
-                        h=1920;
-                        w=(1920*cw)/ch;
+                    if(ch>960&&ch>cw){
+                        h=960;
+                        w=(960*cw)/ch;
                         canvas.width=w;
                         canvas.height=h;
                     }
@@ -628,8 +606,31 @@ var commonCompt = {
             trueNum *=  (1 + 0.01*Math.random());
         }
         return parseFloat(trueNum.toFixed(2));
-    }
+    },
 
+    //监听后台运行返回事件
+    screenVisibleChange: function (){
+        document.addEventListener('visibilitychange',function() {
+            if(document.visibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('webkitvisibilitychange',function() {
+            if(document.webkitVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('mozvisibilitychange',function() {
+            if(document.mozVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('msvisibilitychange',function() {
+            if(document.msVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+    }
 }
 
 

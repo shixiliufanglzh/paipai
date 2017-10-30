@@ -99,59 +99,9 @@
 
     $(function(){
 
-        if(!$hasAddress){
-            $('.no_addr').show();
-            $('.has_addr').hide();
-        }
-
-        if($('.single_good').length <= 0){
-            $('#blank').show();
-            $('#paying').hide();
-        }
 
         //生成底部导航
         commonCompt.mainNav(3);
-
-        //商品列表
-        $.ajax({
-            url: GETCART,
-            type:'GET',
-            dataType:'json',
-            async: false,
-            success: function(data){
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.length > 0) {
-                        $('#blank').hide();
-                        $('#paying').show();
-                        goodsList = data.data;
-                        for (var i = 0; i < goodsList.length; i++) {
-
-                            var goodState = goodsList[i].buyType == 1 ? '<span>距商品中标价格失效还剩：<span class="time_left">0天0小时0分0秒</span></span>' : '<span>正价购买</span>';
-                            var goodsHtml = '<div class="single_good selected" data-good-id="' + goodsList[i].goodsId + '" data-cart-id="' + goodsList[i].cartId + '">' +
-                                    '<h4><i class="contain_state"></i>' + goodState + '<i class="delete"></i></h4>' +
-                                    '<div class="good_detail">' +
-                                    '<div class="img" style="background: url(' + goodsList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></div>' +
-                                    '<p class="product">' + goodsList[i].goodsName + '</p>' +
-                                    '<p class="parameter">' + goodsList[i].goodsSpu + '</p>' +
-                                    '<p class="price_start">起拍价：<span class="price">￥' + goodsList[i].salePrice.toFixed(2) + '</span></p>' +
-                                    '<p class="price_now">中标价：<span class="price">￥' + goodsList[i].price.toFixed(2) + '</span><span class="count">×' + goodsList[i].goodsAmount + '</span></p>' +
-                                    '</div>' +
-                                    '</div>'
-
-                            $('.grab_list').append(goodsHtml);
-                        }
-
-
-                        calculateFee();
-                    }
-                }
-
-            },
-            error: function(err){
-                console.log(err);
-            }
-        });
 
         //地址信息
         console.log($addrId);
@@ -159,11 +109,11 @@
             url: GETUSERADDRESS,
             type:'GET',
             dataType:'json',
-//            async: false,
+            async: false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-//                    alert(data.data.length);
+//                    alert(JSON.stringify(data));
                     var address = data.data;
                     var $index = 0;
                     if(address.length > 0){
@@ -197,6 +147,59 @@
             }
         });
 
+        //商品列表
+        $.ajax({
+            url: GETCART,
+            type:'GET',
+            dataType:'json',
+            async: false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.length > 0) {
+                        $('#blank').hide();
+                        $('#paying').show();
+                        goodsList = data.data;
+                        if(goodsList.length > 0){
+                            $('#paying').show();
+                        }
+                        for (var i = 0; i < goodsList.length; i++) {
+                            var goodState = goodsList[i].buyType == 1 ? '<span>距商品中标价格失效还剩：<span class="time_left">0天0小时0分0秒</span></span>' : '<span>正价购买</span>';
+                            var goodsHtml = '<div class="single_good selected" data-good-id="' + goodsList[i].goodsId + '" data-cart-id="' + goodsList[i].cartId + '">' +
+                                    '<h4><i class="contain_state"></i>' + goodState + '<i class="delete"></i></h4>' +
+                                    '<div class="good_detail">' +
+                                    '<div class="img" style="background: url(' + goodsList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></div>' +
+                                    '<p class="product">' + goodsList[i].goodsName + '</p>' +
+                                    '<p class="parameter">' + goodsList[i].goodsSpu + '</p>' +
+                                    '<p class="price_start">起拍价：<span class="price">￥' + goodsList[i].salePrice.toFixed(2) + '</span></p>' +
+                                    '<p class="price_now">中标价：<span class="price">￥' + goodsList[i].price.toFixed(2) + '</span><span class="count">×' + goodsList[i].goodsAmount + '</span></p>' +
+                                    '</div>' +
+                                    '</div>'
+
+                            $('.grab_list').append(goodsHtml);
+                        }
+
+
+                        calculateFee();
+                    }
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        if(!$hasAddress){
+            $('.no_addr').show();
+            $('.has_addr').hide();
+        }
+
+        if($('.single_good').length <= 0){
+            $('#blank').show();
+            $('#paying').hide();
+            $('#paying').hide()
+        }
 
         timer = setInterval(function(){
             for(var i=0; i<goodsList.length; i++){
@@ -366,6 +369,7 @@
 
             }
         }
+//        alert($accFreeFreightPrice + " " +$freeFreightPrice);
         $('.primary_price_sum').html("￥"+$primaryPriceSum.toFixed(2));
         $('.deal_price_sum').html("￥"+$dealPriceSum.toFixed(2));
         $('.save_fee').html("￥"+commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
@@ -391,6 +395,7 @@
         }
     }
 
+    commonCompt.screenVisibleChange();
 
 </script>
 </html>

@@ -309,6 +309,7 @@
                 //商品规格参数展示
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
+                    console.log(data);
                     paraList = data.data;
                     for (var i = 0; i < paraList.length; i++) {
                         var paraWrapHtml = '';
@@ -408,7 +409,7 @@
 
     //购买数量
     $('#sortsList .minus').click(function(){
-        if(userSel.count > 0)  userSel.count --;
+        if(userSel.count > 1)  userSel.count --;
         $('#sortsList .count_num').html(userSel.count);
     })
     $('#sortsList .plus').click(function(){
@@ -423,20 +424,17 @@
         var skuIndex = $curClickParent.index() - 1;
         var spuIndex = $(this).index();
         console.log(skuIndex,spuIndex);
-
-
         if(!$(this).hasClass('short')){
-
             $(this).siblings('span').removeClass('selected');
-
             if(!$(this).hasClass('selected')){
                 $(this).addClass('selected');
-                $('#sortsList .good_img').css({
-                    'background': 'url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
-                    'background-size': 'cover',
-                    '-webkit-background-size': 'cover'
-                })
-
+                if(paraList[skuIndex].goodsSpu[spuIndex].picUrl){
+                    $('#sortsList .good_img').css({
+                        'background': '#fff url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
+                        'background-size': 'cover',
+                        '-webkit-background-size': 'cover'
+                    })
+                }
                 var sku_id = $(this).parents('.single_para_container').attr('data-sku-id');
                 var spu_id = $(this).attr('data-spu-id');
                 var flag_exist = false;
@@ -450,28 +448,8 @@
                     userSel.sku_id.push(sku_id);
                     userSel.spu_id.push(spu_id);
                 }
-
                 //检查未选参数的库存
-                var paraDomList = $('.single_para_container .sorts span');
-                for(var j=0; j<paraDomList.length; j++){
-                    var notSameParent = [];
-                    for(var m=0; m<userSel.sku_id.length; m++){
-                        if(userSel.sku_id[m] != paraDomList.eq(j).parents('.single_para_container').attr('data-sku-id')){
-                            notSameParent.push(userSel.spu_id[m]);
-                        }
-                    }
-                    var paraCombi = goodsPara.goodsSkuMix;
-                    for(var k=0; k<paraCombi.length; k++) {
-                        if (commonCompt.isContained(paraCombi[k].mixSpuId,userSel.spu_id)
-                                && !commonCompt.isContained(paraCombi[k].mixSpuId,paraDomList.eq(j).attr('data-spu-id'))
-                                && ($curClickParent.attr('data-sku-id') != paraDomList.eq(j).parents('.single_para_container').attr('data-sku-id'))) {
-                            paraDomList.eq(j).addClass('short');
-                        }else if(commonCompt.isContained(paraCombi[k].mixSpuId,notSameParent)
-                                && commonCompt.isContained(paraCombi[k].mixSpuId,paraDomList.eq(j).attr('data-spu-id'))){
-                            paraDomList.eq(j).removeClass('short');
-                        }
-                    }
-                }
+                checkStore();
 
             }else {
                 $(this).removeClass('selected');
@@ -483,22 +461,7 @@
                     }
                 }
                 //检查参数的库存
-                var paraDomList = $('.single_para_container .sorts span');
-                for(var j=0; j<paraDomList.length; j++){
-                    var notSameParent = [];
-                    for(var m=0; m<userSel.sku_id.length; m++){
-                        if(userSel.sku_id[m] != paraDomList.eq(j).parents('.single_para_container').attr('data-sku-id')){
-                            notSameParent.push(userSel.spu_id[m]);
-                        }
-                    }
-                    var paraCombi = goodsPara.goodsSkuMix;
-                    for(var k=0; k<paraCombi.length; k++) {
-                        if(commonCompt.isContained(paraCombi[k].mixSpuId,notSameParent)
-                                && commonCompt.isContained(paraCombi[k].mixSpuId,paraDomList.eq(j).attr('data-spu-id'))){
-                            paraDomList.eq(j).removeClass('short');
-                        }
-                    }
-                }
+                checkStore();
             }
         }
 
@@ -798,6 +761,33 @@
         window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
     })
 
+    //检查库存的方法
+    function checkStore(){
+        var paraDomList = $('.single_para_container .sorts span');
+        var paraCombi = goodsPara.goodsSkuMix;
+
+        for(var k=0; k<paraDomList.length; k++) {
+            var ruleOutSku = [].concat(userSel.sku_id);
+            var ruleOutSpu = [].concat(userSel.spu_id);
+            for(var j=0; j<ruleOutSku.length; j++) {
+                if (ruleOutSku[j] == paraDomList.eq(k).parents('.single_para_container').attr('data-sku-id')) {
+                    ruleOutSku.splice(j, 1);
+                    ruleOutSpu.splice(j, 1);
+                }
+            }
+            for(var m=0; m<paraCombi.length; m++){
+                if(commonCompt.isContained(paraCombi[m].mixSpuId,ruleOutSpu)
+                        && commonCompt.isContained(paraCombi[m].mixSpuId,paraDomList.eq(k).attr('data-spu-id'))){
+                    paraDomList.eq(k).removeClass('short');
+                    break;
+                }
+                paraDomList.eq(k).addClass('short');
+            }
+
+        }
+    }
+
+    commonCompt.screenVisibleChange();
 
 </script>
 </html>

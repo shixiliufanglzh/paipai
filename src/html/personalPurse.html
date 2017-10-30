@@ -111,11 +111,11 @@
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-                    commonCompt.popPrompt('签到成功！');
                     $('#header .count span').html(data.data.userPoint + 1);
                     $('#bottomBtn .like').attr('disabled','disabled');
                     $('#bottomBtn .like').css('background-color', '#999');
                     $('#bottomBtn .like').html('签到完成');
+                    commonCompt.popPrompt('签到成功！');
                 }
             },
             error: function(err){

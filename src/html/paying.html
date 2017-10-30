@@ -51,10 +51,15 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var wxPayPara = {};
+//    var clientIp =  get_client_ip();
 
     $(function(){
+
+
         $.ajax({
             url: GETORDERDETAIL,
             type:'GET',
@@ -116,15 +121,65 @@
 //                console.log('请求参数:',$curOrderId,2,'返回',data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
+//                    window.location.href = data.data;
 //                    $('body').html(data.data);
-                    alert(JSON.stringify(data));
+//                    alert(JSON.stringify(data));
+                    wxPayPara.appId = data.data.appId;
+                    wxPayPara.timeStamp = data.data.timeStamp;
+                    wxPayPara.nonceStr = data.data.nonceStr;
+                    wxPayPara.prepayId = data.data.package;
+                    wxPayPara.paySign = data.data.paySign;
+                    wxPayPara.signType = data.data.signType;
+
+                    onBridgeReady(wxPayPara);
+
+                    if (typeof WeixinJSBridge == "undefined"){
+                        if( document.addEventListener ){
+                            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                        }else if (document.attachEvent){
+                            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                        }
+                    }else{
+                        onBridgeReady();
+                    }
                 }
             },
             error: function (err) {
-//                console.log('请求参数:',$curOrderId,2,'返回',err);
+//                console.log('请求参数:',$curOrderId,2,'返回',er r);
             }
         })
     })
+
+    function onBridgeReady(wxPayPara){
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId": wxPayPara.appId,     //公众号名称，由商户传入
+                    "timeStamp": wxPayPara.timeStamp,         //时间戳，自1970年以来的秒数
+                    "nonceStr": wxPayPara.nonceStr, //随机串
+                    "package": wxPayPara.prepayId,
+                    "signType": wxPayPara.signType,         //微信签名方式：
+                    "paySign": wxPayPara.paySign //微信签名
+                },
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        commonCompt.Confirm({
+                            hasTitle: true,
+                            title: "支付结果",
+                            contentText: "您已完成支付！",
+                            cancleText: "查看订单",
+                            certainText: "继续抢拍",
+                            rightBtnClick: function(){
+                                window.location.href = '../index.html';
+                            },
+                            leftBtnClick: function(){
+                                window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
+                            }
+                        });
+                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                }
+        );
+    }
 
 
 
