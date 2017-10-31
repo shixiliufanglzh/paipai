@@ -340,6 +340,19 @@ body {
       p {
         font-size: 0.24rem;
       }
+      .express_detail {
+        border-top: 1px solid #ddd;
+        margin-top: 0.1rem;
+        padding-top: 0.08rem;
+        padding-left: 0.4rem;
+        &>div {
+          padding: 0.06rem 0;
+          border-bottom: 1px dashed #ddd;
+          &:first-of-type {
+            color: $paiRed;
+          }
+        }
+      }
     }
   }
 }

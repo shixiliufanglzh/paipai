@@ -53,7 +53,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
         case "4000":
             //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                //window.location.href = redirectUrl;
+                window.location.href = redirectUrl;
             }
             break;
         case "4001":

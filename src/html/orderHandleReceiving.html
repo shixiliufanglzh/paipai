@@ -71,7 +71,10 @@
             <div class="detail">
                 <p>物流公司：<span class="express_name"></span></p>
                 <p>物流编号：<span class="express_num"></span></p>
-                <p>物流信息：</p>
+                <!--<p>物流信息：</p>-->
+                <div class="express_detail">
+                </div>
+
             </div>
         </div>
 
@@ -171,7 +174,7 @@
                         $('.express_num').html($expressMsg.nu);
                         if($expressMsg.data.length > 0){
                             for(var i=0; i<$expressMsg.data.length; i++){
-                                $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+                                $('#logistics .express_detail').append('<div><p>'+ $expressMsg.data[i].ftime +'</p><p>'+ $expressMsg.data[i].context +'</p></div>')
                             }
                         }else {
                             $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
