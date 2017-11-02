@@ -50,6 +50,7 @@
   #orderDetail {
     //padding-bottom: 0.3rem;
     .single_good {
+      background-color: #fff;
       border-bottom: 0.2rem solid #f0f0f0;
       &.selected {
         h4 {
@@ -79,6 +80,7 @@
       .good_detail {
         padding: 0.24rem 0.24rem 0.24rem 2.3rem;
         position: relative;
+        min-height: 2.16rem;
         .img {
           width: 1.82rem;
           height: 1.82rem;
@@ -110,6 +112,7 @@
       }
     }
     .fee {
+      background-color: #fff;
       border: 1px solid rgba(171,168,168,0.53);
       font-size: 0.24rem;
       color: #2f2f2f;
@@ -138,14 +141,52 @@
 
     }
     .fee_result {
+      background-color: #fff;
       font-size: 0.3rem;
       color: #2f2f2f;
       padding: 0.24rem;
       margin-bottom: 2rem;
+      &.virtual {
+        margin-bottom: 0;
+      }
       span {
         float: right;
         color: $paiRed;
       }
+    }
+    .fill_number {
+      font-size: 0.24rem;
+      padding: 0 0.24rem;
+      border-top: 1px solid #f0f0f0;
+      background-color: #fff;
+      line-height: 0.72rem;
+      input {
+        border: none;
+        font-size: 0.24rem;
+        width: 5rem;
+        &::-webkit-input-placeholder { /* WebKit browsers */
+          color:    #999;
+        }
+        &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+          color:    #999;
+          opacity:  1;
+        }
+        &::-moz-placeholder { /* Mozilla Firefox 19+ */
+          color:    #999;
+          opacity:  1;
+        }
+        &:-ms-input-placeholder { /* Internet Explorer 10+ */
+          color:    #999;
+        }
+      }
+    }
+    .prompt {
+      font-size: 0.24rem;
+      color: $paiRed;
+      padding: 0 0.24rem;
+      border-top: 1px solid #f0f0f0;
+      background-color: #fff;
+      line-height: 0.6rem;
     }
   }
 
@@ -153,6 +194,9 @@
     position: fixed;
     bottom: 0.98rem;
     width: 100%;
+    &.virtual {
+      bottom: 0;
+    }
     .total_wrap {
       display: flex;
       flex-wrap: nowrap;

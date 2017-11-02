@@ -24,8 +24,10 @@ var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用�
 var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
 var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
 var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
+var GETCARTBYID = apiHost + "order/getCartById.jhtml";  //用户获取指定购物车记录
 var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
 var CREATEORDER = apiHost + "order/createOrder.jhtml";  //创建订单
+var CREATEVORDER = apiHost + "order/createVOrder.jhtml";  //创建虚拟商品订单
 var GETORDER = apiHost + "order/getOrder.jhtml";  //获取用户订单列表
 var GETORDERDETAIL = apiHost + "order/getOrderDetail.jhtml";  //获取订单详情
 var DELORDER = apiHost + "order/delOrder.jhtml";  //删除订单
@@ -437,7 +439,7 @@ var commonCompt = {
         //   alert(str.length);
     },
 
-    //验证手机号
+    //绑定手机号
     verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
         var bool_result = false;
         var html =  '<div id="registerWrap">'+

@@ -118,7 +118,7 @@
         <div class="action_wrap">
             <button class="chat"><i></i></button>
             <button class="like"><i></i><span>加入关注</span></button>
-            <button class="purchase"><i></i><span>正价购买</span></button>
+            <button class="purchase"><i></i><span>立即竞拍</span></button>
         </div>
     </div>
 </div>
@@ -164,7 +164,9 @@
 <div id="evaluateImgs">
     <div class="eva-swiper-container">
         <div class="swiper-wrapper">
-            <div class="swiper-slide"></div>
+            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
+            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
+            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
         </div>
         <div class="swiper-pagination"></div>
     </div>
@@ -182,7 +184,7 @@
         spu_id: [],
         mixId: null
     };
-    var $goodId;
+    var $goodId,$goodType;
     var finishLoading = true;
     var $pageSize = 12, $pageNum = 1;
     var $curAbout = 0;
@@ -229,6 +231,10 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     goodsPara = data.data;
+//                    alert(goodsPara.labelType.length);
+                    if(commonCompt.trim(goodsPara.labelType) && commonCompt.trim(goodsPara.labelType).length > 0){
+                        $goodType = "virtual";
+                    }
                     //价格、库存等信息展示
                     $('#summary .desc').html(goodsPara.goodsDesc);
                     $('#summary .primary_range').html('￥' + goodsPara.salePrice.toFixed(2));
@@ -279,7 +285,8 @@
                         } else {
                             $('.action_wrap .purchase span').html('正价购买');
                             $('#sortsList .purchase').html('正价购买');
-                            $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
+//                            $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
+                            $('.rate').html('');
                         }
 
 
@@ -737,19 +744,23 @@
                         success: function (data) {
                             apiResponse(data.responseCode, data.responseDesc,data.data);
                             if (data.responseCode == 2000) {
-                                commonCompt.Confirm({
-                                    hasTitle: true,
-                                    title: "提示",
-                                    contentText: "恭喜您获得了这件商品的购买权",
-                                    cancleText: "继续抢拍",
-                                    certainText: "查看拍得",
-                                    rightBtnClick: function(){
-                                        window.location.href = 'orderGenerate.html';
-                                    },
-                                    leftBtnClick: function(){
-                                        window.location.href = '../index.html';
-                                    }
-                                });
+                                if($goodType === "virtual"){
+                                    window.location.href = 'orderGenerateVirtual.html?cartId='+data.data;
+                                }else {
+                                    commonCompt.Confirm({
+                                        hasTitle: true,
+                                        title: "提示",
+                                        contentText: "恭喜您获得了这件商品的购买权",
+                                        cancleText: "继续抢拍",
+                                        certainText: "查看拍得",
+                                        rightBtnClick: function(){
+                                            window.location.href = 'orderGenerate.html';
+                                        },
+                                        leftBtnClick: function(){
+                                            window.location.href = '../index.html';
+                                        }
+                                    });
+                                }
                             }
 
                         },
@@ -804,8 +815,15 @@
         var curIndex = $(this).index();
         var imgsWrapList = $(this).parent().children('span');
         for(var i=0; i<imgsWrapList.length; i++){
-            var img = imgsWrapList.eq(i).css('background-image').split('url("')[1].split('")')[0];
-            console.log(img);
+            var imgWrap = imgsWrapList.eq(i).css('background-image');
+            var img = "";
+            if(imgWrap.indexOf('url("') != -1){
+                img = imgWrap.split('url("')[1].split('")')[0];
+            }else if(imgWrap.indexOf("url('") != -1){
+                img = imgWrap.split("url('")[1].split("')")[0];
+            }else {
+                img = imgWrap.split("url(")[1].split(')')[0];
+            }
             $('.eva-swiper-container .swiper-wrapper').append('<div class="swiper-slide" style="background: url('+ img +') center center no-repeat;background-size: cover;-webkit-background-size: cover;"></div>')
         }
 
@@ -820,7 +838,9 @@
     })
 
     $('body').on('click','#evaluateImgs',function(){
-        $(this).fadeOut();
+        if($(this).css('display') != 'none'){
+            $(this).fadeOut();
+        }
     })
 </script>
 </html>

@@ -42,6 +42,10 @@
             <p class="address"><span>收货地址：</span><span class="addr_detail">详细地址</span></p>
         </div>
 
+        <div id="chargePhone">
+            <p><span>充值号码：</span><span class="phoneNum">手机号码</span></p>
+        </div>
+
         <div id="googDetail">
             <h3><i></i>商品信息</h3>
 
@@ -86,6 +90,7 @@
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $rechargeType;
 
     $(function(){
 
@@ -98,9 +103,16 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('.receiver .name').html(orderMsg.name);
-                    $('.receiver .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
-                    $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    if(orderMsg.rechargeType) {
+                        $rechargeType = orderMsg.rechargeType;
+                        $('#chargePhone').show();
+                        $('.phoneNum').html(orderMsg.rechargeAccount);
+                    }else{
+                        $('#receiveMsg').show();
+                        $('.receiver .name').html(orderMsg.name);
+                        $('.receiver .phone').html(orderMsg.tel.substr(0, 3) + "****" + orderMsg.tel.substr(7, 4));
+                        $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    }
 
                     var goods = orderMsg.goods;
                     var goodsHtml = "";
@@ -159,36 +171,40 @@
             }
         })
 
-        $.ajax({
-            url: QUERYFORTRACKING,
-            type:'GET',
-            dataType:'json',
-            data: {orderId: $curOrderId},
-            success: function(data){
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    console.log(data);
-                    if(data.data){
-                        var $expressMsg = data.data;
-                        $('.express_name').html($expressMsg.com);
-                        $('.express_num').html($expressMsg.nu);
-                        if($expressMsg.data.length > 0){
-                            for(var i=0; i<$expressMsg.data.length; i++){
-                                $('#logistics .express_detail').append('<div><p>'+ $expressMsg.data[i].ftime +'</p><p>'+ $expressMsg.data[i].context +'</p></div>')
+        if($rechargeType){
+            $('#logistics').hide();
+        }else {
+            $.ajax({
+                url: QUERYFORTRACKING,
+                type: 'GET',
+                dataType: 'json',
+                data: {orderId: $curOrderId},
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc, data.data);
+                    if (data.responseCode == 2000) {
+                        console.log(data);
+                        if (data.data) {
+                            var $expressMsg = data.data;
+                            $('.express_name').html($expressMsg.com);
+                            $('.express_num').html($expressMsg.nu);
+                            if ($expressMsg.data.length > 0) {
+                                for (var i = 0; i < $expressMsg.data.length; i++) {
+                                    $('#logistics .express_detail').append('<div><p>' + $expressMsg.data[i].ftime + '</p><p>' + $expressMsg.data[i].context + '</p></div>')
+                                }
+                            } else {
+                                $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
                             }
-                        }else {
-                            $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
+                        } else {
+                            $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
                         }
-                    }else {
-                        $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
-                    }
 
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
                 }
-            },
-            error: function(err){
-                console.log(err);
-            }
-        })
+            })
+        }
 
     })
 
