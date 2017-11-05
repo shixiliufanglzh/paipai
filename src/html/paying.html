@@ -30,14 +30,14 @@
     <section id="addrMsg">
         <div class="addressee">
             <p><span class="name">某某先生</span><span class="phone">13623456789</span></p>
-            <p class="address">上海市浦东新区周浦镇上南路7992弄泰苑公寓13号楼602室</p>
+            <p class="address">详细地址</p>
         </div>
         <div class="bottom_img"></div>
     </section>
 
     <section id="payingDetail">
-        <div class="number"><span class="title">订单编号</span><span class="content order_num">1456456456</span></div>
-        <div class="count"><span class="title">订单金额</span><span class="content red order_price">￥108.00</span></div>
+        <div class="number"><span class="title">订单编号</span><span class="content order_num"></span></div>
+        <div class="count"><span class="title">订单金额</span><span class="content red order_price"></span></div>
     </section>
 
     <section id="payingPath">
@@ -55,10 +55,13 @@
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
     var wxPayPara = {};
+    var timer = null;
 //    var clientIp =  get_client_ip();
 
     $(function(){
-
+        if(commonCompt.GetUrlPara('isVirtual')){
+            $('#addrMsg').hide();
+        }
 
         $.ajax({
             url: GETORDERDETAIL,
@@ -66,16 +69,16 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             success: function(data){
-                console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('.addressee .name').html(orderMsg.name);
-                    $('.addressee .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
-                    $('.addressee .address').html(orderMsg.area.split(',').join('') + orderMsg.address);
-
                     $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice.toFixed(2));
                     $('#payingDetail .order_num').html(orderMsg.orderNum);
+                    if(orderMsg.name){
+                        $('.addressee .name').html(orderMsg.name);
+                        $('.addressee .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
+                        $('.addressee .address').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    }
                 }
             },
             error: function(err){
@@ -166,16 +169,53 @@
                         commonCompt.Confirm({
                             hasTitle: true,
                             title: "支付结果",
-                            contentText: "您已完成支付！",
-                            cancleText: "查看订单",
-                            certainText: "继续抢拍",
-                            rightBtnClick: function(){
-                                window.location.href = '../index.html';
-                            },
-                            leftBtnClick: function(){
-                                window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
-                            }
+                            contentText: "您已完成支付,5s后跳转到订单详情页...",
+                            noBtn: true
+//                            cancleText: "查看订单",
+//                            certainText: "继续抢拍",
+//                            rightBtnClick: function(){
+//                                window.location.href = '../index.html';
+//                            },
+//                            leftBtnClick: function(){
+//                                window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
+//                            }
                         });
+                        var count = 5;
+                        timer = setInterval(function(){
+                            count --;
+                            if(count >= 0){
+                                $('#confirm .content .text').html('您已完成支付,'+ count +'s后跳转到订单详情页...')
+                            }else {
+                                clearInterval(timer);
+                                $.ajax({
+                                    url: GETORDERDETAIL,
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    data: {
+                                        orderId: $curOrderId
+                                    },
+                                    success: function (data) {
+                                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                                        if(data.responseCode == 2000){
+                                            if(data.data.orderStatus == 6){
+                                                window.location.href = 'orderHandleEvaluating.html?order_id='+ $curOrderId;
+                                            }else if(data.data.orderStatus == 1){
+                                                window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
+                                            }else {
+                                                window.location.href = 'order.html';
+                                            }
+                                        }
+                                    },
+                                    error: function (err) {
+                                        commonCompt.popPrompt('充值出错，请稍后查看充值结果')
+                                        setTimeout(function (){
+                                            window.location.href = 'order.html';
+                                        },2500)
+                                    }
+                                })
+                            }
+                        },1000)
+
                     }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
                 }
         );

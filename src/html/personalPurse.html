@@ -31,7 +31,7 @@
         <span class="avatar"></span>
         <div class="msg">
             <p class="name">昵称</p>
-            <p class="count">我的拍币余额<span>0</span></p>
+            <p class="count">我的拍币余额<span></span></p>
         </div>
         <button id="purseDetail">拍币记录</button>
     </div>
@@ -65,6 +65,7 @@
 <script src="../script/wx_browser_api.js"></script>
 
 <script>
+    var curPoint = 0;
 
     $(function(){
         $.ajax({
@@ -72,7 +73,7 @@
             type: 'GET',
             dataType: 'json',
             success: function (data) {
-                console.log(data);
+//                alert(JSON.stringify(data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     if(data.data.userPortrait){
@@ -86,6 +87,7 @@
                         $('#header .name').html(data.data.userName);
                     }
                     if(data.data.userPoint){
+                        curPoint = data.data.userPoint;
                         $('#header .count span').html(data.data.userPoint);
                     }
                     if(data.data.isSign){
@@ -110,8 +112,9 @@
             success:function(data){
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
+//                alert(JSON.stringify(data));
                 if(data.responseCode == 2000){
-                    $('#header .count span').html(data.data.userPoint + 1);
+                    $('#header .count span').html(curPoint + 1);
                     $('#bottomBtn .like').attr('disabled','disabled');
                     $('#bottomBtn .like').css('background-color', '#999');
                     $('#bottomBtn .like').html('签到完成');

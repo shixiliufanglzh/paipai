@@ -104,7 +104,7 @@
                     var $primaryPriceSum = 0, $dealPriceSum = 0;
                     for(var i=0; i<goods.length; i++){
                         var refundBtn = "";
-                        if(goods[i].relateStatus == 1){
+                        if(goods[i].relateStatus == 1 || goods[i].relateStatus == 8){
                             refundBtn = '<button class="order_edit refund">申请退款</button>';
                         }else if(goods[i].relateStatus == 2){
                             refundBtn = '<button class="order_edit">退款中</button>';

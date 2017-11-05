@@ -172,7 +172,7 @@
                 success: function(data){
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
-                        window.location.href= 'paying.html?order_id='+ data.data.orderId;
+                        window.location.href= 'paying.html?order_id='+ data.data.orderId +'&isVirtual='+1;
                     }
 
                 },

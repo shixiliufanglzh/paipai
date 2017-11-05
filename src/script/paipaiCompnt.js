@@ -161,6 +161,9 @@ var commonCompt = {
             $('#confirm .content .text').hide();
             $('#confirm .content .input').show();
         }
+        if(objPara.noBtn){
+            $('#confirm .action').hide();
+        }
         $('#confirm').fadeIn();
         $('#confirm .action .cancel').click(function(){
             var inputVal = $('#confirm .input input').val();
@@ -433,6 +436,7 @@ var commonCompt = {
         }, 1000);
     },
 
+    //去除空格
     trim: function(str){
         return str.replace(/(^\s*)|(\s*$)/g, "");
         //alert($a.length);
