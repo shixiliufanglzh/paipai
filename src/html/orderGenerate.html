@@ -81,6 +81,7 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 <script>
     var goodsList = [];
     var $primaryPriceSum = 0,
@@ -99,6 +100,7 @@
 
     $(function(){
 
+        hasRegister = shouldRegister();
 
         //生成底部导航
         commonCompt.mainNav(3);

@@ -89,7 +89,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             });
             break;
         case "4007":
-            commonCompt.popPrompt("拍币不足");
+            commonCompt.popPrompt("拍币不足,获得拍币联系在线客服");
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
@@ -639,4 +639,36 @@ var commonCompt = {
     }
 }
 
+//要求未注册用户注册
+ function shouldRegister(){
+     var hasPhone = false;
+     $.ajax({
+         url: GETUSERINFO,
+         type: 'GET',
+         dataType: 'json',
+         async: false,
+         success: function (data) {
+             console.log(data);
+             apiResponse(data.responseCode,data.responseDesc,data.data);
+             if(data.responseCode == 2000){
+                 if(data.data.userTel){
+                     hasPhone = true;
+                 }
+                 if(data.data.userPoint){
+                     $('.current_left').html(data.data.userPoint);
+                 }else {
+                     $('.current_left').html(0);
+                 }
+             }
+         },
+         error: function (err) {
+             console.log(err);
+         }
+     })
 
+     if(!hasPhone){
+         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+     }
+
+     return hasPhone;
+ }

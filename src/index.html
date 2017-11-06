@@ -25,6 +25,7 @@
     </script>
     <link rel="stylesheet" href="../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="./style/addtohomescreen.css">
 </head>
 <body>
     <div id="viewTotal">
@@ -99,6 +100,7 @@
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 <script>
 
     var labels;
@@ -459,16 +461,20 @@
 
 
     $('body').on('click','#mainNav button',function(){
-        if($('this').attr('class') == 'home'){
-            window.location.href = 'index.html'
-        }else if($(this).attr('class') == 'collection'){
-            window.location.href = 'html/collection.html'
-        }else if($(this).attr('class') == 'grab'){
-            window.location.href = 'html/orderGenerate.html'
-        }else if($(this).attr('class') == 'order'){
-            window.location.href = 'html/order.html'
-        }else if($(this).attr('class') == 'personal'){
-            window.location.href = 'html/personal.html'
+        var hasRegister = shouldRegister();
+        if(hasRegister){
+//            if($('this').attr('class') == 'home'){
+//                window.location.href = 'index.html'
+//            }else
+            if($(this).attr('class') == 'collection'){
+                window.location.href = 'html/collection.html'
+            }else if($(this).attr('class') == 'grab'){
+                window.location.href = 'html/orderGenerate.html'
+            }else if($(this).attr('class') == 'order'){
+                window.location.href = 'html/order.html'
+            }else if($(this).attr('class') == 'personal'){
+                window.location.href = 'html/personal.html'
+            }
         }
     })
 

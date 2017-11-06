@@ -175,6 +175,7 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 <script>
     var goodsPara,paraList,reloadMsg;
     var timer = null;
@@ -188,37 +189,14 @@
     var finishLoading = true;
     var $pageSize = 12, $pageNum = 1;
     var $curAbout = 0;
-    var hasPhone = false;
     var showEvaluateImgs = [];
+    var hasPhone = false;
 
 
     $(function(){
         $('.loading').hide();
 
         $goodId = commonCompt.GetUrlPara('good_id');
-
-        $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.userTel){
-                        hasPhone = true;
-                    }
-                    if(data.data.userPoint){
-                        $('.current_left').html(data.data.userPoint);
-                    }else {
-                        $('.current_left').html(0);
-                    }
-                }
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
 
         $.ajax({
             url: GETGODDSDETAIL,
@@ -406,7 +384,33 @@
     //开启/关闭 规格参数信息
     $('.action_wrap .like,.action_wrap .purchase,#production .sorts_sel').click(function(){
         $('#sortsList').fadeIn(300);
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userTel){
+                        hasPhone = true;
+                    }
+                    if(data.data.userPoint){
+                        $('.current_left').html(data.data.userPoint);
+                    }else {
+                        $('.current_left').html(0);
+                    }
+                }
+                if(!hasPhone){
+                    hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
     })
+
     $('.close').click(function(){
         $('#sortsList').fadeOut(300);
     })
@@ -724,9 +728,9 @@
     //立即购买
     $('#bottomBtn .purchase').click(function() {
         //如果是未绑定手机号的用户
-        if(!hasPhone){
-            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-        }else {
+//        if(!hasPhone){
+//            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
+//        }else {
             if (userSel.spu_id.length >= paraList.length) {
                 if (userSel.count > 0) {
                     var paraData = {
@@ -775,7 +779,7 @@
             } else {
                 commonCompt.popPrompt('请选择参数');
             }
-        }
+//        }
     })
 
     $('.action_wrap .chat').click(function(){

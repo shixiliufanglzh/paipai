@@ -58,6 +58,7 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/exif.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
@@ -141,7 +142,7 @@
                         $('#mask').remove();
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
-                            commonCompt.popPrompt('已提交申请');
+                            commonCompt.popPrompt('评论成功');
                             setTimeout(function(){
                                 window.location.href = 'order.html';
                             },2000)

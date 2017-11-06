@@ -79,6 +79,7 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
@@ -90,27 +91,9 @@
     var hasPhone = false;
 
     $(function(){
+        hasRegister = shouldRegister();
 
         showCollectionList($pageNum);
-
-        $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.userTel){
-                        hasPhone = true;
-                    }
-                }
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
-
 
         if($('.single_collect').length <= 0){
             $('#blank').show();
@@ -225,10 +208,10 @@
         var thisBtn = $(this);
         //alert('detail.html?good_id='+$selParent.attr('data-good-id')+'&count='+$selParent.attr('data-count')+'&mix_spu='+$selParent.attr('data-mix-spu')+'&goodsIssueno='+$selParent.attr('data-goodsIssueno'));
 
-        //如果是未绑定手机号的用户
-        if(!hasPhone){
-            hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-        }else {
+//        //如果是未绑定手机号的用户
+//        if(!hasPhone){
+//            hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+//        }else {
             var paraData = {
                 goodsId: $selParent.attr('data-good-id'),
                 mixId: $selParent.attr('data-mix-spu'),
@@ -270,7 +253,7 @@
                     commonCompt.popPrompt("购买失败，请刷新后再尝试");
                 }
             });
-        }
+//        }
     })
 
     $('body').on('click','#mainNav button',function(){

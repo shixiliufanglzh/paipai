@@ -2,7 +2,7 @@
  * Created by 是昔流芳 on 2017/10/23.
  */
 $(function(){
-    var shareUrl = '';
+    var shareUrl = sessionStorage.getItem('shareUrl') || '';
     $.ajax({
         url: JSSDKCONFIG,
         type: 'post',
@@ -12,7 +12,7 @@ $(function(){
         success:function(data){
             apiResponse(data.responseCode,data.responseDesc);
             if(data.responseCode == 2000) {
-                shareUrl = data.data.url;
+                //shareUrl = data.data.url;
                 //alert(shareUrl);
                 wx.config({
                     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -38,6 +38,11 @@ $(function(){
                         cancel: function () {
 
                             // 用户取消分享后执行的回调函数
+                        },
+                        trigger: function(){
+                            if(!shareUrl){
+                                shareUrl = getShareUrl();
+                            }
                         }
                     });
 
@@ -50,45 +55,65 @@ $(function(){
                         },
                         cancel: function () {
                             // 用户取消分享后执行的回调函数
+                        },
+                        trigger: function(){
+                            if(!shareUrl){
+                                shareUrl = getShareUrl();
+                            }
                         }
                     });
 
                     wx.onMenuShareQQ({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，快来抢话费！', // 分享描述
-                        link: data.data.url, // 分享链接
+                        link: shareUrl, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
                         cancel: function () {
                             // 用户取消分享后执行的回调函数
+                        },
+                        trigger: function(){
+                            if(!shareUrl){
+                                shareUrl = getShareUrl();
+                            }
                         }
                     });
 
                     wx.onMenuShareWeibo({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，快来抢话费！', // 分享描述
-                        link: data.data.url, // 分享链接
+                        link: shareUrl, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
                         cancel: function () {
                             // 用户取消分享后执行的回调函数
+                        },
+                        trigger: function(){
+                            if(!shareUrl){
+                                shareUrl = getShareUrl();
+                            }
                         }
                     });
 
                     wx.onMenuShareQZone({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，快来抢话费！', // 分享描述
-                        link: data.data.url, // 分享链接
+                        link: shareUrl, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
                         },
                         cancel: function () {
                             // 用户取消分享后执行的回调函数
+                        },
+                        trigger: function(){
+                            if(!shareUrl){
+                                shareUrl = getShareUrl();
+                            }
                         }
                     });
 
@@ -103,6 +128,37 @@ $(function(){
             console.log(err);
         }
     })
-
 })
+
+function getShareUrl(){
+    var storeUrl = '';
+    $.ajax({
+        url: GETUSERINFO,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            console.log(data);
+            apiResponse(data.responseCode,data.responseDesc,data.data);
+            if(data.responseCode == 2000){
+                if(data.data.id){
+                    userId = data.data.id;
+                    if(window.location.href.indexOf('?') != -1){
+                        storeUrl = window.location.href + '&urlCode=' + userId;
+                    }else {
+                        storeUrl = window.location.href + '?urlCode=' + userId;
+                    }
+                    sessionStorage.setItem('shareUrl', storeUrl);
+                    if(!data.data.userTel){
+                        hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                    }
+                }
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    })
+    return storeUrl;
+}
 

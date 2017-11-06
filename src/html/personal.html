@@ -70,6 +70,7 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
     var hasPhone = false;
@@ -102,6 +103,10 @@
                     }
                     if(data.data.userPoint){
                         $('.money').html(data.data.userPoint + '拍币');
+                    }
+
+                    if(!hasPhone){
+                        commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
                     }
                 }
             },
@@ -146,9 +151,7 @@
     })
 
     $('#zoneHeader').click(function(){
-        if(!hasPhone){
-            commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-        }else {
+        if(hasPhone){
             window.location.href = 'personalInfo.html';
         }
     })
