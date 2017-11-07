@@ -87,6 +87,7 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
 
 <script>
@@ -94,6 +95,12 @@
     var $rechargeType;
 
     $(function(){
+        if(document.referrer.indexOf('orderHandleEvaluating') != -1){
+            history.go(-1);
+        }
+        if(document.referrer.indexOf('serviceRefundMoney') != -1){
+            window.location.href = 'orderHandleEvaluating.html?order_id='+ $curOrderId;
+        }
 
         $.ajax({
             url: GETORDERDETAIL,
@@ -121,20 +128,22 @@
                     var $primaryPriceSum = 0, $dealPriceSum = 0;
                     for(var i=0; i<goods.length; i++){
                         var refundBtn = "";
-                        if(goods[i].relateStatus == 1 || goods[i].relateStatus == 8){
-                            refundBtn = '<button class="order_edit refund">申请售后</button>';
-                        }else if(goods[i].relateStatus == 2){
-                            refundBtn = '<button class="order_edit">退款中</button>';
-                        }else if(goods[i].relateStatus == 3){
-                            refundBtn = '<button class="order_edit">退货退款中</button>';
-                        }else if(goods[i].relateStatus == 4){
-                            refundBtn = '<button class="order_edit">换货中</button>';
-                        }else if(goods[i].relateStatus == 5){
-                            refundBtn = '<button class="order_edit">退款完成</button>';
-                        }else if(goods[i].relateStatus == 6){
-                            refundBtn = '<button class="order_edit">退货退款完成</button>';
-                        }else if(goods[i].relateStatus == 7){
-                            refundBtn = '<button class="order_edit">换货完成</button>';
+                        if(goods[i].refundStatus == 0){
+                            refundBtn = '<button class="order_edit refund">申请退款</button>';
+                        }else if(goods[i].refundStatus == 1){
+                            refundBtn = '<button class="order_edit">申请待审核</button>';
+                        }else if(goods[i].refundStatus == 2){
+                            refundBtn = '<button class="order_edit">等待退货中</button>';
+                        }else if(goods[i].refundStatus == 3){
+                            refundBtn = '<button class="order_edit">等待确认中</button>';
+                        }else if(goods[i].refundStatus == 4){
+                            refundBtn = '<button class="order_edit">等待发货中</button>';
+                        }else if(goods[i].refundStatus == 5){
+                            refundBtn = '<button class="order_edit">等待退款中</button>';
+                        }else if(goods[i].refundStatus == 6){
+                            refundBtn = '<button class="order_edit">审核拒绝</button>';
+                        }else if(goods[i].refundStatus == 7){
+                            refundBtn = '<button class="order_edit">售后完成</button>';
                         }
 
                         $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goods[i].salePrice*goods[i].goodsAmount);
@@ -209,8 +218,6 @@
 
     })
 
-
-
     //确认收货
     $('.order_edit.receive').on('click', function(){
         commonCompt.Confirm({
@@ -231,7 +238,7 @@
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
                             commonCompt.popPrompt('已确认收货');
-                            window.location.href = document.referrer;
+                            window.location.href = 'orderHandleEvaluating.html?order_id='+ $curOrderId;
                         }
                     },
                     error: function (err) {
@@ -247,9 +254,38 @@
 
     //申请售后
     $('.good_list').on('click','.order_edit.refund',function(){
-        window.location.href = 'services.html?orderId='+ $curOrderId +'&goodsId=' +
-                $(this).parents('.single_good').attr('data-good-id')+
-                '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "您是否已收到货物？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: CONFIRMRECEIPT,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrderId
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+//                            commonCompt.popPrompt('已确认收货');
+                            window.location.href = 'orderHandleEvaluating.html?order_id='+ $curOrderId;
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+                window.location.href = 'serviceRefundMoney.html?orderId='+ $curOrderId +'&goodsId=' +
+                        $(this).parents('.single_good').attr('data-good-id')+
+                        '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id');
+            }
+        })
     })
 
 

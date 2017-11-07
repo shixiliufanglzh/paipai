@@ -282,6 +282,37 @@ var commonCompt = {
         $('body').append(html);
     },
 
+    //悬浮按钮
+    addFixedBtn: function (){
+        var homeLink = "../index.html";
+        if(window.location.href.indexOf('index') != -1){
+            homeLink = "index.html";
+        }else {
+            homeLink = "../index.html";
+        }
+        var html =  '<div id="fixedLink">'+
+                        '<div class="code_wrap">'+
+                            '<div class="code"></div>'+
+                            '<p>请关注【减价拍】官方公众号</p>'+
+                        '</div>'+
+                        '<div class="btn_wrap">'+
+                            '<a href="'+ homeLink +'" class="home"></a>'+
+                            '<a class="show_code"></a>'+
+                        '</div>'+
+                    '</div>'
+
+        $('body').append(html);
+
+        $('body').on('click','.show_code',function(){
+            $('.code_wrap').fadeIn();
+        })
+
+        $('body').on('click','.code_wrap',function(){
+            $(this).fadeOut();
+        })
+
+    },
+
     //图片压缩转base64，依赖EXIF，解决iphone拍照旋转问题
     readFile: function(obj,imgListBase64,position,addBtn) {
 
@@ -653,11 +684,13 @@ var commonCompt = {
              if(data.responseCode == 2000){
                  if(data.data.userTel){
                      hasPhone = true;
-                 }
-                 if(data.data.userPoint){
-                     $('.current_left').html(data.data.userPoint);
                  }else {
-                     $('.current_left').html(0);
+                     if(!hasPhone){
+                         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                     }
+                 }
+                 if(data.data.id){
+                     sessionStorage.setItem('userId', data.data.id);
                  }
              }
          },
@@ -666,9 +699,7 @@ var commonCompt = {
          }
      })
 
-     if(!hasPhone){
-         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-     }
-
      return hasPhone;
  }
+
+commonCompt.addFixedBtn();

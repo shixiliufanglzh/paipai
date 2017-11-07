@@ -25,7 +25,6 @@
     </script>
     <link rel="stylesheet" href="../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="./style/index.css">
-    <link rel="stylesheet" href="./style/addtohomescreen.css">
 </head>
 <body>
     <div id="viewTotal">
@@ -96,11 +95,14 @@
             </ul>
         </div>
     </div>
+
+
 </body>
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
-<script src="../script/wx_browser_api.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="script/wx_browser_api.js"></script>
 <script>
 
     var labels;
@@ -129,11 +131,12 @@
         sales: false,  //true按销量排序
         price: 0  //无0降序1升序2
     };
+
     var $pageNum = 1;
     var goodsList = [];
     var timer = null;
     var finishLoading = true;
-    var $pageSize = 6;
+    var $pageSize = 10;
 
 
     $(function(){

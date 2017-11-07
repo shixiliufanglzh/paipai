@@ -25,7 +25,7 @@
     </script>
     <link rel="stylesheet" href="../style/personal.css">
 </head>
-<body>
+<body style="background-color: #fff;">
 <div id="persoanlCenter">
     <div id="zoneHeader">
         <span class="avatar"></span>
@@ -50,12 +50,16 @@
                 <i class="pre_icon collection"></i><span class="title">我的关注</span><i class="icon_enter"></i>
             </li>
 
+            <li class="single_btn loc_services">
+                <i class="pre_icon services"></i><span class="title">售后记录</span><i class="icon_enter"></i>
+            </li>
+
             <li class="single_btn loc_address">
                 <i class="pre_icon address"></i><span class="title">地址管理</span><i class="icon_enter"></i>
             </li>
 
-            <li class="single_btn loc_service">
-                <i class="pre_icon service"></i><span class="title">联系我们</span><i class="icon_enter"></i>
+            <li class="single_btn loc_contact">
+                <i class="pre_icon contact"></i><span class="title">联系我们</span><i class="icon_enter"></i>
             </li>
 
             <li class="single_btn loc_help">
@@ -70,6 +74,7 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
 
 <script>
@@ -141,9 +146,11 @@
             window.location.href = 'order.html';
         }else if($(this).hasClass('loc_collection')){
             window.location.href = 'collection.html';
+        }else if($(this).hasClass('loc_services')){
+//            window.location.href = 'Q&A.html';
         }else if($(this).hasClass('loc_address')){
             window.location.href = 'address.html?from=0';
-        }else if($(this).hasClass('loc_service')){
+        }else if($(this).hasClass('loc_contact')){
             window.location.href = 'contact.html';
         }else if($(this).hasClass('loc_help')){
             window.location.href = 'Q&A.html';

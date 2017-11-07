@@ -1,8 +1,21 @@
 /**
  * Created by 是昔流芳 on 2017/10/23.
  */
+var shareUrl = window.location.href;
+var userId;
+
 $(function(){
-    var shareUrl = sessionStorage.getItem('shareUrl') || '';
+    userId = sessionStorage.getItem('userId') || '';
+    if(userId){
+        if(window.location.href.indexOf('?') != -1){
+            shareUrl = window.location.href + '&urlCode=' + userId;
+        }else {
+            shareUrl = window.location.href + '?urlCode=' + userId;
+        }
+    }
+
+    //alert(userId+'  '+shareUrl);
+
     $.ajax({
         url: JSSDKCONFIG,
         type: 'post',
@@ -40,8 +53,8 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!shareUrl){
-                                shareUrl = getShareUrl();
+                            if(!userId){
+                                userId = getUserId();
                             }
                         }
                     });
@@ -57,8 +70,9 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!shareUrl){
-                                shareUrl = getShareUrl();
+                            if(!userId){
+                                //alert('进来坐');
+                                userId = getUserId();
                             }
                         }
                     });
@@ -75,8 +89,9 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!shareUrl){
-                                shareUrl = getShareUrl();
+                            if(!userId){
+                                userId = getUserId();
+                                return false;
                             }
                         }
                     });
@@ -93,8 +108,8 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!shareUrl){
-                                shareUrl = getShareUrl();
+                            if(!userId){
+                                userId = getUserId();
                             }
                         }
                     });
@@ -111,11 +126,29 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!shareUrl){
-                                shareUrl = getShareUrl();
+                            if(!userId){
+                                userId = getUserId();
                             }
                         }
                     });
+
+                    //wx.showMenuItems({
+                    //    menuList: [
+                    //        "menuItem:copyUrl",
+                    //        'menuItem:share:appMessage',
+                    //        'menuItem:share:timeline',
+                    //        "menuItem:share:qq",
+                    //        "menuItem:favorite",
+                    //        'menuItem:share:QZone',
+                    //        "menuItem:profile"
+                    //    ], // 要显示的菜单项，所有menu项见附录3
+                    //    success:function () {
+                    //        alert( 'yes' );
+                    //    },
+                    //    fail:function (res) {
+                    //        console.log( 'no' );
+                    //    }
+                    //});
 
                     //wx.hideMenuItems({
                     //    menuList: ['menuItem:copyUrl'] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
@@ -130,8 +163,8 @@ $(function(){
     })
 })
 
-function getShareUrl(){
-    var storeUrl = '';
+function getUserId(){
+    var userId = '';
     $.ajax({
         url: GETUSERINFO,
         type: 'GET',
@@ -143,12 +176,7 @@ function getShareUrl(){
             if(data.responseCode == 2000){
                 if(data.data.id){
                     userId = data.data.id;
-                    if(window.location.href.indexOf('?') != -1){
-                        storeUrl = window.location.href + '&urlCode=' + userId;
-                    }else {
-                        storeUrl = window.location.href + '?urlCode=' + userId;
-                    }
-                    sessionStorage.setItem('shareUrl', storeUrl);
+                    sessionStorage.setItem('userId', userId);
                     if(!data.data.userTel){
                         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
                     }
@@ -159,6 +187,6 @@ function getShareUrl(){
             console.log(err);
         }
     })
-    return storeUrl;
+    return userId;
 }
 

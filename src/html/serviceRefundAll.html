@@ -93,6 +93,7 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/exif.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
 
 <script>
@@ -171,7 +172,8 @@
             }else {
                 var dataPara = {
                     orderId: $curOrderId,
-                    goodsId: $curGoodId,
+//                    goodsId: $curGoodId,
+                    orderGoodsId: $orderGoodsId,
                     refundType: 2,
                     refundReason: $reason,
                     refundMoney: $('input.total_count').val(),

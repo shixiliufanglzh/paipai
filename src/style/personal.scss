@@ -57,10 +57,13 @@ body {
         &.collection {
           background-image: url("../imgs/zone_collection.png");
         }
+        &.services {
+          background-image: url("../imgs/zone_services.png");
+        }
         &.address {
           background-image: url("../imgs/zone_address.png");
         }
-        &.service {
+        &.contact {
           background-image: url("../imgs/zone_service.png");
         }
         &.help {
