@@ -20,7 +20,9 @@
     }
     .filtersWrap {
       display: flex;
+      display: -webkit-flex;
       flex-wrap: nowrap;
+      -webkit-flex-wrap: nowrap;
       border-bottom: 1px solid #ddd;
       .filter {
         text-align: center;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>新手帮助</title>
+    <title>微信授权登录</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -24,32 +24,27 @@
         })(document, window);
     </script>
     <style>
-        #q_a {
-            margin-bottom: 0.5rem;
+        .version {
+            text-align: center;
+            margin-bottom: 1rem;
         }
-        h2 {
-            /*font-weight: 500;*/
+        .logo {
+            width: 2.02rem;
+            height: 2.02rem;
+            position: relative;
+            left: 50%;
+            margin-left: -1.01rem;
+            margin-top: 1rem;
+        }
+        .logo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .version h3 {
+            font-weight: 500;
             font-size: 0.3rem;
-            margin-bottom: 0.16rem;
-            margin-top: 0;
-        }
-        h3 {
-            /*font-weight: 500;*/
-            font-size: 0.28rem;
-            margin: 0.06rem 0;
-        }
-        p {
-            font-size: 0.24rem;
-            text-align: justify;
-            margin-top: 0.02rem;
-            margin-bottom: 0.06rem;
-        }
-        #q_a p {
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 0.16rem;
-        }
-        span {
-            color: #FF4242;
+            margin-bottom: 0.04rem;
         }
 
         #fixedLink .code_wrap {
@@ -105,52 +100,39 @@
             background: url(data:image/png;base64,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) center center no-repeat;
             background-size: contain;
             margin-top: 0.432rem; }
+
+        .contact_code {
+            font-size: 0;
+            text-align: center;
+            margin-top: 0.6rem;
+        }
+
+        .contact_code img {
+            width: 3.28rem;
+            height: 3.28rem;
+            text-align: center;
+        }
+        .contact_code p {
+            font-size: 0.26rem;
+            margin-top: 0.1rem;
+        }
     </style>
 </head>
-<body style="background-color: #fff; padding: 0.24rem">
-    <div id="q_a">
-        <h2>一、常见问题汇总</h2>
-        <h3><span>Q:</span>减价拍商城是什么？</h3>
-        <p><span>A:</span>减价拍商城致力于打造一种全新的商品竞拍售卖模式，通过商品“正价减拍，先拍先得”的运营模式，达到商品快速成交的目的，商品最终售价由买家做主，只有当商品售价降低到买家认可的价格时，买家再出手抢拍购买。由于商品都是从正常售价（即秒杀价、折后价等优惠后的促销价格）开始减价拍卖，首先出价抢拍的买家获得以当前价格购买商品的权利，所以，拍到就是赚到，如果减价过程中，一直没有买家出价竞拍，商品可以一直减价到0元，当然，这种概率还是比较低的，总归有不贪婪的买家率先出价抢拍的。</p>
-
-        <h3><span>Q:</span>减价抢拍的规则是什么？</h3>
-        <p><span>A:</span>减价抢拍的规则非常简单，概况起来就三条：<br>
-            【正价减拍】商品从正常售价（即秒杀价、折后价等优惠后的促销价格）开始减价拍卖，每隔一段时间减价一次，一直降低到有买家出价抢拍为止。<br>
-            【先拍先得】在商品减价过程中，首先出价抢拍的买家获得以当前价格购买商品的权利，如果一直没有买家出价抢拍，则商品可以一直减价到0元。<br>
-            【循环反复】商品被买家出价抢拍后，如商品仍有库存，则商品从正常售价重新开始减价拍卖，循环反复，直至库存为0。</p>
-
-        <h3><span>Q:</span>起拍价是如何定的，如何确保抢拍到的价格比其它电商平台售价低？</h3>
-        <p><span>A:</span>减价拍商城所有商品的起拍价，都是各大主流电商平台近1个月同类商品的最低售价，即包括秒杀价、折后价等促销价格，所以，从起拍价开始，每降低一元的价格，就是节省了一元的花费，可以确保拍到就是赚到。同时，商城设立了价格监督举报机制，一旦发现商城起拍价高于其它主流电商平台的售价，可发送截图等证据资料至邮箱jianjiabid@126.com，一经核实，我们将给予举报者奖励。</p>
-
-        <h3><span>Q:</span>参加减价抢拍有什么要求？</h3>
-        <p><span>A:</span>参加减价抢拍，需要消耗一定数量的拍币，拍币获得方法请参阅第5条。</p>
-
-        <h3><span>Q:</span>如何获得拍币？</h3>
-        <p><span>A:</span>获得拍币的方法非常简单，概率起来就三条：<br>
-            【分享好友】分享公众号文章给好友，邀请好友关注我们，可获得拍币。<br>
-            【每日签到】每日签到可以获得派币。<br>
-            【系统奖励】系统根据用户活跃度、消费金额不定期奖励拍币。</p>
-
-        <h3><span>Q:</span>商城的商品是全新正品么？</h3>
-        <p><span>A:</span>商城郑重承诺：所有商品均由符合资质要求的合作供货商提供，正规渠道采购，全新正品，假一赔三。</p>
-
-        <h3><span>Q:</span>售后服务怎样，有保障么？</h3>
-        <p><span>A:</span>商城支持7天无理由退换货服务，可放心购买。商品售后保修服务由本商城提供或者全国联保，售后无忧。</p>
-
-        <h3><span>Q:</span>订单支付成功后多久发货，发什么快递？</h3>
-        <p><span>A:</span>商城会根据订单支付时间和订单量，统筹安排发货，一般会在48小时内发货，部分库存紧张或者订单量大的商品，会在3天内发货，如有对发货时效有特殊要求，请联系在线客服咨询解决。订单默认发优速或者申通快递，贵重商品发顺丰快递。</p>
-
-        <h3><span>Q:</span>商城为什么可以做到低价甚至赔本销售，是不是骗人的？</h3>
-        <p><span>A:</span>减价拍商城的商品虽然都是从正常售价（即秒杀价、折后价等优惠后的促销价格）开始减价拍卖，甚至可以一直减价到0元购买，但是这种概率是很低的，因为竞拍规则是“先拍先得”，你不出价抢拍，总归会有不贪婪的人觉得价格已经降低到可以接受的程度了，就会率先出价抢拍，而你只能重新参加此商品的减价拍卖。同时，由于商品正价和成本之间有一定的减价空间，有的商品赔了，有的商品赚了，总体来看亏损还是在可控范围内的，而由此吸引聚集的人气和流量，又可以给我们带来额外的附加价值。所以，减价竞拍模式完全符合商业逻辑，完全没有必要骗人。</p>
+<body style="background-color: #fff; padding: 0.24rem;margin: 0">
+<div id="contact">
+    <div class="version">
+        <div class="logo">
+            <img src="../imgs/open_wechat.png" alt="">
+        </div>
+        <h3>此网页需要微信授权登录</h3>
     </div>
 
-    <div>
-        <h2>二、退换货须知</h2>
-        <p>1、请在商品签收时，检查商品外包装是否破损，拆箱检查商品是否完好，如发现商品破损，请直接拒收。</p>
-        <p>2、商品签收之日起，7天内可申请无理由退换货（部分特殊商品除外），请务必确保商品包装及配件完好，不影响二次销售，否则可能导致无法退换货。</p>
-        <p>3、商品签收之日起，商品有质量问题支持7天退货、15天内换货、质保期内保修。买家可联系在线客服提交返修申请办理退换货事宜，拒收一切退换货到付件。</p>
-        <p>4、有质量问题的退换货运费由商城承担，非质量问题的退换货运费由买家承担。</p>
+    <div class="contact_code">
+        <img src="../imgs/wechat_code.png" alt="">
+        <p>请关注【减价拍】官方公众号</p>
     </div>
+
+</div>
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>

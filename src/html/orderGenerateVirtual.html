@@ -48,7 +48,7 @@
         </div>
         <p class="fee_result virtual">需要支付<span>￥0.00</span></p>
         <p class="fill_number">充值手机号：<input type="number" maxlength="11" id="phoneNumber" placeholder="仅限中国大陆（移动、联通和电信）手机号码"></p>
-        <p class="prompt">注意：如没有及时提交订单，购买权将失效</p>
+        <p class="prompt">注意：如没有及时提交订单或者离开本页面，购买权将失效</p>
     </section>
 
     <div id="submitOrder" class="virtual">
@@ -77,6 +77,7 @@
     var timer;
 
     $(function(){
+        $('body').height($('body')[0].clientHeight);
 
         $cartId = commonCompt.GetUrlPara('cartId');
 

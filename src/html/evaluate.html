@@ -71,6 +71,9 @@
     var $grade = 5;
 
     $(function(){
+
+        $('body').height($('body')[0].clientHeight);
+
         $.ajax({
             url: GETORDERGOODS,
             data: {
@@ -124,6 +127,7 @@
                 var dataPara = {
                     orderId: $curOrderId,
                     goodsId: $curGoodId,
+                    orderGoodsId: $orderGoodsId,
                     mixId: $mixId,
                     point: $grade,
                     content: textContent,

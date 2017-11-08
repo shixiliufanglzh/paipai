@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的订单</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body>
+<div id="order">
+    <div class="orders_list">
+        <div class="singleOrder clearfix" data-order-type="beforeSend" data-order-id="">
+            <div class="order_head">订单号：<span class="order_number">3654978251365</span><span class="orde_status">待发货</span></div>
+            <div class="goods_detail" data-order-status="">
+                <div class="order_detail clearfix">
+                    <div class="product_pic"></div>
+                    <div class="product_desc">
+                        <p class="name">噶Sega身高大概v地方个人个人的观点废话不多恢复计划复古风格</p>
+                        <p class="parameter">白色 32寸</p>
+                        </div>
+                    <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">3999.00/span><br><span class="count">×2</span></div>
+                </div>
+                <div class="order_detail clearfix">
+                    <div class="product_pic"></div>
+                    <div class="product_desc">
+                        <p class="name">噶Sega身高大概v地方个人个人的观点废话不多恢复计划复古风格</p>
+                        <p class="parameter">白色 32寸</p>
+                    </div>
+                    <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">3999.00/span><br><span class="count">×2</span></div>
+                </div>
+            </div>
+            <p class="total">共2件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥3999.00</span>（含运费<span class="postage">￥12.00 </span>）</p>
+            <span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：2017-10-13</span>
+            <button class="order_edit red before_send">催一下</button>
+        </div>
+    </div>
+    <div class="loading"><i></i><span>加载中...</span></div>
+</div>
+
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_order.png" alt="">
+    </div>
+    <h6>还没有订单呢~</h6>
+    <button onclick="window.location.href='../index.html'">去抢拍</button>
+</div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+
+<script>
+    var $pageNum = 1;
+    var $pageSize = 6;
+    var $orderStatus = "";  //订单状态（""全部，1待发货，2待支付，4交易关闭，5待收货, 6已收货/交易成功）
+    var ordersListAll = [];
+    var finishLoading = true;
+
+    $(function(){
+
+        shouldRegister();
+
+        bindOrdersList($pageNum,$orderStatus);
+
+        //没有订单时的显示
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+
+    })
+
+
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+            setTimeout(function(){
+                bindOrdersList($pageNum,$orderStatus);
+            },1000)
+        }
+    })
+
+    //查看订单详情
+    $('.orders_list').on('click', '.singleOrder .goods_detail,.order_edit.logistics,.order_edit.view', function(){
+        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
+        var $curOrderStatus = $(this).attr('data-order-status');
+        window.location.href = 'orderHandleSending.html?order_id='+ $curOrderId;
+    })
+
+    //获取商品列表
+    function bindOrdersList(pageNum,orderStatus){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.orders_list').html('');
+        }
+
+        //设置订单列表请求参数
+        var paraData = {};
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.orderStatus = orderStatus;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GETORDER,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            async:false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    var orders = data.data;
+                    if(orders.length > 0){
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+                    }
+                    ordersListAll = ordersListAll.concat(orders);
+                    var ordersListHtml = "";
+                    var $amount = 0;
+                    for(var i=0; i<orders.length; i++){
+
+                    }
+
+                    $('.orders_list').append(ordersListHtml);
+
+                    if(orders.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+</script>
+</html>

@@ -81,6 +81,9 @@
                         $('.addressee .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
                         $('.addressee .address').html(orderMsg.area.split(',').join('') + orderMsg.address);
                     }
+                    if(commonCompt.trim(orderMsg.rechargeType) && commonCompt.trim(orderMsg.rechargeType).length > 0){
+                        $('#addrMsg').hide();
+                    }
                 }
             },
             error: function(err){

@@ -177,7 +177,6 @@
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<script src="../script/wx_browser_api.js"></script>
 <script>
     var goodsPara,paraList,reloadMsg;
     var timer = null;
@@ -196,6 +195,27 @@
 
 
     $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.id){
+                        userId = data.data.id;
+                        localStorage.setItem('userId', userId);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
         $('.loading').hide();
 
         $goodId = commonCompt.GetUrlPara('good_id');
@@ -220,7 +240,7 @@
                     $('#summary .primary_range').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#summary .market_range').html('￥' + goodsPara.marketPrice.toFixed(2));
                     $('#summary .sold_count').html(goodsPara.saleNum + '件');
-                    $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
+                    $('#summary .cur_price').html('当前价：￥' + goodsPara.nowPrice.toFixed(2));
                     $('#sortsList .cur_price span').html('￥' + goodsPara.nowPrice.toFixed(2));
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
@@ -355,7 +375,7 @@
                 if(goodsPara.nowPrice <= 0){
                     goodsPara.nowPrice = 0;
                 };
-                $('#summary .cur_price').html('￥' + goodsPara.nowPrice.toFixed(2));
+                $('#summary .cur_price').html('当前价：￥' + goodsPara.nowPrice.toFixed(2));
                 $('#summary .sold_count').html(goodsPara.saleNum + '件');
                 if (goodsPara.limitNum > 0 && goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
                     $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
@@ -386,6 +406,7 @@
     //开启/关闭 规格参数信息
     $('.action_wrap .like,.action_wrap .purchase,#production .sorts_sel').click(function(){
         $('#sortsList').fadeIn(300);
+        $('body').css("overflow", "hidden");
         $.ajax({
             url: GETUSERINFO,
             type: 'GET',
@@ -415,12 +436,14 @@
 
     $('.close').click(function(){
         $('#sortsList').fadeOut(300);
+        $('body').css("overflow", "auto")
     })
     $('#sortsList').click(function(e){
         if ($(e.target).is('.sorts_wrap')){
             return;
         }else {
             $('#sortsList').fadeOut(300);
+            $('body').css("overflow", "auto")
         }
     })
     $('.sorts_wrap').click(function (e){
@@ -741,6 +764,7 @@
                         goodsAmount: userSel.count,
                         goodsIssueno: goodsPara.goodsIssueno
                     }
+                    commonCompt.addMask('抢拍中...');
 //                    alert(JSON.stringify(paraData));
                     $.ajax({
                         url: ADDCART,
@@ -748,6 +772,9 @@
                         dataType: 'json',
                         data: paraData,
                         success: function (data) {
+                            $('#mask').fadeOut(200,function(){
+                                $('#mask').remove();
+                            });
                             apiResponse(data.responseCode, data.responseDesc,data.data);
                             if (data.responseCode == 2000) {
                                 if($goodType === "virtual"){
@@ -768,9 +795,11 @@
                                     });
                                 }
                             }
-
                         },
                         error: function (err) {
+                            $('#mask').fadeOut(200,function(){
+                                $('#mask').remove();
+                            });
                             console.log(err);
                             commonCompt.popPrompt("购买失败，请刷新后再尝试");
                         }
@@ -849,4 +878,5 @@
         }
     })
 </script>
+<script src="../script/wx_browser_api.js"></script>
 </html>

@@ -102,7 +102,7 @@
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<script src="script/wx_browser_api.js"></script>
+
 <script>
 
     var labels;
@@ -140,6 +140,25 @@
 
 
     $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.id){
+                        userId = data.data.id;
+                        localStorage.setItem('userId', userId);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         if($('.single_good').length <=0 ){
             finishLoading =true
@@ -464,8 +483,8 @@
 
 
     $('body').on('click','#mainNav button',function(){
-        var hasRegister = shouldRegister();
-        if(hasRegister){
+//        var hasRegister = shouldRegister();
+//        if(hasRegister){
 //            if($('this').attr('class') == 'home'){
 //                window.location.href = 'index.html'
 //            }else
@@ -478,10 +497,11 @@
             }else if($(this).attr('class') == 'personal'){
                 window.location.href = 'html/personal.html'
             }
-        }
+//        }
     })
 
     commonCompt.screenVisibleChange();
 
 </script>
+<script src="script/wx_browser_api.js"></script>
 </html>
