@@ -30,8 +30,8 @@
 
     <div id="grade">
         <span class="title">总体评价</span>
-        <span class="chose_grade"><i></i><i></i><i></i><i></i><i></i></span>
-        <span class="state">待评价</span>
+        <span class="chose_grade"><i class="light"></i><i class="light"></i><i class="light"></i><i class="light"></i><i class="light"></i></span>
+        <span class="state">非常好</span>
     </div>
 
     <div id="addition">
@@ -41,7 +41,7 @@
 
     <div id="uploadPics" class="pic_evaluate clearfix">
         <h3>上传凭证<span>（最多上传4张照片）</span>：</h3>
-        <input type="file" id="uploadImg" accept="image/*" multiple="multiple" capture=“camera”>
+        <input type="file" id="uploadImg" accept="image/*" multiple="multiple">
         <div id="pics_box">
             <!--<span class="picture"><i></i></span>-->
         </div>
@@ -58,6 +58,8 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/exif.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
@@ -66,9 +68,12 @@
     var $orderGoodsId = commonCompt.GetUrlPara('orderGoodsId');
     var $mixId = commonCompt.GetUrlPara('mixId');
     var $commentStatus = 2;
-    var $grade = 0;
+    var $grade = 5;
 
     $(function(){
+
+        $('body').height($('body')[0].clientHeight);
+
         $.ajax({
             url: GETORDERGOODS,
             data: {
@@ -122,28 +127,35 @@
                 var dataPara = {
                     orderId: $curOrderId,
                     goodsId: $curGoodId,
+                    orderGoodsId: $orderGoodsId,
                     mixId: $mixId,
                     point: $grade,
                     content: textContent,
-                    picfile: imgsObj
+                    picfile: JSON.stringify(imgsObj)
 
                 };
-                alert(JSON.stringify(dataPara));
+//                alert(imgListBase64);
+//                alert(JSON.stringify(dataPara));
+                commonCompt.addMask('提交中...');
                 $.ajax({
+//                    contentType: multipart/form,
                     url: ADDCOMMENT,
                     data: dataPara,
                     type:'POST',
                     dataType:'json',
                     success:function(data){
+                        $('#mask').remove();
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
-                            commonCompt.popPrompt('已提交申请');
+                            commonCompt.popPrompt('评论成功');
                             setTimeout(function(){
                                 window.location.href = 'order.html';
                             },2000)
                         }
                     },
                     error: function(err){
+                        $('#mask').remove();
+                        commonCompt.popPrompt('提交出错');
                         console.log(err);
                     }
                 })

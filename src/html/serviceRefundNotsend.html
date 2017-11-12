@@ -60,7 +60,8 @@
         <div class="form_group clearfix">
             <span class="required">*</span>
             <label>退款金额：</label>
-            <span class="content">￥<span class="count total_count">3999.00</span></span>
+            <!--<span class="content">￥<span class="count total_count">3999.00</span></span>-->
+            <span class="content">￥<input type="number" class="count total_count"></span>
         </div>
         <p class="count_prompt">最多退款￥<span class="most_count">3999.00</span>，包含快递费￥<span class="postage">0.00</span></p>
     </div>
@@ -78,6 +79,8 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('orderId');
@@ -110,8 +113,9 @@
                     $('.good_msg .price_primary').html(goodMsg.salePrice);
                     $('.good_msg .count').html('×' + goodMsg.goodsAmount);
                     $refundMoney = goodMsg.totalPrice;
-                    $('.total_count,.most_count').html($refundMoney);
-                    $commitStatus = goodMsg.commentStatus;
+                    $('.most_count').html($refundMoney);
+                    $('.total_count').val($refundMoney);
+                    $commitStatus = goodMsg.relateStatus;
 
                 }
             },
@@ -130,10 +134,11 @@
             }else {
                 var dataPara = {
                     orderId: $curOrderId,
-                    goodsId: $curGoodId,
+//                    goodsId: $curGoodId,
+                    orderGoodsId: 0,
                     refundType: 1,
                     refundReason: $reason,
-                    refundMoney: $refundMoney,
+                    refundMoney: $('.total_count').val(),
                     refundDesc: $('#addition textarea').val()
 
                 };
@@ -159,7 +164,7 @@
                 })
             }
         }else {
-            commonCompt.popPrompt('您已经提交过评价了哦');
+            commonCompt.popPrompt('您已经提交过了');
             setTimeout(function(){
                 window.location.href = 'order.html';
             },2000)

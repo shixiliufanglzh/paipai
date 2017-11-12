@@ -31,7 +31,7 @@
             <i class="car"></i>
             <div class="order_state">
                 <h3>交易关闭</h3>
-                <p>您已经失去了购买权</p>
+                <p>很遗憾，本次交易没有达成</p>
                 <p>赶紧去拍下您喜欢的物品吧</p>
             </div>
         </div>
@@ -40,6 +40,10 @@
             <i class="location"></i>
             <p class="receiver">收货人：<span class="name">收货人</span><span class="phone">手机号码</span></p>
             <p class="address"><span>收货地址：</span><span class="addr_detail">详细地址</span></p>
+        </div>
+
+        <div id="chargePhone">
+            <p><span>充值号码：</span><span class="phoneNum">手机号码</span></p>
         </div>
 
         <div id="googDetail">
@@ -68,6 +72,8 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
@@ -84,10 +90,15 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('.receiver .name').html(orderMsg.name);
-                    $('.receiver .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
-                    $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
-
+                    if(orderMsg.rechargeType) {
+                        $('#chargePhone').show();
+                        $('.phoneNum').html(orderMsg.rechargeAccount);
+                    }else{
+                        $('#receiveMsg').show();
+                        $('.receiver .name').html(orderMsg.name);
+                        $('.receiver .phone').html(orderMsg.tel.substr(0, 3) + "****" + orderMsg.tel.substr(7, 4));
+                        $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    }
                     var goods = orderMsg.goods;
                     var goodsHtml = "";
                     var totalCount = 0;

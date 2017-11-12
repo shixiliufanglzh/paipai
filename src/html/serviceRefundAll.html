@@ -93,6 +93,8 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/exif.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('orderId');
@@ -170,7 +172,8 @@
             }else {
                 var dataPara = {
                     orderId: $curOrderId,
-                    goodsId: $curGoodId,
+//                    goodsId: $curGoodId,
+                    orderGoodsId: $orderGoodsId,
                     refundType: 2,
                     refundReason: $reason,
                     refundMoney: $('input.total_count').val(),
@@ -199,7 +202,7 @@
                 })
             }
         }else {
-            commonCompt.popPrompt('您已经提交过评价了哦');
+            commonCompt.popPrompt('您已经提交过了');
             setTimeout(function(){
                 window.location.href = 'order.html';
             },2000)

@@ -53,6 +53,8 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
 
 <script>
     var $pageNum = 1;
@@ -63,6 +65,9 @@
     var finishLoading = true;
 
     $(function(){
+
+        shouldRegister();
+
         //生成底部导航
         commonCompt.mainNav(4);
 
@@ -438,5 +443,8 @@
             }
         });
     }
+
+    commonCompt.screenVisibleChange();
 </script>
+<script src="../script/wx_browser_api.js"></script>
 </html>

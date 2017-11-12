@@ -339,7 +339,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 9;
+  z-index: 9998;
   .sorts_wrap {
     padding-bottom: 1rem;
     width: 100%;
@@ -417,6 +417,7 @@
             span {
               font-size: 0.24rem;
               @include smallBlock(auto,0.4rem);
+              min-width: 0.5rem;
               padding: 0 0.04rem;
               background-color: #f0f0f0;
               text-align: center;
@@ -471,7 +472,6 @@
           font-size: 0.3rem;
           color: #2f2f2f;
           font-weight: 500;
-
         }
         p {
           font-size: 0.24rem;
@@ -483,6 +483,34 @@
       width: 100%;
       position: absolute;
       bottom: 0;
+    }
+  }
+}
+
+#evaluateImgs {
+  display: none;
+  position: fixed;
+  background-color: rgba(0,0,0,0.9);
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  .eva-swiper-container {
+    width: 100%;
+    height: 7.5rem;
+    margin-top: 2rem;
+    position: relative;
+    .swiper-wrapper {
+      width: 100%;
+      height: 100%;
+      .swiper-slide {
+        width: 100%;
+        height: 100%;
+        background: url("../imgs/placeholder.jpg") center center no-repeat;
+        -webkit-background-size: contain;
+        background-size: contain;
+      }
     }
   }
 }

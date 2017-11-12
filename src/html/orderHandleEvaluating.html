@@ -43,6 +43,10 @@
             <p class="address"><span>收货地址：</span><span class="addr_detail">详细地址</span></p>
         </div>
 
+        <div id="chargePhone">
+            <p><span>充值号码：</span><span class="phoneNum">手机号码</span></p>
+        </div>
+
         <div id="googDetail">
             <h3><i></i>商品信息</h3>
 
@@ -71,7 +75,8 @@
             <div class="detail">
                 <p>物流公司：<span class="express_name"></span></p>
                 <p>物流编号：<span class="express_num"></span></p>
-                <p>物流信息：</p>
+                <div class="express_detail">
+                </div>
             </div>
         </div>
 
@@ -80,9 +85,12 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $rechargeType;
 
     $(function(){
 
@@ -91,13 +99,21 @@
             type:'GET',
             dataType:'json',
             data: {orderId: $curOrderId},
+            async: false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('.receiver .name').html(orderMsg.name);
-                    $('.receiver .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
-                    $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    if(orderMsg.rechargeType) {
+                        $rechargeType = orderMsg.rechargeType;
+                        $('#chargePhone').show();
+                        $('.phoneNum').html(orderMsg.rechargeAccount);
+                    }else{
+                        $('#receiveMsg').show();
+                        $('.receiver .name').html(orderMsg.name);
+                        $('.receiver .phone').html(orderMsg.tel.substr(0, 3) + "****" + orderMsg.tel.substr(7, 4));
+                        $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    }
 
                     var goods = orderMsg.goods;
                     var goodsHtml = "";
@@ -106,20 +122,24 @@
                     for(var i=0; i<goods.length; i++){
                         var refundBtn = "";
                         var evaluateBtn = ""
-                        if(goods[i].relateStatus == 1){
-                            refundBtn = '<button class="order_edit refund">申请售后</button>';
-                        }else if(goods[i].relateStatus == 2){
-                            refundBtn = '<button class="order_edit">退款中</button>';
-                        }else if(goods[i].relateStatus == 3){
-                            refundBtn = '<button class="order_edit">退货退款中</button>';
-                        }else if(goods[i].relateStatus == 4){
-                            refundBtn = '<button class="order_edit">换货中</button>';
-                        }else if(goods[i].relateStatus == 5){
-                            refundBtn = '<button class="order_edit">退款完成</button>';
-                        }else if(goods[i].relateStatus == 6){
-                            refundBtn = '<button class="order_edit">退货退款完成</button>';
-                        }else if(goods[i].relateStatus == 7){
-                            refundBtn = '<button class="order_edit">换货完成</button>';
+                        if(!$rechargeType){
+                            if(goods[i].refundStatus == 0){
+                                refundBtn = '<button class="order_edit refund">申请退款</button>';
+                            }else if(goods[i].refundStatus == 1){
+                                refundBtn = '<button class="order_edit">申请待审核</button>';
+                            }else if(goods[i].refundStatus == 2){
+                                refundBtn = '<button class="order_edit">等待退货中</button>';
+                            }else if(goods[i].refundStatus == 3){
+                                refundBtn = '<button class="order_edit">等待确认中</button>';
+                            }else if(goods[i].refundStatus == 4){
+                                refundBtn = '<button class="order_edit">等待发货中</button>';
+                            }else if(goods[i].refundStatus == 5){
+                                refundBtn = '<button class="order_edit">等待退款中</button>';
+                            }else if(goods[i].refundStatus == 6){
+                                refundBtn = '<button class="order_edit">审核拒绝</button>';
+                            }else if(goods[i].refundStatus == 7){
+                                refundBtn = '<button class="order_edit">售后完成</button>';
+                            }
                         }
                         if(goods[i].commentStatus == 1){
                             evaluateBtn = '<button class="order_edit red" data-mix-id="'+ goods[i].mixId +'">已评价</button>';
@@ -162,36 +182,40 @@
             }
         })
 
-        $.ajax({
-            url: QUERYFORTRACKING,
-            type:'GET',
-            dataType:'json',
-            data: {orderId: $curOrderId},
-            success: function(data){
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    console.log(data);
-                    if(data.data){
-                        var $expressMsg = data.data;
-                        $('.express_name').html($expressMsg.com);
-                        $('.express_num').html($expressMsg.nu);
-                        if($expressMsg.data.length > 0){
-                            for(var i=0; i<$expressMsg.data.length; i++){
-                                $('#logistics .detail').append('<p style="color:#666;text-indent:1em;">'+ $expressMsg.data[i].ftime +'</p><p style="text-indent:3em;">'+ $expressMsg.data[i].context +'</p>')
+        if($rechargeType){
+            $('#logistics').hide();
+        }else {
+            $.ajax({
+                url: QUERYFORTRACKING,
+                type: 'GET',
+                dataType: 'json',
+                data: {orderId: $curOrderId},
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc, data.data);
+                    if (data.responseCode == 2000) {
+                        console.log(data);
+                        if (data.data) {
+                            var $expressMsg = data.data;
+                            $('.express_name').html($expressMsg.com);
+                            $('.express_num').html($expressMsg.nu);
+                            if ($expressMsg.data.length > 0) {
+                                for (var i = 0; i < $expressMsg.data.length; i++) {
+                                    $('#logistics .express_detail').append('<div><p>' + $expressMsg.data[i].ftime + '</p><p>' + $expressMsg.data[i].context + '</p></div>')
+                                }
+                            } else {
+                                $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
                             }
-                        }else {
-                            $('#logistics .detail').append('<p style="text-align:center;">暂无物流信息</p>')
+                        } else {
+                            $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
                         }
-                    }else {
-                        $('#logistics .detail').html('<p style="text-align:center;">暂无物流信息</p>')
-                    }
 
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
                 }
-            },
-            error: function(err){
-                console.log(err);
-            }
-        })
+            })
+        }
     })
 
     //申请售后

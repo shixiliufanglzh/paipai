@@ -24,8 +24,10 @@ var UPDATEUSERADDRESS = apiHost + "address/updaUserAddress.jhtml";  //更新用�
 var GETADDRESSBYID = apiHost + "address/getAddressById.jhtml";  //获取用户指定地址
 var ADDCART = apiHost + "order/addCart.jhtml";  //加入购物车
 var GETCART = apiHost + "order/getCart.jhtml";  //获取购物车
+var GETCARTBYID = apiHost + "order/getCartById.jhtml";  //用户获取指定购物车记录
 var DELCART = apiHost + "order/delCart.jhtml";  //删除购物车
 var CREATEORDER = apiHost + "order/createOrder.jhtml";  //创建订单
+var CREATEVORDER = apiHost + "order/createVOrder.jhtml";  //创建虚拟商品订单
 var GETORDER = apiHost + "order/getOrder.jhtml";  //获取用户订单列表
 var GETORDERDETAIL = apiHost + "order/getOrderDetail.jhtml";  //获取订单详情
 var DELORDER = apiHost + "order/delOrder.jhtml";  //删除订单
@@ -87,7 +89,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             });
             break;
         case "4007":
-            commonCompt.popPrompt("拍币不足");
+            commonCompt.popPrompt("拍币不足,获得拍币联系在线客服");
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
@@ -132,34 +134,12 @@ Paipai.prototype = {
     },
 }
 
-//监听后台运行返回事件
-document.addEventListener('visibilitychange',function() {
-    if(document.visibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('webkitvisibilitychange',function() {
-    if(document.webkitVisibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('mozvisibilitychange',function() {
-    if(document.mozVisibilityState=='visible') {
-        location.reload();
-    }
-})
-document.addEventListener('msvisibilitychange',function() {
-    if(document.msVisibilityState=='visible') {
-        location.reload();
-    }
-})
-
 
 var commonCompt = {
 
     //弹出对话框
     Confirm: function (objPara){
-        var html =  '<div id="confirm" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;z-index:99;display:none">'+
+        var html =  '<div id="confirm" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;z-index:10001;display:none">'+
                         '<div class="content" style="width:4.5rem;position:absolute;left:50%;margin-left:-2.25rem;margin-top:4rem;background-color:#fff;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem;border-radius:0.1rem;overflow:hidden;">'+
                             '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
                             '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
@@ -181,10 +161,15 @@ var commonCompt = {
             $('#confirm .content .text').hide();
             $('#confirm .content .input').show();
         }
+        if(objPara.noBtn){
+            $('#confirm .action').hide();
+        }
+        $('body').css("overflow", "hidden");
         $('#confirm').fadeIn();
         $('#confirm .action .cancel').click(function(){
             var inputVal = $('#confirm .input input').val();
             objPara.leftBtnClick(inputVal);
+            $('body').css("overflow", "auto");
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
@@ -193,6 +178,7 @@ var commonCompt = {
         $('#confirm .action .certain').click(function(){
             var inputVal = $('#confirm .input input').val();
             objPara.rightBtnClick(inputVal);
+            $('body').css("overflow", "auto");
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
             });
@@ -217,7 +203,7 @@ var commonCompt = {
             top: "6rem",
             textAlign: "center",
             opacity: "0",
-            zIndex: "9999"
+            zIndex: "10001"
 
         });
         var promptContent = document.createElement('div');
@@ -292,11 +278,55 @@ var commonCompt = {
 
     //提示用户等待的遮罩
     addMask: function(str){
-        var html = '<div id="mask" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;">'+
+        var html = '<div id="mask" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;z-index:10001">'+
             '<p style="color:#fff;font-size:0.28rem;text-align:center;margin-top:5rem;">' + str + '</p>'+
             '</div>';
 
         $('body').append(html);
+    },
+
+    //悬浮按钮
+    addFixedBtn: function (){
+        var ua = navigator.userAgent.toLowerCase();
+        if (/iphone|ipad|ipod/.test(ua)) {
+            $('body').css('cursor','pointer');
+        }
+        var homeLink = "../index.html";
+        var codeImg = '<img src="../imgs/wechat_code.png">';
+        if(window.location.href.indexOf('index') != -1){
+            homeLink = "index.html";
+            codeImg = '<img src="imgs/wechat_code.png">';
+        }else {
+            homeLink = "../index.html";
+            codeImg = '<img src="../imgs/wechat_code.png">';
+        }
+        var html =  '<div id="fixedLink">'+
+                        '<div class="code_wrap">'+
+                            '<div class="code">'+ codeImg +'</div>'+
+                            '<p>请关注【减价拍】官方公众号</p>'+
+                        '</div>'+
+                        '<div class="btn_wrap">'+
+                            '<a href="'+ homeLink +'" class="home"></a>'+
+                            '<span class="show_code"></span>'+
+                        '</div>'+
+                    '</div>'
+
+        $('body').append(html);
+
+        $('body').on('click','.show_code',function(){
+            $('.code_wrap').fadeIn();
+            $('body').css("overflow","hidden");
+        })
+
+        $('body').on('click','.code_wrap',function(e){
+            if ($(e.target).is('.code img')){
+                return;
+            }else {
+                $(this).fadeOut();
+                $('body').css("overflow", "auto");
+            }
+        })
+
     },
 
     //图片压缩转base64，依赖EXIF，解决iphone拍照旋转问题
@@ -366,15 +396,15 @@ var commonCompt = {
                     canvas.height=h;
 
 
-                    if(cw>1920&&cw>ch){
-                        w=1920;
-                        h=(1920*ch)/cw;
+                    if(cw>960&&cw>ch){
+                        w=960;
+                        h=(960*ch)/cw;
                         canvas.width=w;
                         canvas.height=h;
                     }
-                    if(ch>1920&&ch>cw){
-                        h=1920;
-                        w=(1920*cw)/ch;
+                    if(ch>960&&ch>cw){
+                        h=960;
+                        w=(960*cw)/ch;
                         canvas.width=w;
                         canvas.height=h;
                     }
@@ -453,14 +483,16 @@ var commonCompt = {
         }, 1000);
     },
 
+    //去除空格
     trim: function(str){
         return str.replace(/(^\s*)|(\s*$)/g, "");
         //alert($a.length);
         //   alert(str.length);
     },
 
-    //验证手机号
+    //绑定手机号
     verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
+        $('body').css("overflow", "hidden")
         var bool_result = false;
         var html =  '<div id="registerWrap">'+
                         '<div class="register">'+
@@ -545,6 +577,7 @@ var commonCompt = {
                             if(callBack){
                                 callBack($phoneNum);
                             }
+                            $('body').css("overflow", "auto");
                             $('#registerWrap').fadeOut(300,function(){
                                 $('#registerWrap').remove();
                             });
@@ -560,6 +593,7 @@ var commonCompt = {
         })
 
         $('.verify_close').on('click',function(){
+            $('body').css("overflow", "auto");
             $('#registerWrap').fadeOut(300,function(){
                 $('#registerWrap').remove();
             });
@@ -628,8 +662,63 @@ var commonCompt = {
             trueNum *=  (1 + 0.01*Math.random());
         }
         return parseFloat(trueNum.toFixed(2));
-    }
+    },
 
+    //监听后台运行返回事件
+    screenVisibleChange: function (){
+        document.addEventListener('visibilitychange',function() {
+            if(document.visibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('webkitvisibilitychange',function() {
+            if(document.webkitVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('mozvisibilitychange',function() {
+            if(document.mozVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+        document.addEventListener('msvisibilitychange',function() {
+            if(document.msVisibilityState=='visible') {
+                location.reload();
+            }
+        })
+    }
 }
 
+//要求未注册用户注册
+ function shouldRegister(){
+     var hasPhone = false;
+     $.ajax({
+         url: GETUSERINFO,
+         type: 'GET',
+         dataType: 'json',
+         async: false,
+         success: function (data) {
+             console.log(data);
+             apiResponse(data.responseCode,data.responseDesc,data.data);
+             if(data.responseCode == 2000){
+                 if(data.data.userTel){
+                     hasPhone = true;
+                 }else {
+                     if(!hasPhone){
+                         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                     }
+                 }
+                 if(data.data.id){
+                     sessionStorage.setItem('userId', data.data.id);
+                 }
+             }
+         },
+         error: function (err) {
+             console.log(err);
+         }
+     })
 
+     return hasPhone;
+ }
+
+commonCompt.addFixedBtn();

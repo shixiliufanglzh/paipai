@@ -35,6 +35,7 @@
                 <img class="swiper-slide" src="./imgs/banner_03.jpg" />
                 <img class="swiper-slide" src="./imgs/banner_04.jpg" />
                 <img class="swiper-slide" src="./imgs/banner_05.jpg" />
+                <!--<img class="swiper-slide" src="./imgs/banner_06.jpg" />-->
             </div>
             <div class="swiper-pagination"></div>
         </section>
@@ -94,10 +95,14 @@
             </ul>
         </div>
     </div>
+
+
 </body>
 <script src="../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
 <script>
 
     var labels;
@@ -126,14 +131,34 @@
         sales: false,  //true按销量排序
         price: 0  //无0降序1升序2
     };
+
     var $pageNum = 1;
     var goodsList = [];
     var timer = null;
     var finishLoading = true;
-    var $pageSize = 6;
+    var $pageSize = 10;
 
 
     $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.id){
+                        userId = data.data.id;
+                        localStorage.setItem('userId', userId);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         if($('.single_good').length <=0 ){
             finishLoading =true
@@ -458,19 +483,25 @@
 
 
     $('body').on('click','#mainNav button',function(){
-        if($('this').attr('class') == 'home'){
-            window.location.href = 'index.html'
-        }else if($(this).attr('class') == 'collection'){
-            window.location.href = 'html/collection.html'
-        }else if($(this).attr('class') == 'grab'){
-            window.location.href = 'html/orderGenerate.html'
-        }else if($(this).attr('class') == 'order'){
-            window.location.href = 'html/order.html'
-        }else if($(this).attr('class') == 'personal'){
-            window.location.href = 'html/personal.html'
-        }
+//        var hasRegister = shouldRegister();
+//        if(hasRegister){
+//            if($('this').attr('class') == 'home'){
+//                window.location.href = 'index.html'
+//            }else
+            if($(this).attr('class') == 'collection'){
+                window.location.href = 'html/collection.html'
+            }else if($(this).attr('class') == 'grab'){
+                window.location.href = 'html/orderGenerate.html'
+            }else if($(this).attr('class') == 'order'){
+                window.location.href = 'html/order.html'
+            }else if($(this).attr('class') == 'personal'){
+                window.location.href = 'html/personal.html'
+            }
+//        }
     })
 
+    commonCompt.screenVisibleChange();
 
 </script>
+<script src="script/wx_browser_api.js"></script>
 </html>

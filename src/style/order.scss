@@ -188,6 +188,7 @@ body {
 
   }
   #receiveMsg {
+    display: none;
     padding: 0.24rem 0.24rem 0.24rem 0.74rem;
     margin-top: 0.16rem;
     background-color: #fff;
@@ -214,6 +215,14 @@ body {
         width: 5rem;
       }
     }
+  }
+  #chargePhone {
+    display: none;
+    padding: 0.24rem 0.24rem 0.24rem 0.74rem;
+    margin-top: 0.16rem;
+    background-color: #fff;
+    position: relative;
+    font-size: 0.24rem;
   }
   #googDetail {
     background-color: #fff;
@@ -339,6 +348,19 @@ body {
       line-height: 0.4rem;
       p {
         font-size: 0.24rem;
+      }
+      .express_detail {
+        border-top: 1px solid #ddd;
+        margin-top: 0.1rem;
+        padding-top: 0.08rem;
+        padding-left: 0.4rem;
+        &>div {
+          padding: 0.06rem 0;
+          border-bottom: 1px dashed #ddd;
+          &:first-of-type {
+            color: $paiRed;
+          }
+        }
       }
     }
   }

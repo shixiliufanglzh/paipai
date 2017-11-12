@@ -30,7 +30,9 @@
   background-color: #fff;
   .nav_wrap {
     display: flex;
+    display: -webkit-flex;
     flex-wrap: nowrap;
+    -webkit-flex-wrap: nowrap;
     button {
       border: none;
       outline: none;
@@ -39,6 +41,7 @@
       color: #858585;
       font-size: 0rem;
       flex-grow: 1;
+      -webkit-flex-grow: 1;
       span {
         font-size: 0.24rem;
       }
@@ -110,7 +113,7 @@
   left: 0;
   right: 0;
   background-color: rgba(0,0,0,0.8);
-  z-index: 99;
+  z-index: 10001;
   .register {
     background-color: #fff;
     border-radius: 0.06rem;
@@ -185,5 +188,60 @@
   span {
     font-size: 0.22rem;
     color: #858585;
+  }
+}
+
+#fixedLink {
+  .code_wrap {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 9999;
+    .code {
+      width: 3.28rem;
+      height: 3.28rem;
+      position: absolute;
+      left: 50%;
+      margin-left: -1.64rem;
+      -webkit-background-size: contain;
+      background-size: contain;
+      margin-top: 4rem;
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    }
+    p {
+      width: 100%;
+      color: #fff;
+      font-size: 0.26rem;
+      position: absolute;
+      text-align: center;
+      margin-top: 7.5rem;
+    }
+  }
+  .btn_wrap {
+    font-size: 0;
+    width: 0.72rem;
+    height: 1.8rem;
+    border-radius: 0.04rem;
+    background-color: rgba(0,0,0,0.5);
+    position: fixed;
+    bottom: 3rem;
+    right: 0;
+    padding: 0.24rem 0.144rem 0.144rem 0.144rem;
+    z-index: 9997;
+    .home {
+       @include smallIcon(0.432rem,0.432rem,url("../imgs/home_white.png"));
+     }
+    .show_code {
+      @include smallIcon(0.432rem,0.432rem,url("../imgs/qrcode.png"));
+      margin-top: 0.432rem;
+    }
   }
 }

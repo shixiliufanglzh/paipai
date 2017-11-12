@@ -42,6 +42,10 @@
             <p class="address"><span>收货地址：</span><span class="addr_detail">详细地址</span></p>
         </div>
 
+        <div id="chargePhone">
+            <p><span>充值号码：</span><span class="phoneNum">手机号码</span></p>
+        </div>
+
         <div id="googDetail">
             <h3><i></i>商品信息</h3>
 
@@ -69,6 +73,8 @@
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
@@ -84,31 +90,41 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('.receiver .name').html(orderMsg.name);
-                    $('.receiver .phone').html(orderMsg.tel.substr(0,3) + "****" + orderMsg.tel.substr(7,4));
-                    $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    if(orderMsg.rechargeType) {
+                        $('#chargePhone').show();
+                        $('.phoneNum').html(orderMsg.rechargeAccount);
+                    }else{
+                        $('#receiveMsg').show();
+                        $('.receiver .name').html(orderMsg.name);
+                        $('.receiver .phone').html(orderMsg.tel.substr(0, 3) + "****" + orderMsg.tel.substr(7, 4));
+                        $('.addr_detail').html(orderMsg.area.split(',').join('') + orderMsg.address);
+                    }
+
+                    var refundBtn = "";
+                    if(orderMsg.refundStatus == 0){
+                        refundBtn = '<button class="order_edit refund">申请退款</button>';
+                    }else if(orderMsg.refundStatus == 1){
+                        refundBtn = '<button class="order_edit">申请待审核</button>';
+                    }else if(orderMsg.refundStatus == 2){
+                        refundBtn = '<button class="order_edit">等待退货中</button>';
+                    }else if(orderMsg.refundStatus == 3){
+                        refundBtn = '<button class="order_edit">等待确认中</button>';
+                    }else if(orderMsg.refundStatus == 4){
+                        refundBtn = '<button class="order_edit">等待发货中</button>';
+                    }else if(orderMsg.refundStatus == 5){
+                        refundBtn = '<button class="order_edit">等待退款中</button>';
+                    }else if(orderMsg.refundStatus == 6){
+                        refundBtn = '<button class="order_edit">审核拒绝</button>';
+                    }else if(orderMsg.refundStatus == 7){
+                        refundBtn = '<button class="order_edit">售后完成</button>';
+                    }
+                    $('.price_total').append(refundBtn);
 
                     var goods = orderMsg.goods;
                     var goodsHtml = "";
                     var totalCount = 0;
                     var $primaryPriceSum = 0, $dealPriceSum = 0;
                     for(var i=0; i<goods.length; i++){
-                        var refundBtn = "";
-                        if(goods[i].relateStatus == 1){
-                            refundBtn = '<button class="order_edit refund">申请退款</button>';
-                        }else if(goods[i].relateStatus == 2){
-                            refundBtn = '<button class="order_edit">退款中</button>';
-                        }else if(goods[i].relateStatus == 3){
-                            refundBtn = '<button class="order_edit">退货退款中</button>';
-                        }else if(goods[i].relateStatus == 4){
-                            refundBtn = '<button class="order_edit">换货中</button>';
-                        }else if(goods[i].relateStatus == 5){
-                            refundBtn = '<button class="order_edit">退款完成</button>';
-                        }else if(goods[i].relateStatus == 6){
-                            refundBtn = '<button class="order_edit">退货退款完成</button>';
-                        }else if(goods[i].relateStatus == 7){
-                            refundBtn = '<button class="order_edit">换货完成</button>';
-                        }
                         $primaryPriceSum = commonCompt.accAdd($primaryPriceSum,goods[i].salePrice*goods[i].goodsAmount);
                         $dealPriceSum = commonCompt.accAdd($dealPriceSum,goods[i].buyPrice*goods[i].goodsAmount);
                         totalCount += goods[i].goodsAmount;
@@ -122,8 +138,8 @@
                                 '</div>'+
                                 '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ goods[i].salePrice.toFixed(2) +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
                                 '</div>'+
-                                '<div class="manipu clearfix">'+ refundBtn +
-                                '</div>'+
+//                                '<div class="manipu clearfix">'+
+//                                '</div>'+
                                 '</div>'
                     }
                     $('.good_list').html(goodsHtml);

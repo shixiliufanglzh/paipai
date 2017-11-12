@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>虚拟商品下单</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/paying.css">
+</head>
+<body style="background-color: #f0f0f0;">
+<div id="paying" style="display:block">
+    <section id="orderDetail">
+        <div class="grab_list">
+            <div class="single_good selected" data-good-id="" data-cart-id="">
+                <div class="good_detail">
+                    <div class="img"></div>
+                    <p class="product">商品名称</p>
+                    <p class="parameter">规格参数</p>
+                    <p class="price_start">起拍价：<span class="price">￥0.00</span></p>
+                    <p class="price_now">中标价：<span class="price">￥0.00</span><span class="count">×1</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="fee">
+            <div class="fee_detail">
+                <p>起拍价总计 <span class="primary_price_sum">￥0.00</span></p>
+                <p>中标价总计 <span class="deal_price_sum">￥0.00</span></p>
+                <p>减价节省 <span class="save_fee">￥0.00</span></p>
+            </div>
+        </div>
+        <p class="fee_result virtual">需要支付<span>￥0.00</span></p>
+        <p class="fill_number">充值手机号：<input type="number" maxlength="11" id="phoneNumber" placeholder="仅限中国大陆（移动、联通和电信）手机号码"></p>
+        <p class="prompt">注意：如没有及时提交订单或者离开本页面，购买权将失效</p>
+    </section>
+
+    <div id="submitOrder" class="virtual">
+        <div class="total_wrap">
+            <!--<div class="select_all"><i></i>全选</div>-->
+            <div class="sum">
+                <p>合计：<span class="should_pay">￥0.00</span></p>
+                <p class="save">减价节省：<span class="save_count save_fee">￥0.00</span></p>
+            </div>
+            <div class="submit_btn">提交订单</div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+<script>
+    var $cartId,
+        $primaryPriceSum = 0,
+        $dealPriceSum = 0,
+        $payTotal = 0;
+    var timer;
+
+    $(function(){
+        $('body').height($('body')[0].clientHeight);
+
+        $cartId = commonCompt.GetUrlPara('cartId');
+
+        //商品列表
+        $.ajax({
+            url: GETCARTBYID,
+            type:'GET',
+            dataType:'json',
+            data: {
+                id: $cartId
+            },
+            async: false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                //alert($cartId+' '+JSON.stringify(data));
+                if(data.responseCode == 2000){
+                    if(data.data) {
+                       $('.good_detail .img').css({
+                           'background': 'url('+ data.data.goodsPic +') center center no-repeat',
+                           'background-size': 'cover',
+                           '-webkit-background-size': 'cover'
+                       });
+                        $('.good_detail .product').html(data.data.goodsName);
+                        $('.good_detail .parameter').html(data.data.goodsSpu);
+                        $('.good_detail .count').html('×'+data.data.goodsAmount);
+                        $('.good_detail .price_start .price').html('￥'+data.data.salePrice.toFixed(2));
+                        $('.primary_price_sum').html('￥'+data.data.salePrice.toFixed(2));
+                        $('.good_detail .price_now .price').html('￥'+data.data.price.toFixed(2));
+                        $('.deal_price_sum').html('￥'+data.data.price.toFixed(2));
+                        $('.fee_result,.should_pay').html('￥'+data.data.price.toFixed(2));
+                        $('.save_fee').html((commonCompt.accSub(data.data.salePrice,data.data.price)).toFixed(2));
+                    }
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+//        timer = setInterval(function(){
+//            for(var i=0; i<goodsList.length; i++){
+//                if(goodsList[i].buyType == 1){
+//                    goodsList[i].effectiveTime --;
+//                    var timePrompt = "";
+//                    var cal_time = goodsList[i].effectiveTime;
+//                    if(cal_time >= 86400){
+//                        timePrompt += Math.floor(cal_time/86400) + "天";
+//                        cal_time = goodsList[i].effectiveTime % 86400;
+//                    }
+//                    if(cal_time >= 3600){
+//                        timePrompt += Math.floor(cal_time/3600) + "小时";
+//                        cal_time = goodsList[i].effectiveTime % 3600;
+//                    }
+//                    if(cal_time >= 60){
+//                        timePrompt += Math.floor(cal_time/60) + "分";
+//                        cal_time = goodsList[i].effectiveTime % 60;
+//                    }
+//                    timePrompt += cal_time + "秒";
+//                    $('.single_good').eq(i).find('.time_left').html(timePrompt);
+//                    if(goodsList[i].effectiveTime === 0){
+//                        location.reload(true);
+//                    }
+//                }
+//            }
+//        },1000);
+    })
+
+
+    //查看商品详情
+    $('.grab_list').on('click','.single_good .good_detail',function(){
+        window.location.href = 'detail.html?good_id='+$(this).parents('.single_good').attr('data-good-id');
+    })
+
+    $('#phoneNumber').blur(function(){
+        var phoneNum = $(this).val();
+        if(!commonCompt.checkPhone(phoneNum)){
+            $('#phoneNumber').val('');
+            commonCompt.popPrompt('请输入正确的手机号码');
+        }
+    })
+
+    //提交订单
+    $('.submit_btn').click(function(){
+        var phoneNum = $('#phoneNumber').val();
+        if(phoneNum && phoneNum.length > 0){
+            $.ajax({
+                url: CREATEVORDER,
+                type:'POST',
+                dataType:'json',
+                data: {
+                    cartId: $cartId,
+                    rechargeAccount: phoneNum
+                },
+                success: function(data){
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
+                    if(data.responseCode == 2000){
+                        window.location.href= 'paying.html?order_id='+ data.data.orderId +'&isVirtual='+1;
+                    }
+
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            });
+        }else {
+            commonCompt.popPrompt('请填写充值号码');
+        }
+    })
+</script>
+</html>

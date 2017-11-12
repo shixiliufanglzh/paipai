@@ -57,6 +57,8 @@
 <script src="../script/city.js"></script>
 <script src="../script/picker.min.js"></script>
 <script src="../script/iscroll.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 
 <script>
 
@@ -93,7 +95,7 @@
             commonCompt.popPrompt('请填写详细地址');
         }else{
             console.log(name,phone,province,city,county,address);
-
+            commonCompt.addMask('添加中...');
             $.ajax({
                 url: ADDUSERADDRESS,
                 type:'POST',
@@ -106,6 +108,9 @@
                     defaultCode: isDefault
                 },
                 success: function(data){
+                    $('#mask').fadeOut(200,function(){
+                        $('#mask').remove();
+                    });
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
                         commonCompt.popPrompt('添加成功');
@@ -116,6 +121,9 @@
 
                 },
                 error: function(err){
+                    $('#mask').fadeOut(200,function(){
+                        $('#mask').remove();
+                    });
                     console.log(err);
                 }
             });
