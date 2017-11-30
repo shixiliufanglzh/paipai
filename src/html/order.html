@@ -365,9 +365,8 @@
                     }
                     ordersListAll = ordersListAll.concat(orders);
                     var ordersListHtml = "";
-                    var $amount = 0;
                     for(var i=0; i<orders.length; i++){
-
+                        var $amount = 0;
                         if(orders[i].orderStatus == 1){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeSend" data-order-id="'+ orders[i].orderId +'">'+
                                                     '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">待发货</span></div>'

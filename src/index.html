@@ -240,7 +240,7 @@
                             }
                         });
                     } else {
-                        $('.single_good').eq(i).find('.price_now').html('￥' + goodsList[i].nowPrice.toFixed(2));
+                        $('.single_good').eq(i).find('.price_now').html('当前价：￥' + goodsList[i].nowPrice.toFixed(2));
                     }
                 }
             }
@@ -448,7 +448,7 @@
                                 '<div class="about">' +
                                 '<p class="desc">' + addGoods[i].goodsName + '</p>' +
                                 '<div class="price">' +
-                                '<span class="price_now">￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
+                                '<span class="price_now">当前价：￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
                                 '<span class="price_primary">' + addGoods[i].salePrice.toFixed(2) + '</span>' +
                                 '<i class="sales_state ' + cur_state + '"></i>' +
                                 '</div>' +

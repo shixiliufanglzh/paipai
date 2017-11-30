@@ -7,7 +7,9 @@
 
 #bottomBtn {
   display: flex;
+  display: -webkit-flex;
   flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
   button {
     border: none;
     outline: none;
@@ -16,6 +18,7 @@
     color: #fff;
     font-size: 0.3rem;
     flex-grow: 1;
+    -webkit-flex-grow: 1;
   }
   .like {
     background-color: $paiYellow;
@@ -232,7 +235,7 @@
     border-radius: 0.04rem;
     background-color: rgba(0,0,0,0.5);
     position: fixed;
-    bottom: 3rem;
+    bottom: 2rem;
     right: 0;
     padding: 0.24rem 0.144rem 0.144rem 0.144rem;
     z-index: 9997;

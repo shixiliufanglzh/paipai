@@ -77,7 +77,19 @@
     var timer;
 
     $(function(){
-        $('body').height($('body')[0].clientHeight);
+        commonCompt.Confirm({
+            hasTitle: true,
+            title: "重要提示",
+            contentText: "离开当前页面就会失去本次机会，只能1小时后重新抢拍，并且拍币不会退还，请尽快提交订单。获取更多拍币请关注公众号【减价拍】。",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+
+            },
+            leftBtnClick: function(){
+
+            }
+        })
 
         $cartId = commonCompt.GetUrlPara('cartId');
 
@@ -147,10 +159,6 @@
     })
 
 
-    //查看商品详情
-    $('.grab_list').on('click','.single_good .good_detail',function(){
-        window.location.href = 'detail.html?good_id='+$(this).parents('.single_good').attr('data-good-id');
-    })
 
     $('#phoneNumber').blur(function(){
         var phoneNum = $(this).val();

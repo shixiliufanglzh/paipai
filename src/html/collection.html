@@ -199,7 +199,7 @@
         if ($(e.target).is('button') || $(e.target).is('.close')){
             return;
         }else {
-//            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id')+'&count='+$(this).attr('data-count')+'&mix_spu='+$(this).attr('data-mix-spu');
+//            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id')+'&count='+$(this).attr('data-count')+'&mix_spu='+$(this).attr('data-mix-id');
             window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id');
         }
     })
@@ -207,7 +207,7 @@
     $('#collection').on('click', '.single_collect.grab button,.single_collect.primary button', function(){
         var $selParent = $(this).parents('.single_collect');
         var thisBtn = $(this);
-        //alert('detail.html?good_id='+$selParent.attr('data-good-id')+'&count='+$selParent.attr('data-count')+'&mix_spu='+$selParent.attr('data-mix-spu')+'&goodsIssueno='+$selParent.attr('data-goodsIssueno'));
+        //alert('detail.html?good_id='+$selParent.attr('data-good-id')+'&count='+$selParent.attr('data-count')+'&mix_spu='+$selParent.attr('data-mix-id')+'&goodsIssueno='+$selParent.attr('data-goodsIssueno'));
 
 //        //如果是未绑定手机号的用户
 //        if(!hasPhone){
@@ -215,11 +215,11 @@
 //        }else {
             var paraData = {
                 goodsId: $selParent.attr('data-good-id'),
-                mixId: $selParent.attr('data-mix-spu'),
+                mixId: $selParent.attr('data-mix-id'),
                 goodsAmount: $selParent.attr('data-count'),
                 goodsIssueno: $selParent.attr('data-goodsIssueno')
             }
-            //alert(JSON.stringify(paraData));
+//            alert(JSON.stringify(paraData));
             $.ajax({
                 url: ADDCART,
                 type: 'POST',
@@ -320,7 +320,7 @@
                                         '</div>'
                             }
 
-                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '" ' + ' data-count="' + collectionList[i].goodsAmount + '" data-mix-spu="' + collectionList[i].mixSpuId + '" data-goodsIssueno="' + collectionList[i].goodsIssueno + '">' +
+                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '" ' + ' data-count="' + collectionList[i].goodsAmount + '" data-mix-id="' + collectionList[i].mixId + '" data-goodsIssueno="' + collectionList[i].goodsIssueno + '">' +
                                     '<span class="img" style="background: url(' + collectionList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
                                     '<div class="content">' +
                                     '<p class="title">' + collectionList[i].goodsDesc + '</p>' +
