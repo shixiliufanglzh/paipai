@@ -196,26 +196,6 @@
 
     $(function(){
 
-        $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.id){
-                        userId = data.data.id;
-                        localStorage.setItem('userId', userId);
-                    }
-                }
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
-
         $('.loading').hide();
 
         $goodId = commonCompt.GetUrlPara('good_id');
@@ -295,7 +275,7 @@
                         //倒计时
                         var timerList = [];
                         var addOrderTimer = new Paipai;
-                        addOrderTimer.addOrderTimer(goodsPara.timeLeft, $('.rate .left_time'), timerList);
+                        addOrderTimer.addOrderTimer(Number(goodsPara.timeLeft), $('.rate .left_time'), timerList);
                         $('.action_wrap .purchase span').html('正价购买');
                         $('#sortsList .purchase').html('正价购买');
 
@@ -424,9 +404,9 @@
                         $('.current_left').html(0);
                     }
                 }
-                if(!hasPhone){
-                    hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-                }
+                // if(!hasPhone){
+                //     hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                // }
             },
             error: function (err) {
                 console.log(err);
@@ -878,5 +858,4 @@
         }
     })
 </script>
-<script src="../script/wx_browser_api.js"></script>
 </html>

@@ -6,18 +6,6 @@ var userId;
 
 $(function(){
 
-
-    userId = localStorage.getItem('userId') || '';
-    if(userId){
-        if(window.location.href.indexOf('?') != -1){
-            shareUrl = window.location.href + '&urlCode=' + userId;
-        }else {
-            shareUrl = window.location.href + '?urlCode=' + userId;
-        }
-    }
-
-    //alert(userId+'  '+shareUrl);
-
     $.ajax({
         url: JSSDKCONFIG,
         type: 'post',

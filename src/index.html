@@ -40,6 +40,18 @@
             <div class="swiper-pagination"></div>
         </section>
 
+        <section id="guide">
+            <ul class="clearfix">
+                <li class="video"><i></i><span>视频教程</span></li>
+                <li class="like"><i></i><span>收藏商城</span></li>
+                <li class="reward"><i></i><span>打赏支付</span></li>
+                <li class="global"><i></i><span>全球购物</span></li>
+                <li class="money"><i></i><span>获取拍币</span></li>
+            </ul>
+        </section>
+
+        <section id="special"></section>
+
         <section id="filters">
             <div class="filtersWrap">
                 <div class="filter sorts"><span>全部类型</span><i></i></div>
@@ -134,6 +146,7 @@
 
     var $pageNum = 1;
     var goodsList = [];
+    var headerGoodsList = [];
     var timer = null;
     var finishLoading = true;
     var $pageSize = 10;
@@ -141,24 +154,49 @@
 
     $(function(){
 
+        // commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
+
         $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
+            url: GET_GOOD_SHOW,
+            type:'GET',
+            dataType:'json',
+//            async:false,
+            success: function(data){
+                console.log('大图',data);
+                //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.id){
-                        userId = data.data.id;
-                        localStorage.setItem('userId', userId);
+                if(data.responseCode == 2000) {
+                    headerGoodsList = data.data;
+                    var html = ''
+                    
+                    for(var i=0; i<headerGoodsList.length; i++){
+                        var button = ''
+                        if(headerGoodsList[i].saleStatus.toString() === '1'){
+                            button = '<button class="on_bid">减价拍</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '2'){
+                            button = '<button class="pre_sale">预拍中</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '3'){
+                            button = '<button class="sold_out">已售罄</button>';
+                        }
+
+                        html += '<div class="special_good" data-goods-id="'+ headerGoodsList[i].id +'">'+
+                                    '<div class="img_wrap" style="background:url('+ headerGoodsList[i].goodsPic +') center center no-repeat;background-size:cover;-webkit-background-size:cover;"></div>'+
+                                    '<p>'+ headerGoodsList[i].goodsName +'</p>'+
+                                    '<div class="actions clearfix">'+
+                                        '<span class="current_price_pre">当前价:</span><span class="current_price">￥'+ headerGoodsList[i].nowPrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>起拍价:</span><span class="start_price">￥'+ headerGoodsList[i].salePrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>已拍:</span><span class="sale_num">'+ headerGoodsList[i].saleNum +'</span>'+ button +
+                                    '</div>'+
+                                '</div>'
                     }
+
+                    $('#special').html(html);
                 }
             },
-            error: function (err) {
+            error: function(err){
                 console.log(err);
             }
-        })
+        });
 
         if($('.single_good').length <=0 ){
             finishLoading =true
@@ -173,7 +211,6 @@
             url: GETLABELS,
             type:'GET',
             dataType:'json',
-//            async:false,
             success: function(data){
                 //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -216,6 +253,35 @@
         })
 
         timer = setInterval(function(){
+            for(var i=0; i<headerGoodsList.length; i++){
+                if(headerGoodsList[i].saleStatus == 1 && headerGoodsList[i].timeStatus == 1) {
+                    headerGoodsList[i].nowPrice = commonCompt.accSub(headerGoodsList[i].nowPrice, headerGoodsList[i].reducePrice);
+                    if(headerGoodsList[i].nowPrice <= 0){
+                        headerGoodsList[i].nowPrice = 0;
+                    };
+                    if (headerGoodsList[i].nowPrice <= commonCompt.randomNum(headerGoodsList[i].limitPrice)) {
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc);
+                                if (data.responseCode == 2000) {
+                                    headerGoodsList[i] = data.data;
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    } else {
+                        $('.special_good').eq(i).find('.current_price').html('￥' + headerGoodsList[i].nowPrice.toFixed(2));
+                    }
+                }
+            }
+
             for(var i=0; i<$('.single_good').length; i++){
                 if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1) {
                     goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice);
@@ -240,7 +306,7 @@
                             }
                         });
                     } else {
-                        $('.single_good').eq(i).find('.price_now').html('当前价：￥' + goodsList[i].nowPrice.toFixed(2));
+                        $('.single_good').eq(i).find('.price_now').html('￥' + goodsList[i].nowPrice.toFixed(2));
                     }
                 }
             }
@@ -358,7 +424,7 @@
 
     $(document).scroll(function(){
         //菜单顶部吸附
-        var max_distance = $('.swiper-container').height() + $('#filters').height()/2;
+        var max_distance = $('.swiper-container').height() + $('#special').height() + $('#guide').height() + $('#filters').height()/2;
         if($(document).scrollTop() > max_distance){
             $('#filters').addClass('fixed_top');
         }else {
@@ -448,7 +514,7 @@
                                 '<div class="about">' +
                                 '<p class="desc">' + addGoods[i].goodsName + '</p>' +
                                 '<div class="price">' +
-                                '<span class="price_now">当前价：￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
+                                '<span class="price_now">￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
                                 '<span class="price_primary">' + addGoods[i].salePrice.toFixed(2) + '</span>' +
                                 '<i class="sales_state ' + cur_state + '"></i>' +
                                 '</div>' +
@@ -478,7 +544,10 @@
     }
 
     $('#goods').on('click','.single_good',function(){
-        window.location.href = 'html/detail.html?good_id='+$(this).attr('data-goods-id');
+        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
+    })
+    $('#special').on('click','.special_good',function(){
+        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
     })
 
 
@@ -503,5 +572,4 @@
     commonCompt.screenVisibleChange();
 
 </script>
-<script src="script/wx_browser_api.js"></script>
 </html>
