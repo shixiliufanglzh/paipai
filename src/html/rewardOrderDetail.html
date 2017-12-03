@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的打赏</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body>
+    <div id="order" style="margin-bottom:0">
+        <section class="orders_list">
+            <!-- <div class="singleOrder reward_order unfold clearfix" data-order-id="">
+                <div class="order_head">订单号：<span class="order_number">1111111111111</span><i class="more"></i></div>
+                <div class="goods_detail">
+                    <div class="order_detail clearfix">
+                        <div class="product_pic"></div>
+                        <div class="product_desc">
+                            <p class="name">司法机关i的规划</p>
+                            <p class="parameter">嘀咕嘀咕</p>
+                        </div>
+                        <div class="price"><span class="price_now">￥999.99</span><br><span class="price_primary">888.88</span><br><span class="count">×3</span></div>
+                    </div>
+                </div>
+            </div> -->
+        </section>
+
+        <section class="process">
+            <div class="bar_wrap">
+                <div class="process_bar">
+                    <div class="base">
+                        <div class="fill">50.6%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="count_wrap">
+                <div class="count">订单金额<br><span class="order_price">￥99999.99</span></div>
+                <div class="count">还需金额<br><span class="left_price">￥99999.99</span></div>
+                <div class="count">打赏人数<br><span class="rewarder_num">99999</span></div>
+                <span class="divide"></span>
+            </div>
+            <div class="declaration clearfix">
+                <span class="title">发起人宣言：</span>
+                <span class="content">对经济放缓教案集教案集啊接啊哦埃及哦i决定啊哦哦安静</span>
+            </div>
+            <div class="interaction">
+                <div class="button_wrap clearfix">
+                    <button class="reward">我要打赏</button>
+                    <button class="join">我要参与</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="reward_list">
+            <h6>打赏排行榜</h6>
+            <div class="list_wrap">
+                <div class="single_rewarder unfold">
+                    <div class="info_wrap">
+                        <i class="mark"></i>
+                        <!-- <span class="ranking"></span> -->
+                        <span class="avatar"></span>
+                        <span class="info">
+                            <span class="name">你好</span><br>
+                            <span class="phone">17502196780</span>
+                        </span>
+                        <i class="arrow"></i>
+                        <span class="reward_count">￥35.00</span>
+                    </div>
+                    <div class="msg">
+                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
+                    </div>
+                </div>
+                <div class="single_rewarder">
+                    <div class="info_wrap">
+                        <i class="mark"></i>
+                        <!-- <span class="ranking"></span> -->
+                        <span class="avatar"></span>
+                        <span class="info">
+                            <span class="name">你好</span><br>
+                            <span class="phone">17502196780</span>
+                        </span>
+                        <i class="arrow"></i>
+                        <span class="reward_count">￥35.00</span>
+                    </div>
+                    <div class="msg">
+                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
+                    </div>
+                </div>
+                <div class="single_rewarder">
+                    <div class="info_wrap">
+                        <i class="mark"></i>
+                        <!-- <span class="ranking"></span> -->
+                        <span class="avatar"></span>
+                        <span class="info">
+                            <span class="name">你好</span><br>
+                            <span class="phone">17502196780</span>
+                        </span>
+                        <i class="arrow"></i>
+                        <span class="reward_count">￥35.00</span>
+                    </div>
+                    <div class="msg">
+                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
+                    </div>
+                </div>
+                <div class="single_rewarder">
+                    <div class="info_wrap">
+                        <span class="ranking">NO.4</span>
+                        <span class="avatar"></span>
+                        <span class="info">
+                            <span class="name">你好</span><br>
+                            <span class="phone">17502196780</span>
+                        </span>
+                        <i class="arrow"></i>
+                        <span class="reward_count">￥35.00</span>
+                    </div>
+                    <div class="msg">
+                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
+                    </div>
+                </div>
+                
+                
+                
+            </div>
+            <div class="loading"><i></i><span>加载中...</span></div>
+        </section>
+
+    </div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+
+<script>
+    var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $crowdStatus = 2;  //众筹状态(1成功，2进行中，3失败)
+    var finishLoading = true;
+
+    var $pageNum = 1;
+    var $pageSize = 8;
+
+    $(function(){
+
+        shouldRegister();
+
+        //获取商品列表
+        $.ajax({
+            url: GET_RECORD_DETAIL,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            async:false,
+            success: function(data){
+                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                console.log(GET_RECORD_DETAIL,data);
+                if(data.responseCode == 2000){
+                    var order = data.data;
+
+                    $('.order_price').html('￥'+order.orderPrice);
+                    $('.left_price').html('￥'+order.leftPrice);
+                    $('.rewarder_num').html(order.payNum);
+                    var process = (100*(Number(order.orderPrice) - Number(order.leftPrice))/Number(order.orderPrice));
+                    $('.process_bar .fill').html(process.toFixed(2)+'%');
+                    $('.process_bar .base').width(process+'%');
+                    $('.declaration .content').html(order.userMsg?order.userMsg:'无');
+
+                    console.log(order);
+                    var ordersListHtml = "";
+                    var $amount = 0;
+                    ordersListHtml +=   '<div class="singleOrder reward_order clearfix" data-order-id="'+ order.orderId +'">'+
+                                            '<div class="order_head">'+
+                                                '<span class="nickname">'+ order.nikeName +'</span>发起了众赏购物，订单共计'+
+                                                '<span class="amount"></span>件商品<i class="more"></i>'+
+                                            '</div>'+
+                                            '<div class="goods_detail">'
+
+                    for(var j=0; j<order.goods.length; j++){
+                        $amount += order.goods[j].goodsAmount;
+                        var save =((Number(order.goods[j].salePrice) - Number(order.goods[j].buyPrice))*Number(order.goods[j].goodsAmount)).toFixed(2);
+                        ordersListHtml +=       '<div class="order_detail clearfix">'+
+                                                    '<div class="product_pic" style="background: url('+ order.goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                    '<div class="product_desc">'+
+                                                        '<p class="name">'+ order.goods[j].goodsName +'</p>'+
+                                                        '<p class="parameter">'+ order.goods[j].goodsSpu +'</p>'+
+                                                        '<p class="prompt">减价拍节省￥'+ save +'</p>'+
+                                                    '</div>'+
+                                                    '<div class="price"><span class="price_now">￥'+ order.goods[j].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ order.goods[j].salePrice.toFixed(2) +'</span><br><span class="count">×'+ order.goods[j].goodsAmount +'</span></div>'+
+                                                '</div>'
+                    }
+                    ordersListHtml +=       '</div>' +
+                                            '<div class="bottom"></div>'
+                                        '</div>'
+
+                    $('.orders_list').append(ordersListHtml);
+                    $('.singleOrder .order_head .amount').html($amount);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        bindRewarderList($pageNum,$curOrderId);
+
+        //没有订单时的显示
+        if($('.single_rewarder').length <= 0){
+            $('.list_wrap').html('<p style="text-align:center;font-size:0.24rem">暂无打赏</p>');
+            finishLoading =true
+            $('.loading').hide();
+        }
+
+    })
+
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+//            setTimeout(function(){
+            bindRewarderList($pageNum,$curOrderId);
+//            },1000)
+        }
+    })
+
+    
+
+
+
+    $('.orders_list').on('click', '.singleOrder .order_head', function(){
+        $('.singleOrder').toggleClass('unfold');
+    })
+
+    $('.reward_list .list_wrap').on('click', '.single_rewarder .info_wrap', function(){
+        $(this).parents('.single_rewarder').toggleClass('unfold');
+    })
+
+    //获取打赏人列表
+    function bindRewarderList(pageNum,orderId){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.list_wrap').html('');
+        }
+
+        //设置订单列表请求参数
+        var paraData = {};
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.orderId = orderId;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GET_SELF_REWARDER_LIST,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            async:false,
+            success: function(data){
+                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                console.log(GET_SELF_REWARDER_LIST,data);
+                if(data.responseCode == 2000){
+                    var rewarders = data.data;
+                    console.log(rewarders);
+                    var rewarderListHtml = "";
+                    for(var i=0; i<rewarders.length; i++){
+                        var rankMark = '';
+                        var sort = (($pageNum-1)*$pageSize+(i+1));
+                        if(sort > 3){
+                            rankMark = '<span class="ranking">NO.'+ sort +'</span>';
+                        }else {
+                            rankMark = '<i class="mark"></i>';
+                        }
+                        rewarderListHtml += '<div class="single_rewarder">'+
+                                                '<div class="info_wrap">'+ rankMark +
+                                                    '<span class="avatar" style="background: url('+ rewarders[i].userPortrait +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
+                                                    '<span class="info">'+
+                                                        '<span class="name">'+ rewarders[i].userName +'</span><br>'+
+                                                        '<span class="phone">'+ rewarders[i].userTel +'</span>'+
+                                                    '</span>'+
+                                                    (rewarders[i].leaveMsg?'<i class="arrow"></i>':'<i class="no_arrow"></i>')+
+                                                    '<span class="reward_count">￥'+ Number(rewarders[i].payMoney).toFixed(2) +'</span>'+
+                                                '</div>'+
+                                                (rewarders[i].leaveMsg?('<div class="msg"><p>'+ rewarders[i].leaveMsg +'</p></div>'):'')+
+                                            '</div>'
+                    }
+
+                    $('.list_wrap').append(rewarderListHtml);
+
+                    if(rewarders.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+
+</script>
+<script src="../script/wx_browser_api.js"></script>
+</html>

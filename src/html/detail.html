@@ -192,6 +192,8 @@
     var $curAbout = 0;
     var showEvaluateImgs = [];
     var hasPhone = false;
+    var $userPoint = 0;
+    var $consumePoint = 0;
 
 
     $(function(){
@@ -225,6 +227,7 @@
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                     $('#sortsList .consume_count').html(goodsPara.pieNum);
+                    $consumePoint = goodsPara.pieNum;
 
                     if (goodsPara.limitNum > 0 && goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
                         $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
@@ -399,7 +402,8 @@
                         hasPhone = true;
                     }
                     if(data.data.userPoint){
-                        $('.current_left').html(data.data.userPoint);
+                        $userPoint = data.data.userPoint;
+                        $('.current_left').html(userPoint);
                     }else {
                         $('.current_left').html(0);
                     }
@@ -732,6 +736,19 @@
 
     //立即购买
     $('#bottomBtn .purchase').click(function() {
+        if(!$userPoint || Number(userPoint) < Number($consumePoint) ){
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<p style="font-size:0.36rem;text-align:center;margin-top:0.3rem">拍币不足，立即前往获取拍币</p>'+
+                                '<button id="regSubmit">我知道了</button>'+
+                            '</div>'+
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
+            $('#regSubmit').on('click', function(){
+                window.location.href = 'personalPurse.html'
+            })
+        }else {
         //如果是未绑定手机号的用户
 //        if(!hasPhone){
 //            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
@@ -745,7 +762,6 @@
                         goodsIssueno: goodsPara.goodsIssueno
                     }
                     commonCompt.addMask('抢拍中...');
-//                    alert(JSON.stringify(paraData));
                     $.ajax({
                         url: ADDCART,
                         type: 'POST',
@@ -790,7 +806,7 @@
             } else {
                 commonCompt.popPrompt('请选择参数');
             }
-//        }
+        }
     })
 
     $('.action_wrap .chat').click(function(){

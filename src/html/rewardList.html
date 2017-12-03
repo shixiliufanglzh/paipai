@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的打赏</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body>
+<div id="order">
+    <div id="orderSorts">
+        <div class="nav_wrap">
+            <div class="tab tab_rewarding current"><a>打赏中</a></div>
+            <div class="tab tab_successed"><a>打赏成功</a></div>
+            <div class="tab tab_failed"><a>打赏失败</a></div>
+        </div>
+    </div>
+    <div class="orders_list">
+
+    </div>
+    <div class="loading"><i></i><span>加载中...</span></div>
+</div>
+
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_order.png" alt="">
+    </div>
+    <h6>还没有打赏订单呢~</h6>
+    <button onclick="window.location.href='../index.html'">去抢拍</button>
+</div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+
+<script>
+    var $pageNum = 1;
+    var $pageSize = 5;
+    var $crowdStatus = 2;  //众筹状态(1成功，2进行中，3失败)
+    var ordersListAll = [];
+    var finishLoading = true;
+
+    $(function(){
+
+        shouldRegister();
+
+        bindRewardList($pageNum,$crowdStatus);
+
+        //没有订单时的显示
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+
+    })
+
+    //切换分类
+    $('#orderSorts .nav_wrap').on('click', '.tab', function(){
+        ordersListAll = [];
+        $pageNum = 1;
+        $('.nav_wrap .tab').removeClass('current');
+        $(this).addClass('current');
+        if($(this).hasClass('tab_rewarding')){
+            $crowdStatus = 2;
+        }else if($(this).hasClass('tab_successed')){
+            $crowdStatus = 1;
+        }else if($(this).hasClass('tab_failed')){
+            $crowdStatus = 3
+        }
+        bindRewardList($pageNum,$crowdStatus);
+
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+    })
+
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+//            setTimeout(function(){
+            bindRewardList($pageNum,$crowdStatus);
+//            },1000)
+        }
+    })
+
+    //查看订单详情
+    $('.orders_list').on('click', '.singleOrder .order_head,.singleOrder .goods_detail,.singleOrder .total', 
+    function(){
+        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
+        window.location.href = 'rewardOrderDetail.html?order_id='+ $curOrderId;
+    })
+
+
+    //取消订单
+    $('.orders_list').on('click', 'button.close', function(){
+        var $curOrde = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认取消该订单吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: CANCELORDER,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrde.attr('data-order-id')
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+                            $curOrde.remove();
+                            ordersListAll.splice($curOrde.index(),1);
+                            commonCompt.popPrompt('已取消该订单');
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+                                $pageNum ++;
+                                console.log("第"+$pageNum+"页");
+                                finishLoading = true;
+                                setTimeout(function(){
+                                    bindRewardList($pageNum,$crowdStatus);
+                                },1000);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //支付
+    $('.orders_list').on('click', 'button.pay', function(){
+        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
+        window.location.href = 'paying.html?order_id='+ $curOrderId;
+    })
+
+    //分享
+    $('.orders_list').on('click', 'button.share', function(){
+
+    })
+
+    //获取商品列表
+    function bindRewardList(pageNum,crowdStatus){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.orders_list').html('');
+        }
+
+        //设置订单列表请求参数
+        var paraData = {};
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.crowdStatus = crowdStatus;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GET_USER_RECORD,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            async:false,
+            success: function(data){
+                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                console.log(GET_USER_RECORD,data);
+                if(data.responseCode == 2000){
+                    var orders = data.data;
+                    console.log(orders);
+                    if(orders.length > 0){
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+                    }
+                    ordersListAll = ordersListAll.concat(orders);
+                    var ordersListHtml = "";
+                    for(var i=0; i<orders.length; i++){
+                        var $amount = 0;
+
+                        ordersListHtml +=   '<div class="singleOrder clearfix" data-order-id="'+ orders[i].orderId +'">'+
+                                                '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span></div>'+
+                                                '<div class="goods_detail">'
+                        
+
+                        for(var j=0; j<orders[i].goods.length; j++){
+                            $amount += orders[i].goods[j].goodsAmount;
+                            ordersListHtml +=       '<div class="order_detail clearfix">'+
+                                                        '<div class="product_pic" style="background: url('+ orders[i].goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                        '<div class="product_desc">'+
+                                                            '<p class="name">'+ orders[i].goods[j].goodsName +'</p>'+
+                                                            '<p class="parameter">'+ orders[i].goods[j].goodsSpu +'</p>'+
+                                                        '</div>'+
+                                                        '<div class="price"><span class="price_now">￥'+ orders[i].goods[j].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ orders[i].goods[j].salePrice.toFixed(2) +'</span><br><span class="count">×'+ orders[i].goods[j].goodsAmount +'</span></div>'+
+                                                    '</div>'
+                        } 
+
+
+                        if(crowdStatus == 2) {
+                            ordersListHtml +=   '</div>' +
+                                                '<p class="total" style="text-align:left">共计打赏<span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>&nbsp;&nbsp;还差<span class="deal_price" style="color:#E02532">￥'+ (!!orders[i].leftPrice?orders[i].leftPrice.toFixed(2):orders[i].orderPrice.toFixed(2)) +'</span></p>'+
+                                                // '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'+
+                                                '<button class="order_edit close">关闭订单</button>' +
+                                                '<button class="order_edit red pay">支付余额</button>' +
+                                                '<button class="order_edit red share">分享</button>' +
+                                            '</div>'
+                        }else if(crowdStatus == 1 || crowdStatus == 3) {
+                            ordersListHtml +=   '</div>' +
+                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
+                                                // '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'+
+                                            '</div>'
+                        }
+
+                    }
+
+                    $('.orders_list').append(ordersListHtml);
+
+                    if(orders.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+
+</script>
+<script src="../script/wx_browser_api.js"></script>
+</html>

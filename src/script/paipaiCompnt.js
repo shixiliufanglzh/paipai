@@ -2,10 +2,11 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-//var apiHost = "http://116.62.116.5/app/";
-var apiHost = "http://www.jianbid.com/app/";
+var apiHost = "http://47.96.186.64/app/";
+// var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
+var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
 var GETGOODS = apiHost + "goods/getGoods.jhtml";  //获取商品列表接口
 var REFRESHGOODS = apiHost + "goods/refreshGoods.jhtml";  //刷新低于最低价或其他不和规则商品
 var GETGODDSDETAIL = apiHost + "goods/getGoodsDetail.jhtml";  //获取商品详情
@@ -47,7 +48,21 @@ var GETUSERPOINTRECORD = apiHost + "activity/getUserPointRecord.jhtml";  //获�
 var JSSDKCONFIG = apiHost + "util/jssdkConfig.jhtml";  //获取js-skd config接口注入权限验证配置
 
 var REGISTER = apiHost + "login/register.jhtml";  //注册
-var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
+var LOGIN_WITH_PWD = apiHost + "login/loginCheck.jhtml";  //账号密码登录
+var FORGET_PWD = apiHost + "login/forgetPsw.jhtml";  //忘记密码修改密码
+var GET_SHARE_URL = apiHost + "activity/getShareUrl.jhtml";  //获取分享链接
+
+var ADD_REFUND_TRACK_NUM = apiHost + "order/addRefundTrackNum.jhtml";  //.买家添加退换货物流单号
+var GET_ORDER_REFUND = apiHost + "order/getOrderRefund.jhtml";  //.用户获取订单全额退款售后列表
+var GET_ORDER_GOOD_REFUND = apiHost + "goods/getOrderGoodsRefund.jhtml";  //.用户获取订单指定商品售后列表
+var GET_REFUND = apiHost + "crmRefund/getRefund.jhtml";  //.获取售后申请列表
+var GET_REWARD_SHARE_URL = apiHost + "crowdFund/getShareUrl.jhtml";  //.获取众筹订单分享链接
+var GET_USER_RECORD = apiHost + "crowdFund/getUserRecord.jhtml";  //.用户获取自己的众筹记录****
+var GET_RECORD_DETAIL = apiHost + "crowdFund/getRecordDetail.jhtml";  //.获取众筹记录详情
+var GET_SELF_REWARDER_LIST = apiHost + "crowdFund/getSelfRecordUser.jhtml";  //.用户获取自己的众筹记录打赏人列表
+var GET_OTHER_REWARDER_LIST = apiHost + "crowdFund/getRecordUser.jhtml";  //.观众获取众筹记录打赏人列表
+var GET_MSG_RECORD = apiHost + "crowdFund/getRecordMsg.jhtml";  //.获取众筹记录留言列表
+var CANCEL_REWARD = apiHost + "crowdFund/cancelCrowd.jhtml";  //.用户取消众筹
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -825,34 +840,34 @@ var commonCompt = {
 
 //要求未注册用户注册
  function shouldRegister(){
-     var hasPhone = false;
-     $.ajax({
-         url: GETUSERINFO,
-         type: 'GET',
-         dataType: 'json',
-         async: false,
-         success: function (data) {
-             console.log(data);
-             apiResponse(data.responseCode,data.responseDesc,data.data);
-             if(data.responseCode == 2000){
-                 if(data.data.userTel){
-                     hasPhone = true;
-                 }else {
-                     if(!hasPhone){
-                         hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-                     }
-                 }
-                 if(data.data.id){
-                     sessionStorage.setItem('userId', data.data.id);
-                 }
-             }
-         },
-         error: function (err) {
-             console.log(err);
-         }
-     })
+    var hasPhone = false;
+    $.ajax({
+        url: GETUSERINFO,
+        type: 'GET',
+        dataType: 'json',
+        async: false,
+        success: function (data) {
+            console.log(data);
+            apiResponse(data.responseCode,data.responseDesc,data.data);
+            if(data.responseCode == 2000){
+                if(data.data.userTel){
+                    hasPhone = true;
+                }else {
+                    if(!hasPhone){
+                        hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                    }
+                }
+                if(data.data.id){
+                    sessionStorage.setItem('userId', data.data.id);
+                }
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    })
 
-     return hasPhone;
- }
+    return hasPhone;
+}
 
 commonCompt.addFixedBtn();

@@ -1,10 +1,20 @@
 /**
  * Created by 是昔流芳 on 2017/10/23.
  */
-var shareUrl = window.location.href;
-var userId;
+// var shareUrl = window.location.href;
+// var userId;
 
 $(function(){
+
+    // $.ajax({
+    //     url: GET_SHARE_URL,
+    //     type:'GET',
+    //     dataType:'json',
+    //     async:false,
+    //     success: function(data){
+            
+    //     }
+    // })
 
     $.ajax({
         url: JSSDKCONFIG,
@@ -30,7 +40,7 @@ $(function(){
                     wx.onMenuShareAppMessage({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！', // 分享描述
-                        link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         type: '', // 分享类型,music、video或link，不填默认为link
                         dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
@@ -43,15 +53,15 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!userId){
-                                userId = getUserId();
-                            }
+                            // if(!userId){
+                            //     userId = getUserId();
+                            // }
                         }
                     });
 
                     wx.onMenuShareTimeline({
                         title: '【减价拍】售价减拍,先拍先得,30元手机话费，每秒减0.1元，低至0元，抢！', // 分享标题
-                        link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        link: data.data.url, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
@@ -60,17 +70,17 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!userId){
-                                //alert('进来坐');
-                                userId = getUserId();
-                            }
+                            // if(!userId){
+                            //     //alert('进来坐');
+                            //     userId = getUserId();
+                            // }
                         }
                     });
 
                     wx.onMenuShareQQ({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！', // 分享描述
-                        link: shareUrl, // 分享链接
+                        link: data.data.url, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
@@ -79,17 +89,17 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!userId){
-                                userId = getUserId();
-                                return false;
-                            }
+                            // if(!userId){
+                            //     userId = getUserId();
+                            //     return false;
+                            // }
                         }
                     });
 
                     wx.onMenuShareWeibo({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！', // 分享描述
-                        link: shareUrl, // 分享链接
+                        link: data.data.url, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
@@ -98,16 +108,16 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!userId){
-                                userId = getUserId();
-                            }
+                            // if(!userId){
+                            //     userId = getUserId();
+                            // }
                         }
                     });
 
                     wx.onMenuShareQZone({
                         title: '【减价拍】售价减拍 先拍先得 ', // 分享标题
                         desc: '30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！', // 分享描述
-                        link: shareUrl, // 分享链接
+                        link: data.data.url, // 分享链接
                         imgUrl: 'http://www.jianbid.com/app/public/imgs/logo.png', // 分享图标
                         success: function () {
                             // 用户确认分享后执行的回调函数
@@ -116,9 +126,9 @@ $(function(){
                             // 用户取消分享后执行的回调函数
                         },
                         trigger: function(){
-                            if(!userId){
-                                userId = getUserId();
-                            }
+                            // if(!userId){
+                            //     userId = getUserId();
+                            // }
                         }
                     });
 
