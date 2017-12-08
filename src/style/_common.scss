@@ -173,11 +173,28 @@
       width: 100%;
       margin-top: 0.3rem;
     }
+    #doubleBtn {
+      margin-top: 0.75rem;
+      button {
+        width: 2.5rem;
+        border-radius: 0.1rem;
+        line-height: 0.8rem;
+        font-size: 0.3rem;
+        border-radius: 4px;
+      }
+      .skip {
+        float: left;
+        background-color: #858585;
+      }
+      .regSubmit {
+        float: right;
+      }
+    }
     #regSubmit {
       line-height: 0.8rem;
       width: 100%;
       font-size: 0.3rem;
-      border-radius: 0.04rem;
+      border-radius: 4px;
       margin-top: 0.75rem;
     }
   }
@@ -249,6 +266,25 @@
     .show_code {
       @include smallIcon(0.432rem,0.432rem,url("../imgs/qrcode.png"));
       margin-top: 0.432rem;
+    }
+  }
+}
+
+#sharePrompt {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  .guide {
+    position: absolute;
+    right: 0;
+    top: 0;
+    max-width: 80%;
+    img {
+      width: 100%;
     }
   }
 }

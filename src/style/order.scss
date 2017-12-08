@@ -30,6 +30,7 @@ body {
   }
 
   .singleOrder {
+    position: relative;
     &.reward_order {
       .order_head {
         i.more {
@@ -83,7 +84,13 @@ body {
     .bottom {
       height: 0.2rem;
     }
-
+    .crowd_status {
+      @include smallIcon(1.22rem,1.22rem,url('../imgs/crowd_finish.png'));
+      position: absolute;
+      right: 1rem;
+      top: 1.4rem;
+      z-index: 9999;
+    }
     .order_detail {
       height: 1.9rem;
       background-color: #f8f8f8;
@@ -104,7 +111,12 @@ body {
         float: left;
         .name {
           font-size: 0.22rem;
-
+          height: 0.66rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;//被自动清除，后期手动补上
+          -webkit-line-clamp: 2;
         }
         .parameter {
           font-size: 0.2rem;
@@ -112,6 +124,9 @@ body {
           margin-top: 0.08rem;
         }
         .prompt {
+          position: absolute;
+          bottom: 0.07rem;
+          left: 2.12rem;
           color: $paiRed;
           font-size: 0.24rem;
         }
@@ -166,8 +181,9 @@ body {
         height: 0.2rem;
         background-color: #858585;
         border-radius: 0.2rem;
+        // overflow: hidden;
         .base {
-          width: 50.6%;
+          width: 0%;
           background-color: $paiRed;
           height: 0.2rem;
           border-radius: 0.2rem;
@@ -212,6 +228,7 @@ body {
     }
     .declaration {
       margin-top: 0.44rem;
+      font-size: 0;
       span {
         display: inline-block;
         font-size: 0.24rem;
@@ -224,31 +241,71 @@ body {
         width: 76%;
         float: left;
       }
+      textarea {
+        margin: 0.1rem 0;
+        width: 100%;
+        font-size: 0.26rem;
+        height: 1.6rem;
+        padding: 0.2rem;
+        line-height: 1.3em;
+        resize: none;
+        border: 1px solid #f0f0f0;
+        font-family: 'Microsoft YaHei';
+      }
+    }
+    .submit {
+      button {
+        width: 6.7rem;
+        height: 0.9rem;
+        border-radius: 4px;
+        background-color: $paiRed;
+        font-size: 0.3rem;
+        color: #fff;
+        border: none;
+        position: relative;
+        left: 50%;
+        margin-left: -3.35rem;
+        margin-top: 0.8rem;
+      }
+      p {
+        margin-top: 0.1rem;
+        color: $paiRed;
+        font-size: 0.2rem;
+      }
     }
     .interaction {
       position: relative;
       margin-top: 0.4rem;
+      padding-bottom: 0.1rem;
       .button_wrap {
         width: 5.1rem;
         position: relative;
         left: 50%;
         margin-left: -2.55rem;
+        font-size: 0;
         button {
           width: 1.9rem;
           height: 0.6rem;
           border-radius: 0.1rem;
-          border: 1px solid $paiRed;
           outline: none;
           font-size: 0.24rem;
+          border: none;
+          color: #fff;
         }
         .reward {
           float: left;
-          color: #fff;
           background-color: $paiRed;
         }
         .join {
           float: right;
-          background-color: #fff;
+          background-color: $paiYellow;
+        }
+        .share {
+          background-color: $paiRed;
+          position: relative;
+          width: 3.2rem;
+          left: 50%;
+          margin-left: -1.6rem;
         }
       }
     }
@@ -260,9 +317,17 @@ body {
     h6 {
       font-size: 0.24rem;
       font-weight: 500;
-      padding: 0.12rem 0.24rem
+      padding: 0.12rem 0.24rem;
+      .left {
+        float: left;
+      }
+      .right {
+        float: right;
+        color: #858585;
+      }
     }
     .list_wrap {
+      padding-bottom: 0.32rem;
       .single_rewarder {
         border-top: 1px solid #f0f0f0;
         font-size: 0;
@@ -283,8 +348,33 @@ body {
           }
         }
         &.unfold {
+          padding-bottom: 0;
           .msg {
             height: auto;
+            >div {
+              padding-top: 0.18rem;
+              padding-bottom: 0.1rem;
+              margin-left: 0.8rem;
+              border-top: 1px solid #f5f5f5;
+              .single_msg {
+                padding: 0;
+                border: none;
+                .date {
+                  float: left;
+                  font-size: 0.2rem;
+                  color: #858585;
+                }
+                .count {
+                  float: right;
+                  font-size: 0.2rem;
+                  color: #858585;
+                }
+              }
+              p {
+                border: none;
+                padding-top: 0;
+              }
+            }
           }
           .info_wrap {
             .arrow {
@@ -310,9 +400,10 @@ body {
             margin-right: 0.1rem;
           }
           .avatar {
-            @include smallIcon(0.7rem,0.7rem,url("../imgs/placeholder.jpg"));
+            @include smallIcon(0.7rem,0.7rem,url("../imgs/ano.png"));
             vertical-align: middle;
             margin-right: 0.2rem;
+            border-radius: 50%;
           }
           .info {
             font-size: 0.24rem;
@@ -373,7 +464,6 @@ body {
     border-color: $paiRed;
   }
 }
-
 
 #orderHandle {
   #state {
@@ -594,6 +684,174 @@ body {
           }
         }
       }
+    }
+  }
+}
+
+#rewardPay {
+  background-color: #fff;
+  text-align: center;
+  .user_msg {
+    background-color: #f0f0f0;
+    font-size: 0;
+    padding-top: 0.5rem;
+    padding-bottom: 0.4rem;
+    .avatar {
+      @include smallBlock(1.24rem,1.24rem);
+      background: url('../imgs/user_avatar.png') center center no-repeat;
+      background-size: cover;
+      border-radius: 50%;
+    }
+    p {
+      font-size: 0.24rem;
+      margin-top: 0.2rem;
+    }
+  }
+  .left_space{
+    font-size: 0;
+    padding: 0 0.24rem;
+    background-color: #fff;
+    border-bottom: 0.1rem solid #f0f0f0;
+    span {
+      font-size: 0.24rem;
+      line-height: 0.8rem;
+      float: left;
+    }
+    .count {
+      font-size: 0.36rem;
+      float: right;
+    }
+  }
+  .reward_count {
+    font-size: 0;
+    padding: 0 0.24rem;
+    background-color: #fff;
+    border-bottom: 0.1rem solid #f0f0f0;
+    .count_input {
+      font-size: 0.24rem;
+      border-bottom: 1px solid #f0f0f0;
+      span {
+        line-height: 0.64rem;
+        float: left;
+      }
+      input {
+        height: 0.64rem;
+        min-width: 60%;
+        border: none;
+        font-size: 0.24rem;
+      }
+      .most {
+        float: right;
+        color: $paiRed;
+      }
+    }
+    .options_wrap {
+      padding: 0.2rem 0.01rem 0.02rem;
+      span {
+        display: inline-block;
+        background-color: #858585;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 0.38rem;
+        width: 1.6rem;
+        line-height: 0.64rem;
+        text-align: center;
+        margin-right: 0.2rem;
+        margin-bottom: 0.18rem;
+        s {
+          font-size: 0.24rem;
+          text-decoration: none;
+        }
+        &.valid {
+          background-color: $paiRed;
+        }
+        &:nth-child(4n) {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  .pay_type {
+    font-size: 0;
+    padding: 0 0.24rem;
+    background-color: #fff;
+    border-bottom: 0.1rem solid #f0f0f0;
+    div {
+      width: 50%;
+      float: left;
+      text-align: center;
+      i.check {
+        @include smallIcon(0.28rem,0.28rem,url('../imgs/unselected.png'));
+        margin-bottom: -0.04rem;
+      }
+      &.selected {
+        i.check {
+          @include smallIcon(0.28rem,0.28rem,url('../imgs/selected.png'));
+        }
+      }
+      span {
+        line-height: 0.92rem;
+        font-size: 0.26rem;
+      }
+      &.alipay {
+        i.icon {
+          @include smallIcon(0.52rem,0.52rem,url('../imgs/alipay.png'));
+          vertical-align: middle;
+          margin: -0.16rem 0.1rem 0 0.2rem;
+        }
+      }
+      &.wechat {
+        i.icon {
+          @include smallIcon(0.52rem,0.52rem,url('../imgs/wechat.png'));
+          vertical-align: middle;
+          margin: -0.16rem 0.1rem 0 0.2rem;
+        }
+      }
+    }
+  }
+  .leave_msg {
+    font-size: 0;
+    padding: 0 0.24rem;
+    background-color: #fff;
+    .head {
+      font-size: 0.24rem;
+      padding-top: 0.1rem;
+      .title {
+        float: left;
+      }
+      .mode {
+        float: right;
+        vertical-align: middle;
+        color: #858585;
+      }
+    }
+    textarea {
+      margin: 0.1rem 0;
+      width: 100%;
+      font-size: 0.24rem;
+      height: 1.4rem;
+      padding: 0.2rem;
+      line-height: 1.2em;
+      resize: none;
+      border: 1px solid #f0f0f0;
+      font-family: 'Microsoft YaHei';
+    }
+    .commit {
+      margin-top: 0.44rem;
+      width: 6.7rem;
+      line-height: 0.9rem;
+      color: #fff;
+      background-color: $paiRed;
+      border-radius: 4px;
+      outline: none;
+      border: none;
+      font-size: 0.3rem;
+    }
+    p.prompt {
+      font-size: 0.2rem;
+      color: $paiRed;
+      text-align: left;
+      padding: 0.1rem 0.2rem;
     }
   }
 }

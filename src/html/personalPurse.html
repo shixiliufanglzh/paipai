@@ -43,17 +43,17 @@
 
     <div id="column">
         <h4><i class="gift"></i>获得方式</h4>
-        <p class="content">1.关注【减价拍】新浪微博或微信公众号（FallBid），奖励5拍币
-                <br>2. 分享商城链接，每个点击链接的好友奖励1个拍币
-                <br>3. 商城消费购物，每消费10元奖励1拍币
-                <br>4. 晒图好评奖励10拍币
+        <p class="content">1.关注【减价拍】新浪微博或微信公众号（FallBid），奖励5个拍币
+                <br>2. 点击底部【好友互动】，每个点击的好友奖励1个拍币
+                <br>3. 商城消费购物，每消费10元奖励1个拍币
+                <br>4. 晒图好评奖励10个拍币
                 <br>5. 每日签到奖励1个拍币</p>
         <!-- <p class="content">通过用户每日签到、购物金额等增加活跃度，系统给予奖励。<br>获得更多拍币请咨询在线客服。</p> -->
     </div>
 
     <div id="bottomBtn">
         <button class="like">每日签到</button>
-        <button class="purchase">分享好友</button>
+        <button class="purchase">好友互动</button>
     </div>
 </div>
 
@@ -68,6 +68,7 @@
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var curPoint = 0;
@@ -95,14 +96,29 @@
                         curPoint = data.data.userPoint;
                         $('#header .count span').html(data.data.userPoint);
                     }
-                    if(data.data.isSign){
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
+        $.ajax({
+            url: ISSIGN,
+            type:'GET',
+            dataType:'json',
+            async:false,
+            success:function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data){
                         $('#bottomBtn .like').attr('disabled','disabled');
                         $('#bottomBtn .like').css('background-color', '#999');
                         $('#bottomBtn .like').html('签到完成');
                     }
                 }
             },
-            error: function (err) {
+            error: function(err){
                 console.log(err);
             }
         })

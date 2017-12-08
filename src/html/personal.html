@@ -42,8 +42,8 @@
                 <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money"></span>
             </li>
 
-            <li class="single_btn loc_purse">
-                <i class="pre_icon reward"></i><span class="title">我的打赏</span><i class="icon_enter"></i>
+            <li class="single_btn loc_reward">
+                <i class="pre_icon reward"></i><span class="title">我的众赏</span><i class="icon_enter"></i>
             </li>
 
             <li class="single_btn loc_order">
@@ -79,6 +79,7 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var hasPhone = false;
@@ -145,6 +146,8 @@
     $('#selection').on('click','.single_btn',function(){
         if($(this).hasClass('loc_purse')){
             window.location.href = 'personalPurse.html';
+        }else if($(this).hasClass('loc_reward')){
+            window.location.href = 'rewardList.html';
         }else if($(this).hasClass('loc_order')){
             window.location.href = 'order.html';
         }else if($(this).hasClass('loc_collection')){

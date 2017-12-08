@@ -69,6 +69,7 @@
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 <script>
     var $cartId,
         $primaryPriceSum = 0,
@@ -183,7 +184,7 @@
                 success: function(data){
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
-                        window.location.href= 'paying.html?order_id='+ data.data.orderId +'&isVirtual='+1;
+                        window.location.href= 'paying.html?order_id='+ data.data.orderId +'&isVirtual='+1+'&hide_crowd=0';
                     }
 
                 },

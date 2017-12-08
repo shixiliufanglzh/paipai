@@ -288,7 +288,26 @@
         vertical-align: middle;
         margin-right: 0.3rem;
       }
-
+    }
+    .zhongshang {
+      display: none;
+      .icon_pay {
+        @include smallIcon(0.6rem,0.6rem,url("../imgs/crowd_pay.png"));
+        vertical-align: middle;
+        margin-right: 0.3rem;
+      }
+    }
+  }
+  #instruction {
+    padding: 0.24rem;
+    display: none;
+    h5 {
+      font-weight: 500;
+      font-size: 0.3rem;
+      margin: 0.1rem 0;
+    }
+    p {
+      font-size: 0.24rem;
     }
   }
 }

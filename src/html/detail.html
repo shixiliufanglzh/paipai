@@ -177,6 +177,7 @@
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 <script>
     var goodsPara,paraList,reloadMsg;
     var timer = null;
@@ -398,12 +399,13 @@
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
+                    // alert('获取'+JSON.stringify(data));
                     if(data.data.userTel){
                         hasPhone = true;
                     }
                     if(data.data.userPoint){
                         $userPoint = data.data.userPoint;
-                        $('.current_left').html(userPoint);
+                        $('.current_left').html($userPoint);
                     }else {
                         $('.current_left').html(0);
                     }
@@ -458,13 +460,13 @@
             $(this).siblings('span').removeClass('selected');
             if(!$(this).hasClass('selected')){
                 $(this).addClass('selected');
-                if(paraList[skuIndex].goodsSpu[spuIndex].picUrl){
-                    $('#sortsList .good_img').css({
-                        'background': '#fff url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
-                        'background-size': 'cover',
-                        '-webkit-background-size': 'cover'
-                    })
-                }
+                // if(paraList[skuIndex].goodsSpu[spuIndex].picUrl){
+                //     $('#sortsList .good_img').css({
+                //         'background': '#fff url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
+                //         'background-size': 'cover',
+                //         '-webkit-background-size': 'cover'
+                //     })
+                // }
                 var sku_id = $(this).parents('.single_para_container').attr('data-sku-id');
                 var spu_id = $(this).attr('data-spu-id');
                 var flag_exist = false;
@@ -515,6 +517,13 @@
                         userSel.mixId = reloadMsg.mixId
 
                         //价格、库存等信息展示
+                        if(!!reloadMsg.goodsPic){
+                            $('#sortsList .good_img').css({
+                                'background': '#fff url('+ reloadMsg.goodsPic +') center center no-repeat',
+                                'background-size': 'cover',
+                                '-webkit-background-size': 'cover'
+                            })
+                        }
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
@@ -736,7 +745,7 @@
 
     //立即购买
     $('#bottomBtn .purchase').click(function() {
-        if(!$userPoint || Number(userPoint) < Number($consumePoint) ){
+        if(!$userPoint || (Number($userPoint) < Number($consumePoint))){
             var html =  '<div id="registerWrap">'+
                             '<div class="register">'+
                                 '<p style="font-size:0.36rem;text-align:center;margin-top:0.3rem">拍币不足，立即前往获取拍币</p>'+
@@ -749,10 +758,6 @@
                 window.location.href = 'personalPurse.html'
             })
         }else {
-        //如果是未绑定手机号的用户
-//        if(!hasPhone){
-//            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-//        }else {
             if (userSel.spu_id.length >= paraList.length) {
                 if (userSel.count > 0) {
                     var paraData = {
@@ -874,4 +879,5 @@
         }
     })
 </script>
+<script src="../script/wx_browser_api.js"></script>
 </html>

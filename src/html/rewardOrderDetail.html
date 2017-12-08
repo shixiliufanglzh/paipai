@@ -27,133 +27,64 @@
 </head>
 <body>
     <div id="order" style="margin-bottom:0">
-        <section class="orders_list">
-            <!-- <div class="singleOrder reward_order unfold clearfix" data-order-id="">
-                <div class="order_head">订单号：<span class="order_number">1111111111111</span><i class="more"></i></div>
-                <div class="goods_detail">
-                    <div class="order_detail clearfix">
-                        <div class="product_pic"></div>
-                        <div class="product_desc">
-                            <p class="name">司法机关i的规划</p>
-                            <p class="parameter">嘀咕嘀咕</p>
-                        </div>
-                        <div class="price"><span class="price_now">￥999.99</span><br><span class="price_primary">888.88</span><br><span class="count">×3</span></div>
-                    </div>
-                </div>
-            </div> -->
-        </section>
+
+        <section class="orders_list"></section>
 
         <section class="process">
             <div class="bar_wrap">
                 <div class="process_bar">
                     <div class="base">
-                        <div class="fill">50.6%</div>
+                        <div class="fill">0%</div>
                     </div>
                 </div>
             </div>
             <div class="count_wrap">
-                <div class="count">订单金额<br><span class="order_price">￥99999.99</span></div>
-                <div class="count">还需金额<br><span class="left_price">￥99999.99</span></div>
-                <div class="count">打赏人数<br><span class="rewarder_num">99999</span></div>
+                <div class="count">订单金额<br><span class="order_price">￥0.00</span></div>
+                <div class="count">还需金额<br><span class="left_price">￥0.00</span></div>
+                <div class="count">打赏人次<br><span class="rewarder_num" style="margin-top:0.06rem;display:inline-block">0</span></div>
                 <span class="divide"></span>
             </div>
             <div class="declaration clearfix">
                 <span class="title">发起人宣言：</span>
-                <span class="content">对经济放缓教案集教案集啊接啊哦埃及哦i决定啊哦哦安静</span>
+                <span class="content">无</span>
             </div>
             <div class="interaction">
                 <div class="button_wrap clearfix">
-                    <button class="reward">我要打赏</button>
-                    <button class="join">我要参与</button>
+                    <button class="share">分享</button>
                 </div>
             </div>
         </section>
 
         <section class="reward_list">
-            <h6>打赏排行榜</h6>
-            <div class="list_wrap">
-                <div class="single_rewarder unfold">
-                    <div class="info_wrap">
-                        <i class="mark"></i>
-                        <!-- <span class="ranking"></span> -->
-                        <span class="avatar"></span>
-                        <span class="info">
-                            <span class="name">你好</span><br>
-                            <span class="phone">17502196780</span>
-                        </span>
-                        <i class="arrow"></i>
-                        <span class="reward_count">￥35.00</span>
-                    </div>
-                    <div class="msg">
-                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
-                    </div>
-                </div>
-                <div class="single_rewarder">
-                    <div class="info_wrap">
-                        <i class="mark"></i>
-                        <!-- <span class="ranking"></span> -->
-                        <span class="avatar"></span>
-                        <span class="info">
-                            <span class="name">你好</span><br>
-                            <span class="phone">17502196780</span>
-                        </span>
-                        <i class="arrow"></i>
-                        <span class="reward_count">￥35.00</span>
-                    </div>
-                    <div class="msg">
-                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
-                    </div>
-                </div>
-                <div class="single_rewarder">
-                    <div class="info_wrap">
-                        <i class="mark"></i>
-                        <!-- <span class="ranking"></span> -->
-                        <span class="avatar"></span>
-                        <span class="info">
-                            <span class="name">你好</span><br>
-                            <span class="phone">17502196780</span>
-                        </span>
-                        <i class="arrow"></i>
-                        <span class="reward_count">￥35.00</span>
-                    </div>
-                    <div class="msg">
-                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
-                    </div>
-                </div>
-                <div class="single_rewarder">
-                    <div class="info_wrap">
-                        <span class="ranking">NO.4</span>
-                        <span class="avatar"></span>
-                        <span class="info">
-                            <span class="name">你好</span><br>
-                            <span class="phone">17502196780</span>
-                        </span>
-                        <i class="arrow"></i>
-                        <span class="reward_count">￥35.00</span>
-                    </div>
-                    <div class="msg">
-                        <p>啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>
-                    </div>
-                </div>
-                
-                
-                
-            </div>
+            <h6 class="clearfix"><span class="left">打赏排行榜</span><span class="right">查看留言</span></h6>
+
+            <div class="list_wrap"> </div>
+
             <div class="loading"><i></i><span>加载中...</span></div>
         </section>
+    </div>
 
+    <div id="sharePrompt">
+        <div class="guide">
+            <img src="../imgs/share_prompt.png" alt="">
+        </div>
     </div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
     var $crowdStatus = 2;  //众筹状态(1成功，2进行中，3失败)
     var finishLoading = true;
+    var $msgUnfold = false;
+    var $userName = '';
+    var $shareImg = '';
+    var $userDeclaration = '';
 
     var $pageNum = 1;
     var $pageSize = 8;
@@ -170,10 +101,20 @@
             data: {orderId: $curOrderId},
             async:false,
             success: function(data){
-                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 console.log(GET_RECORD_DETAIL,data);
                 if(data.responseCode == 2000){
                     var order = data.data;
+
+                    if(!order || order.orderStatus.toString() !== '2'){
+                        $('.interaction .share').attr('disabled','disabled');
+                        $('.interaction .share').css('background-color','#858585');
+                    }
+
+                    $userName = order.userName ? order.userName : order.nikeName;
+                    $shareImg = order.goods[0].goodsPic;
+                    $userDeclaration = order.userMsg ? order.userMsg
+                        :'测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！';
 
                     $('.order_price').html('￥'+order.orderPrice);
                     $('.left_price').html('￥'+order.leftPrice);
@@ -181,23 +122,25 @@
                     var process = (100*(Number(order.orderPrice) - Number(order.leftPrice))/Number(order.orderPrice));
                     $('.process_bar .fill').html(process.toFixed(2)+'%');
                     $('.process_bar .base').width(process+'%');
-                    $('.declaration .content').html(order.userMsg?order.userMsg:'无');
+                    $('.declaration .content').html(order.userMsg ? order.userMsg : '无');
 
                     console.log(order);
                     var ordersListHtml = "";
                     var $amount = 0;
+                    var isSuccessful = (order.orderStatus.toString() !== '2') && (order.orderStatus.toString() !== '4');
                     ordersListHtml +=   '<div class="singleOrder reward_order clearfix" data-order-id="'+ order.orderId +'">'+
                                             '<div class="order_head">'+
-                                                '<span class="nickname">'+ order.nikeName +'</span>发起了众赏购物，订单共计'+
+                                                '<span class="nickname" style="color:#ee383c">'+ $userName +'</span>发起了众赏购物，订单共计'+
                                                 '<span class="amount"></span>件商品<i class="more"></i>'+
                                             '</div>'+
+                                            ( isSuccessful ? ('<span class="crowd_status"></span>') : '')+
                                             '<div class="goods_detail">'
 
                     for(var j=0; j<order.goods.length; j++){
                         $amount += order.goods[j].goodsAmount;
                         var save =((Number(order.goods[j].salePrice) - Number(order.goods[j].buyPrice))*Number(order.goods[j].goodsAmount)).toFixed(2);
                         ordersListHtml +=       '<div class="order_detail clearfix">'+
-                                                    '<div class="product_pic" style="background: url('+ order.goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                    '<div class="product_pic" style="background: url('+ (order.goods[j].goodsPic ? order.goods[j].goodsPic : '') +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
                                                     '<div class="product_desc">'+
                                                         '<p class="name">'+ order.goods[j].goodsName +'</p>'+
                                                         '<p class="parameter">'+ order.goods[j].goodsSpu +'</p>'+
@@ -277,7 +220,7 @@
             data: paraData,
             async:false,
             success: function(data){
-                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 console.log(GET_SELF_REWARDER_LIST,data);
                 if(data.responseCode == 2000){
                     var rewarders = data.data;
@@ -291,18 +234,29 @@
                         }else {
                             rankMark = '<i class="mark"></i>';
                         }
-                        rewarderListHtml += '<div class="single_rewarder">'+
+                        rewarderListHtml += '<div class="single_rewarder '+ ($msgUnfold?"unfold":"") +'">'+
                                                 '<div class="info_wrap">'+ rankMark +
-                                                    '<span class="avatar" style="background: url('+ rewarders[i].userPortrait +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
+                                                    '<span class="avatar" style="background: url('+ (rewarders[i].userPortrait ? rewarders[i].userPortrait : '../imgs/ano.png') +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
                                                     '<span class="info">'+
                                                         '<span class="name">'+ rewarders[i].userName +'</span><br>'+
                                                         '<span class="phone">'+ rewarders[i].userTel +'</span>'+
                                                     '</span>'+
-                                                    (rewarders[i].leaveMsg?'<i class="arrow"></i>':'<i class="no_arrow"></i>')+
+                                                    (rewarders[i].recordMsg?'<i class="arrow"></i>':'<i class="no_arrow"></i>')+
                                                     '<span class="reward_count">￥'+ Number(rewarders[i].payMoney).toFixed(2) +'</span>'+
-                                                '</div>'+
-                                                (rewarders[i].leaveMsg?('<div class="msg"><p>'+ rewarders[i].leaveMsg +'</p></div>'):'')+
-                                            '</div>'
+                                                '</div>'
+                        if(!!rewarders[i].recordMsg){
+                            rewarderListHtml += '<div class="msg">'
+                            for(var j=0; j<rewarders[i].recordMsg.length; j++){
+                                rewarderListHtml += '<div>'+
+                                                        '<div class="single_msg clearfix">'+
+                                                            '<span class="date">'+ rewarders[i].recordMsg[j].createDate +'</span><span class="count">￥'+ rewarders[i].recordMsg[j].payMoney +'</span>'+
+                                                        '</div>'+
+                                                        '<p>'+ rewarders[i].recordMsg[j].leaveMsg +'</p>'+
+                                                    '</div>'
+                            }
+                            rewarderListHtml += '</div>'
+                        }
+                        rewarderListHtml += '</div>'
                     }
 
                     $('.list_wrap').append(rewarderListHtml);
@@ -321,6 +275,152 @@
             }
         });
     }
+
+    $.ajax({
+        url: GET_REWARD_SHARE_URL,
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            orderId: $curOrderId
+        },
+        success: function (data) {
+            apiResponse(data.responseCode, data.responseDesc, data.data);
+            if (data.responseCode == 2000) {
+                var crowdShareUrl = data.data;
+                if (isWeiXin()) {
+                    $.ajax({
+                        url: JSSDKCONFIG,
+                        type: 'post',
+                        dataType: 'json',
+                        data: { 'url': window.location.href },
+                        success: function (data) {
+                            apiResponse(data.responseCode, data.responseDesc);
+                            if (data.responseCode == 2000) {
+                                wx.config({
+                                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                    appId: data.data.appId, // 必填，公众号的唯一标识
+                                    timestamp: data.data.timestamp, // 必填，生成签名的时间戳
+                                    nonceStr: data.data.nonceStr, // 必填，生成签名的随机串
+                                    signature: data.data.signature, // 必填，签名，见附录1
+                                    jsApiList: ['onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'hideMenuItems'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                                });
+                                wx.ready(function () {
+                                    // alert('$userName'+$userName+'$userDeclaration'+$userDeclaration+'crowdShareUrl'+crowdShareUrl+'$shareImg'+$shareImg)
+                                    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                                    wx.onMenuShareAppMessage({
+                                        title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                        desc: $userDeclaration, // 分享描述
+                                        link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                        imgUrl: $shareImg, // 分享图标
+                                        type: '', // 分享类型,music、video或link，不填默认为link
+                                        dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                                        success: function () {
+                                            // 用户确认分享后执行的回调函数
+                                        },
+                                        cancel: function () {
+                                            // 用户取消分享后执行的回调函数
+                                        },
+                                    });
+
+                                    wx.onMenuShareTimeline({
+                                        title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                        link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                        imgUrl: $shareImg, // 分享图标
+                                        success: function () {
+                                            // 用户确认分享后执行的回调函数
+                                        },
+                                        cancel: function () {
+                                            // 用户取消分享后执行的回调函数
+                                        },
+                                    });
+
+                                    wx.onMenuShareQQ({
+                                        title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                        desc: $userDeclaration, // 分享描述
+                                        link: crowdShareUrl, // 分享链接
+                                        imgUrl: $shareImg, // 分享图标
+                                        success: function () {
+                                            // 用户确认分享后执行的回调函数
+                                        },
+                                        cancel: function () {
+                                            // 用户取消分享后执行的回调函数
+                                        },
+                                    });
+
+                                    wx.onMenuShareWeibo({
+                                        title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                        desc: $userDeclaration, // 分享描述
+                                        link: crowdShareUrl, // 分享链接
+                                        imgUrl: $shareImg, // 分享图标
+                                        success: function () {
+                                            // 用户确认分享后执行的回调函数
+                                        },
+                                        cancel: function () {
+                                            // 用户取消分享后执行的回调函数
+                                        },
+                                    });
+
+                                    wx.onMenuShareQZone({
+                                        title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                        desc: $userDeclaration, // 分享描述
+                                        link: crowdShareUrl, // 分享链接
+                                        imgUrl: $shareImg, // 分享图标
+                                        success: function () {
+                                            // 用户确认分享后执行的回调函数
+                                        },
+                                        cancel: function () {
+                                            // 用户取消分享后执行的回调函数
+                                        },
+                                    });
+
+                                });
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                } else if(isWeiBo) {
+                    alert("来自微博内置浏览器");
+                } else {
+                    alert("不是来自微信/微博内置浏览器");
+                }
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    })
+
+    //观众打赏
+    $('.interaction .reward').click(function(){
+        window.location.href = 'rewardPay.html?order_id='+$curOrderId+'&sign='+$sign;
+    })
+
+    //分享
+    $('.interaction .share').click(function(){
+        // window.location.href = 'rewardPay.html?order_id='+$curOrderId+'&sign='+$sign;
+        $('#sharePrompt').fadeIn();
+        
+    })
+
+    //查看全部留言
+    $('.reward_list h6 .right').click(function(){
+        if(!$msgUnfold){
+            $('.single_rewarder').addClass('unfold');
+            $msgUnfold = true;
+            $('.reward_list h6 .right').html('隐藏留言');
+        }else {
+            $('.single_rewarder').removeClass('unfold');
+            $msgUnfold = false;
+            $('.reward_list h6 .right').html('查看留言');
+        }
+        
+    })
+
+    $('#sharePrompt').click(function (){
+        $('#sharePrompt').fadeOut();
+    });
 
 </script>
 <script src="../script/wx_browser_api.js"></script>

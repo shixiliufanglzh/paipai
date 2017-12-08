@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://47.96.186.64/app/";
-// var apiHost = "http://www.jianbid.com/app/";
+// var apiHost = "http://47.96.186.64/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -40,9 +40,11 @@ var CONFIRMRECEIPT = apiHost + "order/confirmReceipt.jhtml";  //确认收货
 var APPLYSERVER = apiHost + "order/applyServer.jhtml";  //申请售后
 var UPDATEBASEINFO = apiHost + "user/updateBaseInfo.jhtml";  //修改用户基本信息
 var SIGN = apiHost + "activity/sign.jhtml";  //每日签到
+var ISSIGN = apiHost + "user/isSign.jhtml";  //是否签到
 var GETCODE = apiHost + "login/getCode.jhtml";  //获取验证码
 var UPDATEPHONE = apiHost + "user/updatePhone.jhtml";  //修改手机号
 var ORDERPAY = apiHost + "pay/orderPay.jhtml";  //订单支付
+var CROWD_FUND = apiHost + "pay/crowdFund.jhtml";  //好友打赏支付
 var GETUSERINFO = apiHost + "user/getUserInfo.jhtml";  //获取用户信息
 var GETUSERPOINTRECORD = apiHost + "activity/getUserPointRecord.jhtml";  //获取用户派币记录
 var JSSDKCONFIG = apiHost + "util/jssdkConfig.jhtml";  //获取js-skd config接口注入权限验证配置
@@ -56,12 +58,13 @@ var ADD_REFUND_TRACK_NUM = apiHost + "order/addRefundTrackNum.jhtml";  //.买家
 var GET_ORDER_REFUND = apiHost + "order/getOrderRefund.jhtml";  //.用户获取订单全额退款售后列表
 var GET_ORDER_GOOD_REFUND = apiHost + "goods/getOrderGoodsRefund.jhtml";  //.用户获取订单指定商品售后列表
 var GET_REFUND = apiHost + "crmRefund/getRefund.jhtml";  //.获取售后申请列表
-var GET_REWARD_SHARE_URL = apiHost + "crowdFund/getShareUrl.jhtml";  //.获取众筹订单分享链接
+
+var GET_REWARD_SHARE_URL = apiHost + "crowdFund/getShareUrl.jhtml";  //.获取众筹订单分享链接****
 var GET_USER_RECORD = apiHost + "crowdFund/getUserRecord.jhtml";  //.用户获取自己的众筹记录****
-var GET_RECORD_DETAIL = apiHost + "crowdFund/getRecordDetail.jhtml";  //.获取众筹记录详情
-var GET_SELF_REWARDER_LIST = apiHost + "crowdFund/getSelfRecordUser.jhtml";  //.用户获取自己的众筹记录打赏人列表
-var GET_OTHER_REWARDER_LIST = apiHost + "crowdFund/getRecordUser.jhtml";  //.观众获取众筹记录打赏人列表
-var GET_MSG_RECORD = apiHost + "crowdFund/getRecordMsg.jhtml";  //.获取众筹记录留言列表
+var GET_RECORD_DETAIL = apiHost + "crowdFund/getRecordDetail.jhtml";  //.获取众筹记录详情****
+var GET_SELF_REWARDER_LIST = apiHost + "crowdFund/getSelfRecordUser.jhtml";  //.用户获取自己的众筹记录打赏人列表****
+var GET_OTHER_REWARDER_LIST = apiHost + "crowdFund/getRecordUser.jhtml";  //.观众获取众筹记录打赏人列表****
+// var GET_MSG_RECORD = apiHost + "crowdFund/getRecordMsg.jhtml";  //.获取众筹记录留言列表
 var CANCEL_REWARD = apiHost + "crowdFund/cancelCrowd.jhtml";  //.用户取消众筹
 
 //接口返回状态响应
@@ -114,7 +117,11 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             commonCompt.popPrompt("需特殊处理，第三方浏览器登录，弹出登录遮罩");
             break;
         case "4009":
-            commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
+            if(window.location.href.indexOf('rewardPay') != -1){
+                commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单众赏失败后，打赏金额将原路径退回）',true);
+            }else {
+                commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
+            }
             break;
         case "5000":
             commonCompt.popPrompt("服务器出错");
@@ -140,13 +147,13 @@ Paipai.prototype = {
                 timePrompt += Math.floor(cal_time/86400) + "天";
                 cal_time = timeLeft % 86400;
             }
-            if(cal_time >= 3600 && timePrompt.length>0){
+            if(cal_time >= 3600){
                 timePrompt += Math.floor(cal_time/3600) + "小时";
                 cal_time = timeLeft % 3600;
             }else if(cal_time < 3600 && timePrompt.length>0){
                 timePrompt += "00小时"
             }
-            if(cal_time >= 60 && timePrompt.length>0){
+            if(cal_time >= 60){
                 timePrompt += Math.floor(cal_time/60) + "分";
                 cal_time = timeLeft % 60;
             }else if(cal_time < 60 && timePrompt.length>0){
@@ -266,7 +273,7 @@ var commonCompt = {
                             body.removeChild(container);
                         }
                     }, 30);
-                }, 3000)
+                }, 2000)
             }
         }, 30);
 
@@ -521,234 +528,246 @@ var commonCompt = {
 
     //绑定手机号
     verifyPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
-        $('body').css("overflow", "hidden")
-        var bool_result = false;
-        var html =  '<div id="registerWrap">'+
-                        '<div class="register">'+
-                            '<i class="verify_close"></i>'+
-                            '<h3>' + title + '</h3>'+
-                            '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
-                            '<div class="verify">'+
-                                '<input type="number" placeholder="请填写验证码" id="code">'+
-                                '<button>获取验证码</button>'+
+        // alert(!$('#registerWrap'));
+        if($('#registerWrap').length <= 0){
+            $('body').css("overflow", "hidden")
+            var bool_result = false;
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<i class="verify_close"></i>'+
+                                '<h3>' + title + '</h3>'+
+                                '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
+                                '<div class="verify">'+
+                                    '<input type="number" placeholder="请填写验证码" id="code">'+
+                                    '<button>获取验证码</button>'+
+                                '</div>'+
+                                // '<input type="password" placeholder="请填写您的密码" id="password">'+
+                                '<button id="regSubmit">提交</button>'+
                             '</div>'+
-                            // '<input type="password" placeholder="请填写您的密码" id="password">'+
-                            '<button id="regSubmit">提交</button>'+
-                        '</div>'+
-                    '</div>';
-        $('body').append(html);
-        $('#registerWrap').fadeIn(300);
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
 
-        if(hasCloseBtn){
-            $('.verify_close').show();
-        }
-
-        var _that = this;
-        $('.verify button').on('click', function(){
-            var $phoneNum = $('#phoneNum').val();
-            if(!$phoneNum){
-                _that.popPrompt("手机号不能为空");
-            }else if(!_that.checkPhone($phoneNum)){
-                _that.popPrompt("错误的手机号码");
-            }else {
-                $.ajax({
-                    url: GETCODE,
-                    data: {
-                        phone: $phoneNum,
-                        type: type
-                    },
-                    type:'POST',
-                    dataType:'json',
-                    //async:false,
-                    success:function(data){
-                        console.log(data);
-                        console.log({
-                            phone: $phoneNum,
-                            type: 1
-                        });
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000){
-                            _that.timeCount(remainTime,$('.verify button'));
-                            _that.popPrompt("验证码已发送");
-                        }
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                })
+            if(hasCloseBtn){
+                $('.verify_close').show();
             }
-        })
 
-        $('#regSubmit').on('click', function(){
-            var $phoneNum = $('#phoneNum').val();
-            if(!$phoneNum){
-                _that.popPrompt("手机号不能为空");
-            }else if(!_that.checkPhone($phoneNum)){
-                _that.popPrompt("错误的手机号码");
-            }else {
-                $.ajax({
-                    url: UPDATEPHONE,
-                    data: {
-                        phone: $phoneNum,
-                        checkCode: $('#code').val()
-                    },
-                    type:'POST',
-                    dataType:'json',
-                    //async:false,
-                    success:function(data){
-                        console.log(data);
-                        console.log({
+            var _that = this;
+            $('.verify button').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else {
+                    $.ajax({
+                        url: GETCODE,
+                        data: {
+                            phone: $phoneNum,
+                            type: type
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            console.log(data);
+                            console.log({
+                                phone: $phoneNum,
+                                type: 1
+                            });
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.timeCount(remainTime,$('.verify button'));
+                                _that.popPrompt("验证码已发送");
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+
+            $('#regSubmit').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else {
+                    $.ajax({
+                        url: UPDATEPHONE,
+                        data: {
                             phone: $phoneNum,
                             checkCode: $('#code').val()
-                        });
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000){
-                            _that.popPrompt(submitPrompt);
-                            if(callBack){
-                                callBack($phoneNum);
-                            }
-                            $('body').css("overflow", "auto");
-                            $('#registerWrap').fadeOut(300,function(){
-                                $('#registerWrap').remove();
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            console.log(data);
+                            console.log({
+                                phone: $phoneNum,
+                                checkCode: $('#code').val()
                             });
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.popPrompt(submitPrompt);
+                                if(callBack){
+                                    callBack($phoneNum);
+                                }else {
+                                    location.reload(true);
+                                }
+                                $('body').css("overflow", "auto");
+                                $('#registerWrap').fadeOut(300,function(){
+                                    $('#registerWrap').remove();
+                                });
 
-                            bool_result = true;
+                                bool_result = true;
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
                         }
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
 
-        $('.verify_close').on('click',function(){
-            $('body').css("overflow", "auto");
-            $('#registerWrap').fadeOut(300,function(){
-                $('#registerWrap').remove();
-            });
-        })
+            $('.verify_close').on('click',function(){
+                $('body').css("overflow", "auto");
+                $('#registerWrap').fadeOut(300,function(){
+                    $('#registerWrap').remove();
+                });
+            })
 
-        return bool_result;
+            return bool_result;
+        }
     },
 
     //注册
-    registerPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack){
-        $('body').css("overflow", "hidden")
-        var bool_result = false;
-        var html =  '<div id="registerWrap">'+
-                        '<div class="register">'+
-                            '<i class="verify_close"></i>'+
-                            '<h3>' + title + '</h3>'+
-                            '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
-                            '<div class="verify">'+
-                                '<input type="number" placeholder="请填写验证码" id="code">'+
-                                '<button>获取验证码</button>'+
+    registerPhone: function(remainTime,title,hasCloseBtn,type,submitPrompt,callBack,subtitle,doubleBtn){
+        // alert($('#registerWrap').length);
+        if($('#registerWrap').length <= 0){
+            $('body').css("overflow", "hidden")
+            var bool_result = false;
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<i class="verify_close"></i>'+
+                                '<h3>' + title + '</h3>'+
+                                (!!subtitle?('<p style="font-size:0.16rem;text-align:center">'+ subtitle +'</p>'):'')+
+                                '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
+                                '<div class="verify">'+
+                                    '<input type="number" placeholder="请填写验证码" id="code">'+
+                                    '<button>获取验证码</button>'+
+                                '</div>'+
+                                '<input type="password" placeholder="请填写您的密码" maxLength="16" id="password">'+
+                                (doubleBtn?('<div id="doubleBtn"><button class="skip">跳过</button><button class="regSubmit">提交</button></div>')
+                                    :('<button id="regSubmit">提交</button>'))+
                             '</div>'+
-                            '<input type="password" placeholder="请填写您的密码" maxLength="16" id="password">'+
-                            '<button id="regSubmit">提交</button>'+
-                        '</div>'+
-                    '</div>';
-        $('body').append(html);
-        $('#registerWrap').fadeIn(300);
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
 
-        if(hasCloseBtn){
-            $('.verify_close').show();
-        }
+            if(hasCloseBtn){
+                $('.verify_close').show();
+            }
 
-        var _that = this;
-        $('.verify button').on('click', function(){
-            var $phoneNum = $('#phoneNum').val();
-            if(!$phoneNum){
-                _that.popPrompt("手机号不能为空");
-            }else if(!_that.checkPhone($phoneNum)){
-                _that.popPrompt("错误的手机号码");
-            }else {
-                $.ajax({
-                    url: GETCODE,
-                    data: {
-                        phone: $phoneNum,
-                        type: type
-                    },
-                    type:'POST',
-                    dataType:'json',
-                    //async:false,
-                    success:function(data){
-                        console.log(data);
-                        console.log({
+            var _that = this;
+            $('.verify button').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else {
+                    $.ajax({
+                        url: GETCODE,
+                        data: {
                             phone: $phoneNum,
                             type: type
-                        });
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000){
-                            _that.timeCount(remainTime,$('.verify button'));
-                            _that.popPrompt("验证码已发送");
-                        }
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                })
-            }
-        })
-
-        $('#regSubmit').on('click', function(){
-            var $phoneNum = $('#phoneNum').val();
-            var $password = $('#password').val();
-            if(!$phoneNum){
-                _that.popPrompt("手机号不能为空");
-            }else if(!_that.checkPhone($phoneNum)){
-                _that.popPrompt("错误的手机号码");
-            }else if(!$password){
-                _that.popPrompt("密码不能为空");
-            }else if($password.length < 6){
-                _that.popPrompt("密码长度不能小于6位数");
-            }else {
-                $.ajax({
-                    url: REGISTER,
-                    data: {
-                        phone: $phoneNum,
-                        psw: $password,
-                        checkCode: $('#code').val()
-                    },
-                    type:'POST',
-                    dataType:'json',
-                    //async:false,
-                    success:function(data){
-                        console.log(data);
-                        console.log({
-                            phone: $phoneNum,
-                            checkCode: $('#code').val()
-                        });
-                        apiResponse(data.responseCode,data.responseDesc);
-                        if(data.responseCode == 2000){
-                            _that.popPrompt(submitPrompt);
-                            if(callBack){
-                                callBack($phoneNum);
-                            }
-                            $('body').css("overflow", "auto");
-                            $('#registerWrap').fadeOut(300,function(){
-                                $('#registerWrap').remove();
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            console.log(data);
+                            console.log({
+                                phone: $phoneNum,
+                                type: type
                             });
-
-                            bool_result = true;
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.timeCount(remainTime,$('.verify button'));
+                                _that.popPrompt("验证码已发送");
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
                         }
-                    },
-                    error: function(err){
-                        console.log(err);
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
 
-        $('.verify_close').on('click',function(){
-            $('body').css("overflow", "auto");
-            $('#registerWrap').fadeOut(300,function(){
-                $('#registerWrap').remove();
-            });
-        })
+            $('#regSubmit, .regSubmit').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                var $password = $('#password').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else if(!$password){
+                    _that.popPrompt("密码不能为空");
+                }else if($password.length < 6){
+                    _that.popPrompt("密码长度不能小于6位数");
+                }else {
+                    $.ajax({
+                        url: REGISTER,
+                        data: {
+                            phone: $phoneNum,
+                            psw: $password,
+                            checkCode: $('#code').val()
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            console.log(data);
+                            console.log({
+                                phone: $phoneNum,
+                                checkCode: $('#code').val()
+                            });
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.popPrompt(submitPrompt);
+                                if(callBack){
+                                    callBack($phoneNum);
+                                }else {
+                                    location.reload(true);
+                                }
+                                $('body').css("overflow", "auto");
+                                $('#registerWrap').fadeOut(300,function(){
+                                    $('#registerWrap').remove();
+                                });
 
-        return bool_result;
+                                bool_result = true;
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+
+            $('.verify_close, .skip').on('click',function(){
+                $('body').css("overflow", "auto");
+                $('#registerWrap').fadeOut(300,function(){
+                    $('#registerWrap').remove();
+                });
+            })
+
+            return bool_result;
+        }
     },
 
     //小数较精确的加法
@@ -866,8 +885,28 @@ var commonCompt = {
             console.log(err);
         }
     })
-
     return hasPhone;
+}
+
+//判断是否微信登陆
+function isWeiXin() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    console.log(ua);//mozilla/5.0 (iphone; cpu iphone os 9_1 like mac os x) applewebkit/601.1.46 (khtml, like gecko)version/9.0 mobile/13b143 safari/601.1
+    if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//判断是否微博登陆
+function isWeiBo() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if (ua.match(/WeiBo/i) == "weibo") {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 commonCompt.addFixedBtn();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>我的打赏</title>
+    <title>我的众赏</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -29,9 +29,9 @@
 <div id="order">
     <div id="orderSorts">
         <div class="nav_wrap">
-            <div class="tab tab_rewarding current"><a>打赏中</a></div>
-            <div class="tab tab_successed"><a>打赏成功</a></div>
-            <div class="tab tab_failed"><a>打赏失败</a></div>
+            <div class="tab tab_rewarding current"><a>众赏中</a></div>
+            <div class="tab tab_successed"><a>众赏成功</a></div>
+            <div class="tab tab_failed"><a>众赏失败</a></div>
         </div>
     </div>
     <div class="orders_list">
@@ -48,10 +48,17 @@
     <button onclick="window.location.href='../index.html'">去抢拍</button>
 </div>
 
+<div id="sharePrompt">
+    <div class="guide">
+        <img src="../imgs/share_prompt.png" alt="">
+    </div>
+</div>
+
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 
 <script>
@@ -60,10 +67,26 @@
     var $crowdStatus = 2;  //众筹状态(1成功，2进行中，3失败)
     var ordersListAll = [];
     var finishLoading = true;
+    var $userName = '';
 
     $(function(){
 
-        shouldRegister();
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    $userName = data.data.userName ?  data.data.userName : data.data.nikeName;
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         bindRewardList($pageNum,$crowdStatus);
 
@@ -124,34 +147,32 @@
 
     //取消订单
     $('.orders_list').on('click', 'button.close', function(){
-        var $curOrde = $(this).parents('.singleOrder');
+        var $curOrder = $(this).parents('.singleOrder');
         commonCompt.Confirm({
             hasTitle: false,
             title: "",
-            contentText: "确认取消该订单吗？",
+            contentText: "众赏订单关闭后，已打赏金额将原路径退回支付账户中，确认关闭订单吗？",
             cancleText: "取消",
             certainText: "确认",
             rightBtnClick: function(){
                 $.ajax({
-                    url: CANCELORDER,
+                    url: CANCEL_REWARD,
                     type: 'POST',
                     dataType: 'json',
                     data: {
-                        orderId: $curOrde.attr('data-order-id')
+                        orderId: $curOrder.attr('data-order-id')
                     },
                     success: function (data) {
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
-                            $curOrde.remove();
-                            ordersListAll.splice($curOrde.index(),1);
+                            $curOrder.remove();
+                            ordersListAll.splice($curOrder.index(),1);
                             commonCompt.popPrompt('已取消该订单');
-                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
                                 $pageNum ++;
                                 console.log("第"+$pageNum+"页");
                                 finishLoading = true;
-                                setTimeout(function(){
-                                    bindRewardList($pageNum,$crowdStatus);
-                                },1000);
+                                bindRewardList($pageNum,$crowdStatus);
                             }
                         }
                     },
@@ -169,12 +190,7 @@
     //支付
     $('.orders_list').on('click', 'button.pay', function(){
         var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
-        window.location.href = 'paying.html?order_id='+ $curOrderId;
-    })
-
-    //分享
-    $('.orders_list').on('click', 'button.share', function(){
-
+        window.location.href = 'paying.html?order_id='+ $curOrderId+'&hide_crowd=1';
     })
 
     //获取商品列表
@@ -200,7 +216,7 @@
             data: paraData,
             async:false,
             success: function(data){
-                // apiResponse(data.responseCode,data.responseDesc,data.data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
                 console.log(GET_USER_RECORD,data);
                 if(data.responseCode == 2000){
                     var orders = data.data;
@@ -234,11 +250,10 @@
 
                         if(crowdStatus == 2) {
                             ordersListHtml +=   '</div>' +
-                                                '<p class="total" style="text-align:left">共计打赏<span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>&nbsp;&nbsp;还差<span class="deal_price" style="color:#E02532">￥'+ (!!orders[i].leftPrice?orders[i].leftPrice.toFixed(2):orders[i].orderPrice.toFixed(2)) +'</span></p>'+
+                                                '<p class="total" style="text-align:left">订单金额<span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>&nbsp;&nbsp;还差<span class="deal_price" style="color:#E02532">￥'+ (!!orders[i].leftPrice?orders[i].leftPrice.toFixed(2):orders[i].orderPrice.toFixed(2)) +'</span></p>'+
                                                 // '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'+
                                                 '<button class="order_edit close">关闭订单</button>' +
                                                 '<button class="order_edit red pay">支付余额</button>' +
-                                                '<button class="order_edit red share">分享</button>' +
                                             '</div>'
                         }else if(crowdStatus == 1 || crowdStatus == 3) {
                             ordersListHtml +=   '</div>' +
@@ -266,6 +281,9 @@
         });
     }
 
+    $('#sharePrompt').click(function (){
+        $('#sharePrompt').fadeOut();
+    });
+
 </script>
-<script src="../script/wx_browser_api.js"></script>
 </html>

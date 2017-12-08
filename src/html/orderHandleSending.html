@@ -75,6 +75,7 @@
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
@@ -146,7 +147,7 @@
 
                     $('.count_detail.primary').html("￥"+ $primaryPriceSum.toFixed(2));
                     $('.count_detail.now').html("￥"+ $dealPriceSum.toFixed(2));
-                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice.toFixed(2));
+                    $('.price_total .fee').html("￥"+ orderMsg.leftPrice.toFixed(2));
                     $('.price_total .count').html(totalCount);
                     $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
                     $('.count_detail.freight').html("￥"+ orderMsg.freight.toFixed(2));

@@ -82,6 +82,7 @@
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var goodsList = [];
@@ -338,7 +339,7 @@
                     success: function(data){
                         apiResponse(data.responseCode,data.responseDesc,data.data);
                         if(data.responseCode == 2000){
-                            window.location.href= 'paying.html?order_id='+ data.data.orderId;
+                            window.location.href= 'paying.html?order_id='+ data.data.orderId+'&hide_crowd=0';
                         }
 
                     },
