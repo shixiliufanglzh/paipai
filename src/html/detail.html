@@ -214,6 +214,24 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     goodsPara = data.data;
+                    if(goodsPara.nowPrice <=0 ){
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc, data.data);
+                                if (data.responseCode == 2000) {
+                                    location.reload(true);
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
 //                    alert(goodsPara.labelType.length);
                     if(commonCompt.trim(goodsPara.labelType) && commonCompt.trim(goodsPara.labelType).length > 0){
                         $goodType = "virtual";
@@ -524,6 +542,7 @@
                                 '-webkit-background-size': 'cover'
                             })
                         }
+                        alert('nowPrice:'+reloadMsg.nowPrice+' salePrice:'+reloadMsg.salePrice);
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');

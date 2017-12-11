@@ -115,7 +115,8 @@
                         $('textarea').val(order.userMsg ? order.userMsg : '无宣言');
                         $hasCommit = true;
                         $('.submit p').hide();
-                        $('.submit button').html('分享');
+                        // $('.submit button').html('分享');
+                        $('.submit button').html('点击查看如何获得好友众赏');
                         $.ajax({
                             url: GET_REWARD_SHARE_URL,
                             type: 'GET',
@@ -198,8 +199,9 @@
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000){
                         $('textarea').attr('disabled','disabled');
-                        commonCompt.popPrompt('提交成功，立即分享吧！');
-                        $('.submit button').html('分享');
+                        commonCompt.popPrompt('众赏订单提交成功！');
+                        // $('.submit button').html('分享');
+                        $('.submit button').html('点击查看如何获得好友众赏');
                         $('.submit p').hide();
                         $hasCommit = true;
                         crowdShareUrl = data.data;
@@ -211,7 +213,8 @@
                 }
             })
         }else {
-            $('#sharePrompt').fadeIn();
+            // $('#sharePrompt').fadeIn();
+            window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
         }
     })
 
@@ -220,13 +223,13 @@
     });
 
     function configShare(){
+        $userDeclaration = $userDeclaration ? $userDeclaration : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
         if (isWeiXin()) {
-            $userDeclaration = $userDeclaration ? $userDeclaration : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
             $.ajax({
                 url: JSSDKCONFIG,
                 type: 'post',
                 dataType: 'json',
-                data: { 'url': crowdShareUrl },
+                data: { 'url': crowdShareUrl, signType: 1 },
                 success: function (data) {
                     apiResponse(data.responseCode, data.responseDesc);
                     if (data.responseCode == 2000) {

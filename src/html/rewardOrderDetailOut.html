@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>我的打赏</title>
+    <title>我的众赏</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -275,6 +275,10 @@
     //观众打赏
     $('.interaction .reward').click(function(){
         window.location.href = 'rewardPay.html?order_id='+$curOrderId+'&sign='+$sign;
+    })
+    //观众参与
+    $('.interaction .join').click(function(){
+        window.location.href = '../index.html';
     })
 
     //查看全部留言

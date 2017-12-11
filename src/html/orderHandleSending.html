@@ -163,10 +163,9 @@
 
     })
 
-    $('.good_list').on('click','.order_edit.refund',function(){
-        window.location.href = 'serviceRefundNotsend.html?orderId='+ $curOrderId +'&goodsId=' +
-                $(this).parents('.single_good').attr('data-good-id')+
-                '&orderGoodsId=' + $(this).parents('.single_good').attr('data-relate-id');
+    $('.price_total').on('click','.order_edit.refund',function(){
+        window.location.href = 'serviceRefundNotsend.html?orderId='+ $curOrderId +'&orderGoodsId=' +
+         $('.single_good').eq(0).attr('data-relate-id');
     })
 
 </script>

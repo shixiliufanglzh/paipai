@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>我的打赏</title>
+    <title>我的众赏</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -50,7 +50,7 @@
             </div>
             <div class="interaction">
                 <div class="button_wrap clearfix">
-                    <button class="share">分享</button>
+                    <button class="share">点击查看如何获得好友众赏</button>
                 </div>
             </div>
         </section>
@@ -292,7 +292,7 @@
                         url: JSSDKCONFIG,
                         type: 'post',
                         dataType: 'json',
-                        data: { 'url': window.location.href },
+                        data: { 'url': window.location.href, signType: 1 },
                         success: function (data) {
                             apiResponse(data.responseCode, data.responseDesc);
                             if (data.responseCode == 2000) {
@@ -399,8 +399,8 @@
 
     //分享
     $('.interaction .share').click(function(){
-        // window.location.href = 'rewardPay.html?order_id='+$curOrderId+'&sign='+$sign;
-        $('#sharePrompt').fadeIn();
+        window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
+        // $('#sharePrompt').fadeIn();
         
     })
 

@@ -178,9 +178,28 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     headerGoodsList = data.data;
-                    var html = ''
-                    
+                    var html = '';
                     for(var i=0; i<headerGoodsList.length; i++){
+
+                        if (headerGoodsList[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        headerGoodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
                         var button = ''
                         if(headerGoodsList[i].saleStatus.toString() === '1'){
                             button = '<button class="on_bid">减价拍</button>';
@@ -507,6 +526,26 @@
                     var goodsListHtml = "";
                     for (var i = 0; i < addGoods.length; i++) {
                         var cur_state;
+
+                        if (addGoods[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        goodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
                         if (addGoods[i].saleStatus == 1) {
 //                            var timestamp = new Date().getTime();
 //                            var todayTimestamp = timestamp % 86400000;
@@ -583,6 +622,10 @@
                 window.location.href = 'html/personal.html'
             }
 //        }
+    })
+
+    $('.video').click(function(){
+        window.location.href = "https://c.eqxiu.com/s/y7SU0is5?eqrcode=1";
     })
 
     commonCompt.screenVisibleChange();

@@ -366,6 +366,10 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
+                        
+                        if(goodsList[i].nowPrice <= 0 ){
+                            reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
+                        }
                     }else {
                         finishLoading =true
                         $('.loading').hide();
