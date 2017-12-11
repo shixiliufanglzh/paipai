@@ -216,7 +216,7 @@
 }
 
 #fixedLink {
-  .code_wrap {
+  .pop_cover {
     display: none;
     position: fixed;
     left: 0;
@@ -225,29 +225,60 @@
     bottom: 0;
     background-color: rgba(0,0,0,0.6);
     z-index: 9999;
-    .code {
-      width: 3.28rem;
-      height: 3.28rem;
-      position: absolute;
+    .code-container {
+      width: 6.4rem;
+      height: 7.6rem;
+      border-radius: 6px;
+      background-color: #fff;
+      margin-top: 1.6rem;
+      position: relative;
       left: 50%;
-      margin-left: -1.64rem;
-      -webkit-background-size: contain;
-      background-size: contain;
-      margin-top: 4rem;
-      img {
-        display: block;
-        width: 100%;
-        height: 100%;
+      margin-left: -3.2rem;
+      overflow: hidden;
+      font-size: 0;
+      .swiper-wrapper {
+        h3 {
+          font-size: 0.36rem;
+          text-align: center;
+          font-weight: 500;
+          margin-top: 1.06rem;
+        }
+        .weibo {
+          text-align: center;
+          margin: 0.3rem 0;
+        }
+        .code {
+          width: 2.24rem;
+          height: 2.24rem;
+          position: relative;
+          left: 50%;
+          margin-left: -1.12rem;
+          margin-top: 0.6rem;
+          background-size: contain;
+          img {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        p {
+          font-size: 0.36rem;
+          color: $paiRed;
+          text-align: center;
+          margin-top: 0.66rem;
+        }
       }
+      
     }
-    p {
-      width: 100%;
-      color: #fff;
-      font-size: 0.26rem;
-      position: absolute;
-      text-align: center;
-      margin-top: 7.5rem;
-    }
+    
+    // p {
+    //   width: 100%;
+    //   color: #fff;
+    //   font-size: 0.26rem;
+    //   position: absolute;
+    //   text-align: center;
+    //   margin-top: 7.5rem;
+    // }
   }
   .btn_wrap {
     font-size: 0;

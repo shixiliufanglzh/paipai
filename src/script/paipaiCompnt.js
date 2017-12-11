@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://47.96.186.64/app/";
-// var apiHost = "http://www.jianbid.com/app/";
+// var apiHost = "http://47.96.186.64/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -337,9 +337,23 @@ var commonCompt = {
             codeImg = '<img src="../imgs/wechat_code.png">';
         }
         var html =  '<div id="fixedLink">'+
-                        '<div class="code_wrap">'+
-                            '<div class="code">'+ codeImg +'</div>'+
-                            '<p>请关注【减价拍】官方公众号</p>'+
+                        '<div class="pop_cover">'+
+                            '<div class="code-container">'+
+                                '<div class="swiper-wrapper">'+
+                                    '<div class="swiper-slide">'+
+                                        '<h3>关注微信公众号</h3>'+
+                                        '<div class="code">'+ codeImg +'</div>'+
+                                        '<p>保存减价拍商城入口</p>'+
+                                    '</div>'+
+                                    '<div class="swiper-slide">'+
+                                        '<h3>关注官方微博</h3>'+
+                                        '<div class="weibo"><wb:follow-button uid="6411194176" type="red_1" width="67" height="24" ></wb:follow-button></div>'+
+                                        '<div class="code" style="margin-top:0">'+ codeImg +'</div>'+
+                                        '<p>保存减价拍商城入口</p>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="swiper-pagination" style="bottom:20px"></div>'+
+                            '</div>'+
                         '</div>'+
                         '<div class="btn_wrap">'+
                             '<a href="'+ homeLink +'" class="home"></a>'+
@@ -350,12 +364,19 @@ var commonCompt = {
         $('body').append(html);
 
         $('body').on('click','.show_code',function(){
-            $('.code_wrap').fadeIn();
+            $('.pop_cover').fadeIn();
             $('body').css("overflow","hidden");
+
+            var codeSwiper = new Swiper ('.code-container', {
+                direction: 'horizontal',
+                // loop: true,
+                // autoplay: 3000,
+                pagination : '.swiper-pagination'
+            })
         })
 
-        $('body').on('click','.code_wrap',function(e){
-            if ($(e.target).is('.code img')){
+        $('body').on('click','.pop_cover',function(e){
+            if ($(e.target).is('.code-container .swiper-slide')){
                 return;
             }else {
                 $(this).fadeOut();

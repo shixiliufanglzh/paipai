@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,7 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="../style/service.css">
 </head>
 <body>
@@ -113,6 +114,7 @@
                     $('.good_msg .price_now').html('￥' + goodMsg.buyPrice);
                     $('.good_msg .price_primary').html(goodMsg.salePrice);
                     $('.good_msg .count').html('×' + goodMsg.goodsAmount);
+                    
                     $refundMoney = goodMsg.totalPrice;
                     $('.most_count').html($refundMoney);
                     $('.total_count').val($refundMoney);

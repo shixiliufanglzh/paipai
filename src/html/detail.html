@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,7 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>        
     <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/detail.css">
 </head>
@@ -164,9 +165,9 @@
 <div id="evaluateImgs">
     <div class="eva-swiper-container">
         <div class="swiper-wrapper">
+            <!-- <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
             <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
-            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
-            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
+            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div> -->
         </div>
         <div class="swiper-pagination"></div>
     </div>
@@ -542,7 +543,7 @@
                                 '-webkit-background-size': 'cover'
                             })
                         }
-                        alert('nowPrice:'+reloadMsg.nowPrice+' salePrice:'+reloadMsg.salePrice);
+                        // alert('nowPrice:'+reloadMsg.nowPrice+' salePrice:'+reloadMsg.salePrice);
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
