@@ -247,9 +247,18 @@ body {
     padding: 0.1rem 0.24rem;
     background-color: #fff;
     font-size: 0.24rem;
+    .weibo_share_text {
+      position: relative;
+      .weibo_share_btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
     h4 {
       font-size: 0.3rem;
       font-weight: 500;
+      margin-bottom: 0.1rem;
       i.rule {
         @include smallIcon(0.35rem,0.35rem,url("../imgs/rule_caution.png"));
         margin-right: 0.1rem;

@@ -2,21 +2,31 @@
  * Created by 是昔流芳 on 2017/10/23.
  */
 var shareUrl = window.location.href;
-// var userId;
+
+if((shareUrl.indexOf('index') == -1) 
+    && (shareUrl.indexOf('/detail.html') == -1)){
+    $.ajax({
+        url: GET_SHARE_URL,
+        type:'GET',
+        dataType:'json',
+        async:false,
+        cache: false,
+        success: function(data){
+            shareUrl = data.data;
+            if(isWeiBo()){
+                $('.weibo_share_text').append('<wb:share-button class="weibo_share_btn" appkey="1490666142" addition="simple" type="button" default_text="【减价拍】30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！" url="'+ shareUrl +'&shareMethod=weibo" pic="http%3A%2F%2Fwww.jianbid.com%2Fpublic%2Fimgs%2Flogo.png"></wb:share-button>');
+            }
+        }
+    })
+}
+// alert(shareUrl);
+
+
 
 $(function(){
-    if((shareUrl.indexOf('index') == -1) 
-        && (shareUrl.indexOf('/detail.html') == -1)){
-            $.ajax({
-                url: GET_SHARE_URL,
-                type:'GET',
-                dataType:'json',
-                async:false,
-                success: function(data){
-                    shareUrl = data.data;
-                }
-            })
-    }
+
+    // $('.weibo_share').attr('pic','http%3A%2F%2Fwww.jianbid.com%2Fpublic%2Fimgs%2Flogo.png');
+    // $('body').append('<wb:share-button appkey="1490666142" addition="full" type="button" default_text="【减价拍】30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！" url="'+ shareUrl +'" pic="http%3A%2F%2Fwww.jianbid.com%2Fpublic%2Fimgs%2Flogo.png"></wb:share-button>')
 
     if(isWeiXin()){
         $.ajax({
@@ -117,85 +127,66 @@ $(function(){
                 console.log(err);
             }
         })
-    }else if(isWeiBo()){
-        $.ajax({
-            url: JSSDKCONFIG,
-            type: 'post',
-            dataType: 'json',
-            data: {'url': window.location.href, signType: 2},
-            async: false,
-            success:function(data){
-                apiResponse(data.responseCode,data.responseDesc);
-                // alert(JSON.stringify(data));
-                if(data.responseCode == 2000) {
-                    window.WeiboJS.init({
-                        'appkey' : data.data.appId,
-                        'debug': true,
-                        'timestamp': data.data.timestamp,
-                        'noncestr': data.data.nonceStr,
-                        'signature': data.data.signature,
-                        'scope': [
-                            'getNetworkType',
-                            'networkTypeChanged',
-                            'getBrowserInfo',
-                            'checkAvailability',
-                            'setBrowserTitle',
-                            'openMenu',
-                            'setMenuItems',
-                            'menuItemSelected',
-                            'setSharingContent',
-                            'openImage',
-                            'scanQRCode',
-                            'pickImage',
-                            'getLocation',
-                            'pickContact',
-                            'apiFromTheFuture'
-                        ]
-                    }, function(ret){
-                        // alert('init done\n' + JSON.stringify(ret));
-                        // WeiboJS.invoke("menuItemAvailable", {}, function(params){
-                        //     alert("获取的菜单项：" + JSON.stringify(params.available_codes));
-                        // });
-                        WeiboJS.invoke("setMenuItems", {
-                            menus : ["shareToWeibo","follow","shareToMessage","shareToWeixin","shareToPYQ","shareToQQ","shareToQzone","openInBrowser","copyURL"],
-                            content : shareUrl,
-                            title: "【减价拍】售价减拍 先拍先得", 
-                            icon: "http://www.jianbid.com/public/imgs/logo.png"
-                        }, function(params){
-                            alert("setMenuItems 返回数据：" + JSON.stringify(params));
-                        });
-                        WeiboJS.invoke("openMenu", null, function (e) {
-                            safeAlert("openMenu 返回数据：" + JSON.stringify(e))
-                        });
-                        // WeiboJS.invoke("getNetworkType", {}, function (params, success, code) {
-                        //     if (success) {
-                        //         alert('网络状态是' + params.network_type);
-                        //     } else {
-                        //         if (code == WeiboJS.STATUS_CODE.NO_RESULT) {
-                        //             // do something.
-                        //         }
-                        //     }
-                        // });
-                        // WeiboJS.invoke("setSharingContent", {
-                        //     "icon": "http://www.jianbid.com/public/imgs/logo.png", 
-                        //     "title": "【减价拍】售价减拍 先拍先得", 
-                        //     "desc": "30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！",
-                        //     "url": shareUrl
-                        // }, function () {
-                        //     // alert(111);
-                        // });
-                    });
-                }  
-            },
-            error: function(err){
-                // alert(err);
-                console.log(err);
-            }
-        })
-    }else {
-        // alert('外部浏览器');
     }
+    // else if(isWeiBo()){
+    //     $.ajax({
+    //         url: JSSDKCONFIG,
+    //         type: 'post',
+    //         dataType: 'json',
+    //         data: {'url': window.location.href, signType: 2},
+    //         async: false,
+    //         success:function(data){
+    //             apiResponse(data.responseCode,data.responseDesc);
+    //             // alert(JSON.stringify(data));
+    //             if(data.responseCode == 2000) {
+    //                 window.WeiboJS.init({
+    //                     'appkey' : data.data.appId,
+    //                     'debug': true,
+    //                     'timestamp': data.data.timestamp,
+    //                     'noncestr': data.data.nonceStr,
+    //                     'signature': data.data.signature,
+    //                     'scope': [
+    //                         'getNetworkType',
+    //                         'networkTypeChanged',
+    //                         'getBrowserInfo',
+    //                         'checkAvailability',
+    //                         'setBrowserTitle',
+    //                         'openMenu',
+    //                         'setMenuItems',
+    //                         'menuItemSelected',
+    //                         'setSharingContent',
+    //                         'openImage',
+    //                         'scanQRCode',
+    //                         'pickImage',
+    //                         'getLocation',
+    //                         'pickContact',
+    //                         'apiFromTheFuture'
+    //                     ]
+    //                 }, function(ret){
+    //                     alert('init done\n' + JSON.stringify(ret));
+    //                     WeiboJS.invoke("setMenuItems", {
+    //                         // menus : ["shareToWeibo","follow","shareToMessage","shareToWeixin","shareToPYQ","shareToQQ","shareToQzone","openInBrowser","copyURL"],
+    //                         menus : ["shareToWeibo","follow"],
+    //                         content : shareUrl,
+    //                         title: "【减价拍】售价减拍 先拍先得", 
+    //                         icon: "http://www.jianbid.com/public/imgs/logo.png"
+    //                     }, function(params){
+    //                         // alert("setMenuItems 返回数据：" + JSON.stringify(params));
+    //                     });
+    //                 });
+    //             }  
+    //         },
+    //         error: function(err){
+    //             // alert(err);
+    //             console.log(err);
+    //         }
+    //     })
+    // }else {
+        // alert('外部浏览器');
+    // }
 })
+
+
 
 function getUserId(){
     var userId = '';

@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-// var apiHost = "http://47.96.186.64/app/";
-var apiHost = "http://www.jianbid.com/app/";
+var apiHost = "http://47.96.186.64/app/";
+// var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -331,24 +331,26 @@ var commonCompt = {
         var codeImg = '<img src="../imgs/wechat_code.png">';
         if(window.location.href.indexOf('index') != -1){
             homeLink = "index.html";
-            codeImg = '<img src="imgs/wechat_code.png">';
+            wechatCodeImg = '<img src="imgs/wechat_code.png">';
+            weiboCodeImg = '<img src="imgs/weibo_code.png">';
         }else {
             homeLink = "../index.html";
-            codeImg = '<img src="../imgs/wechat_code.png">';
+            wechatCodeImg = '<img src="../imgs/wechat_code.png">';
+            weiboCodeImg = '<img src="../imgs/weibo_code.png">';
         }
         var html =  '<div id="fixedLink">'+
-                        '<div class="pop_cover">'+
+                        '<div class="pop_cover" style="display:none">'+
                             '<div class="code-container">'+
                                 '<div class="swiper-wrapper">'+
                                     '<div class="swiper-slide">'+
                                         '<h3>关注微信公众号</h3>'+
-                                        '<div class="code">'+ codeImg +'</div>'+
+                                        '<div class="code">'+ wechatCodeImg +'</div>'+
                                         '<p>保存减价拍商城入口</p>'+
                                     '</div>'+
                                     '<div class="swiper-slide">'+
                                         '<h3>关注官方微博</h3>'+
                                         '<div class="weibo"><wb:follow-button uid="6411194176" type="red_1" width="67" height="24" ></wb:follow-button></div>'+
-                                        '<div class="code" style="margin-top:0">'+ codeImg +'</div>'+
+                                        '<div class="code" style="margin-top:0">'+ weiboCodeImg +'</div>'+
                                         '<p>保存减价拍商城入口</p>'+
                                     '</div>'+
                                 '</div>'+
@@ -369,20 +371,30 @@ var commonCompt = {
 
             var codeSwiper = new Swiper ('.code-container', {
                 direction: 'horizontal',
-                // loop: true,
-                // autoplay: 3000,
                 pagination : '.swiper-pagination'
             })
         })
 
         $('body').on('click','.pop_cover',function(e){
-            if ($(e.target).is('.code-container .swiper-slide')){
+            if ($(e.target).is('.code-container')){
                 return;
             }else {
                 $(this).fadeOut();
                 $('body').css("overflow", "auto");
             }
         })
+
+        $('.code-container').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('.btn_wrap').on('touchmove',function(e){
+            e.preventDefault();
+            var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+            var elm = $(this).offset();
+            var y = $(window).height() - touch.pageY + $(document).scrollTop() - $(this).height()/2;
+            $(this).css('bottom', y+'px');
+        });
 
     },
 
@@ -837,18 +849,18 @@ var commonCompt = {
     },
 
     //区间随机数
-    randomNum: function(num){
-        var trueNum = parseFloat(num);
+    randomNum: function(limitNum,startNum){
+        var trueNum = Number(limitNum);
         if(trueNum < 100){
-            trueNum *=  (1 + 0.1*Math.random());
+            trueNum =  (trueNum + (Number(startNum)-trueNum)*0.1*Math.random());
         }else if(trueNum >= 100 && trueNum < 500){
-            trueNum *=  (1 + 0.05*Math.random());
+            trueNum =  (trueNum + (Number(startNum)-trueNum)*0.05*Math.random());
         }else if(trueNum >= 500 && trueNum < 1000){
-            trueNum *=  (1 + 0.03*Math.random());
+            trueNum =  (trueNum + (Number(startNum)-trueNum)*0.03*Math.random());
         }else if(trueNum >= 1000 && trueNum < 3000){
-            trueNum *=  (1 + 0.02*Math.random());
+            trueNum =  (trueNum + (Number(startNum)-trueNum)*0.02*Math.random());
         }else if(trueNum >= 3000){
-            trueNum *=  (1 + 0.01*Math.random());
+            trueNum =  (trueNum + (Number(startNum)-trueNum)*0.01*Math.random());
         }
         return parseFloat(trueNum.toFixed(2));
     },

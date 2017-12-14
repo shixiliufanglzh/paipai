@@ -217,7 +217,6 @@
 
 #fixedLink {
   .pop_cover {
-    display: none;
     position: fixed;
     left: 0;
     right: 0;
@@ -246,6 +245,14 @@
         .weibo {
           text-align: center;
           margin: 0.3rem 0;
+          .WB_follow_ex {
+            position: relative;
+            left: 50%;
+            margin-left: -33.5px !important;
+            .follow_text {
+              width: 40px;
+            }
+          }
         }
         .code {
           width: 2.24rem;
@@ -317,5 +324,28 @@
     img {
       width: 100%;
     }
+  }
+}
+
+#qrcode_cover {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  .qrcode_wrap {
+    position: relative;
+    left: 50%;
+    width: 122px;
+    margin-top: 4.4rem;
+    margin-left: -56px;
+    padding: 5px;
+    background-color: rgba(255,255,255,0.7);
+    // border: 1px solid #858585;
+    #qrcode {
+
+    } 
   }
 }

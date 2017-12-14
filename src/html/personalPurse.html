@@ -24,6 +24,7 @@
         })(document, window);
     </script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/personal.css">
 </head>
 <body>
@@ -43,15 +44,15 @@
     </div>
 
     <div id="column">
-        <p style="text-align:center;font-size:0.3rem;line-height:2em;"><a href="http://mp.weixin.qq.com/s/mHFJAMBJwUN78--sYzf9lg" style="color:blue;">点击查看拍币获得方式</a></p>
-        <!-- <h4><i class="gift"></i>获得方式</h4> -->
-        <!-- <p class="content">1.关注【减价拍】新浪微博或微信公众号（FallBid），奖励5个拍币 -->
-                <!-- <br>2. 点击底部【好友互动】，每个点击的好友奖励1个拍币
-                <br>2. 点击右上角“...”，分享好友，每有一个好友点击就会奖励1个拍币
-                <br>3. 商城消费购物，每消费10元奖励1个拍币
-                <br>4. 晒图好评奖励10个拍币
-                <br>5. 每日签到奖励1个拍币</p> -->
-        <!-- <p class="content">通过用户每日签到、购物金额等增加活跃度，系统给予奖励。<br>获得更多拍币请咨询在线客服。</p> -->
+        <p class="share_teach" style="text-align:center;font-size:0.3rem;line-height:2em;"><a href="http://mp.weixin.qq.com/s/mHFJAMBJwUN78--sYzf9lg" style="color:blue;">点击查看拍币获得方式</a></p>
+        <div class="weibo_share_text" style="display:none">
+            <h4><i class="gift"></i>获得方式</h4>
+            <p class="content">1. 点击【分享】按钮进行分享，每有一个好友点击网页链接就会奖励1个拍币
+                    <br>2. 商城消费购物并确认收货，每消费10元奖励1个拍币
+                    <br>3. 晒图好评奖励10个拍币
+                    <br>4. 每日签到奖励1个拍币
+            </p>
+        </div>
     </div>
 
     <div id="bottomBtn">
@@ -65,18 +66,25 @@
         <img src="../imgs/share_prompt.png" alt="">
     </div>
 </div>
+<!-- <wb:share-button appkey="1490666142" count="n" type="button" size="big" url="http://www.baidu.com"></wb:share-button> -->
+<!-- <wb:share-button class="weibo_share" appkey="1490666142" addition="simple" type="button" default_text="【减价拍】30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！" url="http://www.jianbid.com" ></wb:share-button> -->
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<script src="../script/wx_browser_api.js"></script>
 <script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
-
+<script src="../script/wx_browser_api.js"></script>
 <script>
     var curPoint = 0;
-
+    // $('body').append('<wb:share-button appkey="1490666142" addition="simple" type="button" default_text="【减价拍】30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！" url="http://www.jianbid.com" pic="http%3A%2F%2Fwww.jianbid.com%2Fpublic%2Fimgs%2Flogo.png"></wb:share-button>')
+    // $('body').append('<wb:share-button appkey="1490666142" addition="full" type="button" default_text="【减价拍】30元手机充值卡，29.8元起拍，每秒减0.1元，低至0元，先拍先得,循环反复，即充即到，快来抢话费！" url="'+ shareUrl +'" pic="http%3A%2F%2Fwww.jianbid.com%2Fpublic%2Fimgs%2Flogo.png"></wb:share-button>')
     $(function(){
+        if(isWeiBo()){
+            $('#column .weibo_share_text').show();
+            $('#column .share_teach').hide();
+        }
         $.ajax({
             url: GETUSERINFO,
             type: 'GET',
@@ -162,8 +170,6 @@
     $('#purseDetail').click(function(){
         window.location.href = 'personalPurseChange.html';
     })
-
-
-
 </script>
+
 </html>

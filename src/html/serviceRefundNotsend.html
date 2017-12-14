@@ -24,20 +24,21 @@
         })(document, window);
     </script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/service.css">
 </head>
 <body>
 <div id="serviceDetail">
 
     <div id="goodDetail">
-        <div class="good_msg clearfix">
+        <!-- <div class="good_msg clearfix">
             <span class="img"></span>
             <div class="product_desc">
                 <p class="name">商品</p>
                 <p class="parameter">参数</p>
             </div>
             <div class="price"><span class="price_now">￥3999.00</span><br><span class="price_primary">4999.00</span><br><span class="count">×2</span></div>
-        </div>
+        </div> -->
     </div>
 
     <div id="fillMsg">
@@ -79,6 +80,7 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
@@ -92,38 +94,36 @@
     var $commitStatus = 1;
 
     $(function(){
+
         $.ajax({
-            url: GETORDERGOODS,
-            data: {
-                orderGoodsId: $orderGoodsId
-            },
+            url: GETORDERDETAIL,
             type:'GET',
             dataType:'json',
-            async:false,
-            success:function(data){
+            data: {orderId: $curOrderId},
+            success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
-                    var goodMsg = data.data;
-                    $('.good_msg .img').css({
-                        'background': 'url("'+ goodMsg.goodsPic +'") center center no-repeat',
-                        'background-size': 'cover',
-                        '-webkit-background-size': 'cover'
-                    });
-                    $('.good_msg .name').html(goodMsg.goodsName);
-                    $('.good_msg .parameter').html(goodMsg.goodsSpu);
-                    $('.good_msg .price_now').html('￥' + goodMsg.buyPrice);
-                    $('.good_msg .price_primary').html(goodMsg.salePrice);
-                    $('.good_msg .count').html('×' + goodMsg.goodsAmount);
-                    
-                    $refundMoney = goodMsg.totalPrice;
+                    var goods = data.data.goods;
+                    var goodsHtml = '';
+                    for(var i=0; i<goods.length; i++){
+
+                        goodsHtml +=    '<div class="good_msg clearfix">'+
+                                            '<span class="img" style="background: url('+ goods[i].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></span>'+
+                                            '<div class="product_desc">'+
+                                                '<p class="name">'+ goods[i].goodsName +'</p>'+
+                                                '<p class="parameter">'+ goods[i].goodsSpu +'</p>'+
+                                            '</div>'+
+                                            '<div class="price"><span class="price_now">￥'+ goods[i].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ goods[i].salePrice.toFixed(2) +'</span><br><span class="count">×'+ goods[i].goodsAmount +'</span></div>'+
+                                        '</div>'
+                    }
+
+                    $('#goodDetail').html(goodsHtml);
+
+                    $refundMoney = data.data.totalPrice;
                     $('.most_count').html($refundMoney);
                     $('.total_count').val($refundMoney);
-                    $commitStatus = goodMsg.relateStatus;
-
+                    $('.postage').html(data.data.freight);
                 }
-            },
-            error: function(err){
-                console.log(err);
             }
         })
     })

@@ -24,6 +24,7 @@
         })(document, window);
     </script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/personal.css">
 </head>
 <body style="background-color:#fff;padding-bottom: 1.1rem;">
@@ -79,6 +80,7 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
@@ -94,6 +96,7 @@
     var hasPhone = false;
     var $userPoint = 0;
     var $consumePoint = 0;
+    var lastTime = 0;
 
     $(function(){
         // hasRegister = shouldRegister();
@@ -102,6 +105,7 @@
             url: GETUSERINFO,
             type: 'GET',
             dataType: 'json',
+            cache: false,
             success: function (data) {
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -128,14 +132,16 @@
         commonCompt.mainNav(2);
 
         timer = setInterval(function(){
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
             for(var i=0; i<$('.single_collect').length; i++){
                 //alert("i "+i+" nowPrice "+goodsList[i].nowPrice + " limitPrice " + goodsList[i].limitPrice+" saleStatus "+goodsList[i].saleStatus);
                 if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1){
-                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice);
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice*subTime/1000);
                     if(goodsList[i].nowPrice <= 0){
                         goodsList[i].nowPrice = 0;
                     };
-                    if(goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
+                    if(goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)){
                         reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }else {
                         $('.single_collect').eq(i).find('.price_now').html('￥'+goodsList[i].nowPrice.toFixed(2));
@@ -158,11 +164,12 @@
                     }
                     timePrompt += cal_time + "秒";
                     $('.single_collect').eq(i).find('.time_left').html(timePrompt);
-                    if(goodsList[i].restTime <= 0 || goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
+                    if(goodsList[i].restTime <= 0 || goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)){
                         reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }
                 }
             }
+            lastTime = currentTime;
         },1000);
 
     })
@@ -182,6 +189,7 @@
                     url: CANCELSTORE,
                     type: 'POST',
                     dataType: 'json',
+                    cache: false,
                     data: {
                         storeId: curGood.attr('data-store-id')
                     },
@@ -254,6 +262,7 @@
                 url: ADDCART,
                 type: 'POST',
                 dataType: 'json',
+                cache: false,
                 data: paraData,
                 success: function (data) {
                     apiResponse(data.responseCode, data.responseDesc,data.data);
@@ -359,6 +368,10 @@
 
 
                             $('#collection').append(collectionHtml);
+
+                            if(goodsList[i].nowPrice <= 0 ){
+                                reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
+                            }
                         }
                         if(collectionList.length < $pageSize || !collectionList){
                             finishLoading =true
@@ -366,10 +379,6 @@
                         }else {
                             $('.loading').show();
                             finishLoading = false;
-                        }
-                        
-                        if(goodsList[i].nowPrice <= 0 ){
-                            reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                         }
                     }else {
                         finishLoading =true
@@ -395,7 +404,6 @@
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
-//                    alert(JSON.stringify(goodPara));
                     goodPara.goodsIssueno = data.data.goodsIssueno;
                     $.ajax({
                         url: GETGOODSMIXSKU,
@@ -420,15 +428,15 @@
                                 var stateHtml = "";
                                 if (goodPara.saleStatus == 1 && goodPara.timeStatus == 1) {
                                     state = "grab";
-                                    stateHtml = '<button data-virtual="'+goodpara.labelType+'" data-consume="'+ goodpara.pieNum +'">立即抢拍</button>'
+                                    stateHtml = '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">立即抢拍</button>'
                                 } else if (goodPara.saleStatus == 1 && goodPara.timeStatus == 2) {
                                     state = "primary";
                                     stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
-                                            '<button data-virtual="'+goodpara.labelType+'" data-consume="'+ goodpara.pieNum +'">正价购买</button>'
+                                            '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">正价购买</button>'
                                 } else if (goodPara.saleStatus == 2) {
                                     state = "primary";
                                     stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
-                                            '<button data-virtual="'+goodpara.labelType+'" data-consume="'+ goodpara.pieNum +'">正价购买</button>'
+                                            '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">正价购买</button>'
                                 } else if (goodPara.saleStatus == 3) {
                                     state = "sold_out";
                                     stateHtml = '<button>销售告罄</button>'

@@ -45,7 +45,7 @@
             <ul class="clearfix">
                 <li class="video"><i></i><span>视频教程</span></li>
                 <li class="like"><i></i><span>关注商城</span></li>
-                <li class="reward"><i></i><span>打赏支付</span></li>
+                <li class="reward"><i></i><span>众赏购物</span></li>
                 <li class="global"><i></i><span>全球购物</span></li>
                 <li class="money"><i></i><span>获取拍币</span></li>
                 <!-- <li class="like" style="padding-top: 20px"></li>                 -->
@@ -147,6 +147,7 @@
     var timer = null;
     var finishLoading = true;
     var $pageSize = 10;
+    var lastTime = 0;
 
 
     $(function(){
@@ -172,12 +173,14 @@
             type:'GET',
             dataType:'json',
             async:false,
+            cache: false,
             success: function(data){
                 console.log('大图',data);
                 //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     headerGoodsList = data.data;
+                    console.log(data.data);
                     var html = '';
                     for(var i=0; i<headerGoodsList.length; i++){
 
@@ -186,6 +189,7 @@
                                 url: REFRESHGOODS,
                                 type: 'GET',
                                 dataType: 'json',
+                                cache: false,
                                 data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
                                 async: false,
                                 success: function (data) {
@@ -241,6 +245,7 @@
             url: GETLABELS,
             type:'GET',
             dataType:'json',
+            cache: false,
             success: function(data){
                 //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -274,6 +279,7 @@
 
         //商品列表初始化
         bindGoodsList($filters,$pageNum);
+        lastTime = new Date().getTime();
 
         var mySwiper = new Swiper ('.swiper-container', {
             direction: 'horizontal',
@@ -283,23 +289,28 @@
         })
 
         timer = setInterval(function(){
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
             for(var i=0; i<headerGoodsList.length; i++){
                 if(headerGoodsList[i].saleStatus == 1 && headerGoodsList[i].timeStatus == 1) {
-                    headerGoodsList[i].nowPrice = commonCompt.accSub(headerGoodsList[i].nowPrice, headerGoodsList[i].reducePrice);
+                    headerGoodsList[i].nowPrice = commonCompt.accSub(headerGoodsList[i].nowPrice, headerGoodsList[i].reducePrice*subTime/1000);
                     if(headerGoodsList[i].nowPrice <= 0){
                         headerGoodsList[i].nowPrice = 0;
                     };
-                    if (headerGoodsList[i].nowPrice <= commonCompt.randomNum(headerGoodsList[i].limitPrice)) {
+                    if (headerGoodsList[i].nowPrice <= commonCompt.randomNum(headerGoodsList[i].limitPrice,headerGoodsList[i].salePrice)) {
                         $.ajax({
                             url: REFRESHGOODS,
                             type: 'GET',
                             dataType: 'json',
+                            cache: false,
                             data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
                             async: false,
                             success: function (data) {
                                 apiResponse(data.responseCode, data.responseDesc);
                                 if (data.responseCode == 2000) {
                                     headerGoodsList[i] = data.data;
+                                    // var changeGoodDom = $('.special_good').eq(i);
+                                    // changeGoodDom.children('.current_price').html()
                                 }
                             },
                             error: function (err) {
@@ -314,15 +325,16 @@
 
             for(var i=0; i<$('.single_good').length; i++){
                 if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1) {
-                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice);
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice*subTime/1000);
                     if(goodsList[i].nowPrice <= 0){
                         goodsList[i].nowPrice = 0;
                     };
-                    if (goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)) {
+                    if (goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)) {
                         $.ajax({
                             url: REFRESHGOODS,
                             type: 'GET',
                             dataType: 'json',
+                            cache: false,
                             data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
                             async: false,
                             success: function (data) {
@@ -340,6 +352,7 @@
                     }
                 }
             }
+            lastTime = currentTime;
         },1000);
 
     })
@@ -517,6 +530,7 @@
             dataType:'json',
             data: paraData,
             async:false,
+            cache: false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
@@ -532,6 +546,7 @@
                                 url: REFRESHGOODS,
                                 type: 'GET',
                                 dataType: 'json',
+                                cache: false,
                                 data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
                                 async: false,
                                 success: function (data) {
@@ -547,13 +562,6 @@
                         }
                         
                         if (addGoods[i].saleStatus == 1) {
-//                            var timestamp = new Date().getTime();
-//                            var todayTimestamp = timestamp % 86400000;
-//                            if (todayTimestamp > 57600000) {
-//                                cur_state = "out_time";
-//                            } else {
-//                                cur_state = "salling_cut";
-//                            }
                             if (addGoods[i].timeStatus == 1) {
                                 cur_state = "salling_cut";
                             } else {
@@ -607,25 +615,31 @@
 
 
     $('body').on('click','#mainNav button',function(){
-//        var hasRegister = shouldRegister();
-//        if(hasRegister){
-//            if($('this').attr('class') == 'home'){
-//                window.location.href = 'index.html'
-//            }else
-            if($(this).attr('class') == 'collection'){
-                window.location.href = 'html/collection.html'
-            }else if($(this).attr('class') == 'grab'){
-                window.location.href = 'html/orderGenerate.html'
-            }else if($(this).attr('class') == 'order'){
-                window.location.href = 'html/order.html'
-            }else if($(this).attr('class') == 'personal'){
-                window.location.href = 'html/personal.html'
-            }
-//        }
+        if($(this).attr('class') == 'collection'){
+            window.location.href = 'html/collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'html/orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'html/order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'html/personal.html'
+        }
     })
 
-    $('.video').click(function(){
-        window.location.href = "https://c.eqxiu.com/s/y7SU0is5?eqrcode=1";
+    $('#guide .video').click(function(){
+        window.location.href = "http://mp.weixin.qq.com/s/NmroHaz5e5F8rgLmUWOQ_g";
+    })
+
+    $('#guide .like').click(function(){
+        $('.show_code').trigger('click');
+    })
+
+    $('#guide .money').click(function(){
+        window.location.href = 'html/personalPurse.html';
+    })
+
+    $('#guide .reward').click(function(){
+        window.location.href = 'http://mp.weixin.qq.com/s/24fe_7n78S1li8WbDY9zRA';
     })
 
     commonCompt.screenVisibleChange();

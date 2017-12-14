@@ -196,6 +196,7 @@
     var hasPhone = false;
     var $userPoint = 0;
     var $consumePoint = 0;
+    var lastTime = 0;
 
 
     $(function(){
@@ -220,6 +221,7 @@
                             url: REFRESHGOODS,
                             type: 'GET',
                             dataType: 'json',
+                            cache: false,
                             data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
                             async: false,
                             success: function (data) {
@@ -233,7 +235,6 @@
                             }
                         });
                     }
-//                    alert(goodsPara.labelType.length);
                     if(commonCompt.trim(goodsPara.labelType) && commonCompt.trim(goodsPara.labelType).length > 0){
                         $goodType = "virtual";
                     }
@@ -288,7 +289,6 @@
                         } else {
                             $('.action_wrap .purchase span').html('正价购买');
                             $('#sortsList .purchase').html('正价购买');
-//                            $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
                             $('.rate').html('');
                         }
 
@@ -319,6 +319,8 @@
                 console.log(err);
             }
         });
+
+        lastTime = new Date().getTime();
 
         $.ajax({
             url: GETGODDSSKU,
@@ -355,12 +357,15 @@
         });
 
         timer = setInterval(function () {
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
             if (goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
-                if (goodsPara.nowPrice <= commonCompt.randomNum(goodsPara.limitPrice)) {
+                if (goodsPara.nowPrice <= commonCompt.randomNum(goodsPara.limitPrice,goodsPara.salePrice)) {
                     $.ajax({
                         url: REFRESHGOODS,
                         type: 'GET',
                         dataType: 'json',
+                        cache: false,
                         data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
                         async: false,
                         success: function (data) {
@@ -374,7 +379,7 @@
                         }
                     });
                 }
-                goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice);
+                goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice*subTime/1000);
                 if(goodsPara.nowPrice <= 0){
                     goodsPara.nowPrice = 0;
                 };
@@ -393,7 +398,7 @@
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                 }
                 if(reloadMsg){
-                    reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice);
+                    reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice*subTime/1000);
                     if(reloadMsg.nowPrice <= 0){
                         reloadMsg.nowPrice = 0;
                     };
@@ -402,7 +407,7 @@
                     $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
                 }
             }
-
+            lastTime = currentTime;
         }, 1000);
     })
 
@@ -414,6 +419,7 @@
             url: GETUSERINFO,
             type: 'GET',
             dataType: 'json',
+            cache: false,
             success: function (data) {
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -637,7 +643,7 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
-                    }else {
+                    }else if($('.single_evaluate').length <=0) {
                         $('.evaluate_list').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无评论</h4>')
                     }
                 }
@@ -693,7 +699,7 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
-                    }else {
+                    }else if($('.single_deal').length <=0) {
                         $('.deal_record').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无交易记录</h4>')
                     }
                 }
@@ -742,6 +748,7 @@
                     url: ADDSTORE,
                     type: 'POST',
                     dataType: 'json',
+                    cache: false,
                     data: paraData,
                     success: function (data) {
                         console.log(data);
@@ -791,6 +798,7 @@
                         url: ADDCART,
                         type: 'POST',
                         dataType: 'json',
+                        cache: false,
                         data: paraData,
                         success: function (data) {
                             $('#mask').fadeOut(200,function(){
