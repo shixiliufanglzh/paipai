@@ -42,7 +42,7 @@
         <div class="reward_count">
             <div class="count_input clearfix">
                 <span class="label">打赏金额</span>
-                <input type="number" placeholder="最多为">
+                <input type="number" placeholder="自定义金额最多为">
                 <span class="most">全部金额</span>
             </div>
             <div class="options_wrap">
@@ -57,7 +57,11 @@
         </div>
 
         <div class="leave_msg">
-            <div class="head"><span class="title">添加留言(140字以内)</span><span class="mode"><input class="anonymous_check" type="checkbox">匿名打赏</span></div>
+            <div class="head">
+                <span class="title">添加留言(140字以内)</span>
+                <span class="mode"><input class="anonymous_check" maxlength="10" type="checkbox" style="margin-bottom: 0.04rem">匿名打赏</span>
+                <!-- <span class="mode"><input class="real_name" type="text" placeholder="自定义打赏昵称"></span> -->
+            </div>
             <textarea name="" id="" maxlength="140"></textarea>
             <button class="commit">确认打赏</button>
             <p class="prompt">新用户需授权登录并注册,否则众赏订单失败后将无法退款到您的支付账户。如需重新授权,请刷新页面。</p>
@@ -111,7 +115,7 @@
 
 
         $('.left_space .count').html('￥' + $leftPrice);
-        $('.reward_count input').attr('placeholder','最多为￥' + $leftPrice);
+        $('.reward_count input').attr('placeholder','自定义金额最多为￥' + $leftPrice);
 
         for(var i=0; i<countOptions.length; i++){
             $('.options_wrap').append('<span class="'+ (Number(countOptions[i])<=Number($leftPrice)?'valid':'') +'">'+ countOptions[i] +'<s>元</s></span>');
@@ -205,6 +209,7 @@
                         payMoney: moneyCount,
                         crownType: isAnonymous,
                         sign: $sign,
+                        // realName: $('.real_name').val(),
                         leaveMsg: $('textarea').val()
                     },
                     success: function (data) {

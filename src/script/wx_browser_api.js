@@ -4,7 +4,8 @@
 var shareUrl = window.location.href;
 
 if((shareUrl.indexOf('index') == -1) 
-    && (shareUrl.indexOf('/detail.html') == -1)){
+    && (shareUrl.indexOf('/detail.html') == -1)
+    && (shareUrl.indexOf('/rewardOrderDetailOut.html') == -1)){
     $.ajax({
         url: GET_SHARE_URL,
         type:'GET',

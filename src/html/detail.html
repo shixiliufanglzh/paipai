@@ -873,9 +873,10 @@
     }
 
     commonCompt.screenVisibleChange();
+
+    var evaluateSwiper;
     $('.evaluate_list').on('click','.single_evaluate .imgs span', function(){
         $('.eva-swiper-container .swiper-wrapper').html('');
-        $('#evaluateImgs').fadeIn();
         var curIndex = $(this).index();
         var imgsWrapList = $(this).parent().children('span');
         for(var i=0; i<imgsWrapList.length; i++){
@@ -890,12 +891,11 @@
             }
             $('.eva-swiper-container .swiper-wrapper').append('<div class="swiper-slide" style="background: url('+ img +') center center no-repeat;background-size: contain;-webkit-background-size: contain;"></div>')
         }
-
+        $('#evaluateImgs').fadeIn();
         //评论轮播图
-        var evaluateSwiper = new Swiper('.eva-swiper-container', {
+        evaluateSwiper = new Swiper('.eva-swiper-container', {
             direction: 'horizontal',
             loop: false,
-//            autoplay: 3000,
             initialSlide: curIndex,
             pagination: '.swiper-pagination'
         })
@@ -904,6 +904,7 @@
     $('body').on('click','#evaluateImgs',function(){
         if($(this).css('display') != 'none'){
             $(this).fadeOut();
+            evaluateSwiper.destroy(true,true);
         }
     })
 </script>

@@ -86,6 +86,8 @@
     var $pageNum = 1;
     var $pageSize = 8;
 
+    var $urlCode = commonCompt.GetUrlPara('urlCode');
+
     $(function(){
 
         // shouldRegister();
@@ -95,7 +97,7 @@
             url: GET_RECORD_DETAIL,
             type:'GET',
             dataType:'json',
-            data: {orderId: $curOrderId},
+            data: {orderId: $curOrderId,urlCode:$urlCode},
             async:false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -135,7 +137,7 @@
                         for(var j=0; j<order.goods.length; j++){
                             $amount += order.goods[j].goodsAmount;
                             var save =((Number(order.goods[j].salePrice) - Number(order.goods[j].buyPrice))*Number(order.goods[j].goodsAmount)).toFixed(2);
-                            ordersListHtml +=       '<div class="order_detail clearfix">'+
+                            ordersListHtml +=       '<div class="order_detail clearfix" data-good-id="'+ order.goods[j].goodsId +'">'+
                                                         '<div class="product_pic" style="background: url('+ order.goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
                                                         '<div class="product_desc">'+
                                                             '<p class="name">'+ order.goods[j].goodsName +'</p>'+
@@ -296,6 +298,11 @@
             $('.reward_list h6 .right').html('查看留言');
         }
         
+    })
+
+    $('.orders_list').on('click','.order_detail',function(){
+        var goodId = $(this).attr('data-good-id') || $(this).parents('.order_detail').attr('data-good-id');
+        window.location.href = 'detail.html?good_id='+goodId;
     })
 
 </script>

@@ -125,6 +125,7 @@
             dataType:'json',
             data: {orderId: $curOrderId},
             async:false,
+            cache: false,
             success: function(data){
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -245,7 +246,7 @@
                         // $('.submit button').html('点击查看如何获得好友众赏');
                         $('.submit button').hide();
                         $('.interaction').show();
-                        $('.interaction .reward').html('分享到我的微博');
+                        // $('.interaction .reward').html('分享到我的微博');
                         $('.submit p').hide();
                         $hasCommit = true;
                         crowdShareUrl = data.data;
@@ -290,7 +291,7 @@
     })
 
     $('.interaction .reward').click(function(){
-        if(!isWeiBo){
+        if(!isWeiBo()){
             window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
         }
     })

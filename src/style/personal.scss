@@ -51,13 +51,13 @@ body {
         @include smallIcon(0.44rem,0.44rem,url("../imgs/zone_money.png"));
         vertical-align: middle;
         margin-right: 0.1rem;
-        &.order {
-          background-image: url("../imgs/zone_order.png");
+        &.wallet {
+          background-image: url("../imgs/zone_wallet.png");
         }
         &.reward {
           background-image: url("../imgs/zone_reward.png");
         }
-        &.collection {
+        &.wishing {
           background-image: url("../imgs/zone_collection.png");
         }
         &.services {

@@ -26,6 +26,7 @@
         margin: 0 0.15rem;
         span {
           font-size: 0.2rem;
+          line-height: 2.4em;
         }
         &.video {
           i {
@@ -35,6 +36,11 @@
         &.like {
           i {
             @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_like.png"));
+          }
+        }
+        &.wish {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_wish.png"));
           }
         }
         &.reward {

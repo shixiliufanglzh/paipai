@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>生成愿望</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/wishingTree.css">
+   
+</head>
+<body>
+<div id="createWish">
+    <div id="typeCard">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <h3>旅游</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>美食</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>购物</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>公益</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>活动</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>其他</h3>
+                    <p>相约志同道合的好友一起欣赏美景</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+    <button id="msgSubmit">选择许愿</button>
+</div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+    var mySwiper = null;
+    $(function(){
+
+        if(localStorage.wishData){
+            localStorage.removeItem('wishData');
+            localStorage.removeItem('wishSubmitState');
+            localStorage.removeItem('shareWishUrl');
+        }
+
+        mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: true,
+        })
+
+    })
+
+    //提交
+    $('#msgSubmit').click(function(){
+        window.location.href = 'wishingTreeCreate.html?typeIndex='+mySwiper.realIndex;
+    })
+
+
+
+
+</script>
+</html>

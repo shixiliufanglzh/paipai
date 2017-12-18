@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>生成愿望</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/wishingTree.css">
+   
+</head>
+<body>
+<div id="createWish">
+    <div class="block">
+        <div class="single_option clearfix">
+            <span class="left">许愿标题</span>
+            <input type="text" maxlength="20" id="title" class="right" placeholder="请输入许愿标题" />
+        </div>
+    </div>
+    <div class="block">
+        <div class="single_option clearfix">
+            <span class="left">许愿金额</span>
+            <s>元</s>
+            <input type="number" class="right" id="count" placeholder="请填写金额" />
+        </div>
+        <div class="single_option clearfix">
+            <span class="left">截止时间</span>
+            <i></i>
+            <input id="endTime" placeholder="选择截止时间，不填则不限时间" class="right">
+        </div>
+    </div>
+
+    <div id="datePlugin"></div>
+
+    <div id="declaration">
+        <h3>许愿宣言：</h3>
+        <textarea maxlength="140" placeholder="输入你的宣言&#10;举例1：参与人数需要最多10人。参与的人至少打赏26元...&#10;举例2：我们将会一起爬山"></textarea>
+    </div>
+
+    <div id="wishIntroduction" class="clearfix">
+        <h3>上传图片<span>（最多上传3组）</span>：</h3>
+        <input type="file" id="uploadImg" accept="image/*" multiple="multiple" capture=“camera”>
+        <div id="pics_box">
+            <!--<span class="picture"><i></i></span>-->
+        </div>
+        <label for="uploadImg" class="add_pic"></label>
+    </div>
+
+    <button id="msgSubmit">提交</button>
+    <div class="interaction" style="display:none">
+        <div class="button_wrap clearfix">
+            <button class="reward" style="width:2.3rem">如何获取众赏</button>
+            <button class="join" style="width:2.3rem">生成众赏二维码</button>
+        </div>
+    </div>
+</div>
+
+<div id="qrcode_cover" style="display:none;position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,0.5);">
+    <div class="qrcode_wrap" style="position: relative;left:50%;width:122px;margin-top:4.4rem;margin-left:-56px;padding:5px;background-color:rgba(255,255,255,0.7);">
+        <div id="qrcode"></div>
+    </div>
+</div>
+
+
+
+</body>
+<!--<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>-->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/qrcode.min.js"></script>
+<script src="../script/exif.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="../script/picker.min.js"></script>
+<script src="../script/iscroll.js"></script>
+<script src="../script/date.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+    var $typeId = Number(commonCompt.GetUrlPara('typeIndex'))+1;
+    var imgList = [];
+    var imgDescList = [];
+    var $endTime = 0;
+    var $timeStr = '';
+    var $userName = '';
+    var shareUrl = '';
+    var $content = '';
+
+    if(isWeiBo()){
+        $('.interaction .button_wrap').append('<wb:share-button size="big" class="weibo_share_btn" appkey="1490666142" type="button" default_text="zzzzzzz" url="xxxxxxx" pic="http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png"></wb:share-button>');
+        $('.interaction .reward').html('分享到我的微博');
+    }
+
+
+    $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    $userName = !!data.data.userName ? data.data.userName : data.data.nikeName;
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
+        //检查是否已经提交过了
+        if(localStorage.wishSubmitState && localStorage.wishSubmitState.toString() === '1' ){
+            console.log(JSON.parse(localStorage.wishData));
+            var $wishData = JSON.parse(localStorage.wishData);
+            $('#title').val($wishData.title);
+            $('#declaration textarea').val($wishData.content);
+            $('#count').val($wishData.totalMoney);
+            $('#endTime').val($wishData.endDate);
+            imgList = $wishData.imgList;
+            imgDescList = $wishData.imgDescList;
+            
+            for (var j = 0; j < imgList.length; j++) {
+                var picDesc = !!imgDescList[j] ? '<textarea class="pic_desc" placeholder="'+ imgDescList[j] +'"></textarea>' : '';
+                $('#pics_box').append('<span class="picture" style="background: url(' + imgList[j].commonUrl + 
+                    imgList[j].picName + ') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i>' +
+                    picDesc + '</span>');
+                $('.pic_desc').eq(j).val(imgDescList[j]);
+            }
+
+            $('input,textarea').attr('disabled', 'disabled');
+            $('#pics_box .picture i').remove();
+            if (!!$('label.add_pic')) $('label.add_pic').remove();
+            $('#msgSubmit').hide();
+            $('.interaction').show();
+
+            console.log(localStorage.shareWishUrl);
+            var qrcode = new QRCode("qrcode", {
+                text: localStorage.shareWishUrl,
+                width: 112,
+                height: 112,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        //时间插件初始化
+        $('#endTime').date({
+            theme:"datetime",
+            fromat: 'yyyy-mm-dd hh:ii'
+        },function(str){
+            $timeStr = str();
+            $('#endTime').val($timeStr);
+            $endTime = Math.floor((new Date($timeStr.replace(/-/g, '/'))).getTime()/1000);
+
+        });
+    })
+
+    $('#count').change(function(){
+        var inputCount = Number($(this).val()).toFixed(2);
+        if(inputCount > 9999999 || inputCount <= 0){
+            commonCompt.popPrompt('输入合理的金额')
+            $(this).val('');
+        }
+        $(this).val(inputCount);
+    })
+    
+    $('#pics_box').on('change','.pic_desc',function(){
+        imgDescList[$(this).parent().index()] = $(this).val();
+    })
+    
+    
+    $('#uploadImg').change(function(e){
+        commonCompt.getImgUrl(e.target,imgList,$('#pics_box'),$('label.add_pic'),3,true,imgDescList);
+        // console.log(imgDescList);
+    })
+
+    $('#pics_box').on('click', '.picture i',function(){
+        imgList.splice($(this).parent().index(),1);
+        imgDescList.splice($(this).parent().index(),1);
+        $(this).parent().remove();
+        $('#pics_box').html('');
+        for(var i=0;i<imgList.length;i++){
+            $('#pics_box').append('<span class="picture" style="background: url('+ 
+                imgList[i].commonUrl + imgList[i].picName +
+                ') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i>'+
+                '<textarea maxlength="30" class="pic_desc" placeholder="添加图片描述（限30个字）"></textarea></span>');
+
+            $('.pic_desc').eq(i).val(imgDescList[i]);
+        }
+        if(imgList.length < 3) {
+            $('label.add_pic').show();
+        }
+    })
+
+    //提交
+    $('#msgSubmit').click(function(){
+        var files = [];
+        for(var i=0; i<imgList.length; i++){
+            files.push({
+                fileName: imgList[i].picName,
+                fileDesc: imgDescList[i]
+            })
+        }
+        var $title = $('#title').val();
+        $content = $('#declaration textarea').val();
+        var $totalMoney = $('#count').val();
+
+        if($title.length <= 0){
+            commonCompt.popPrompt('请输入愿望标题');
+        }else if(!$totalMoney || $totalMoney.length <= 0){
+            commonCompt.popPrompt('请输入目标金额');
+        }else {
+            var $wishData = {
+                wishType: $typeId,
+                title: $title,
+                content: $content,
+                totalMoney: $totalMoney,
+                endDate: $timeStr,
+                imgList: imgList,
+                imgDescList: imgDescList,
+            };
+
+            $.ajax({
+                url: ADD_WISH,
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    wishType: $typeId,
+                    title: $title,
+                    content: $content,
+                    totalMoney: $totalMoney,
+                    endDate: $endTime,
+                    files: files
+                },
+                success: function (data) {
+                    console.log(data);
+                    apiResponse(data.responseCode, data.responseDesc, data.data);
+                    if (data.responseCode == 2000) {
+                        $('input,textarea').attr('disabled','disabled');
+                        $('#pics_box .picture i').remove();
+                        if(!!$('label.add_pic')) $('label.add_pic').remove();
+                        $('#msgSubmit').hide();
+                        $('.interaction').show();
+                        shareUrl = data.data;
+
+                        localStorage.wishData = JSON.stringify($wishData);
+                        localStorage.wishSubmitState = "1";
+                        localStorage.shareWishUrl = shareUrl;
+
+                        var qrcode = new QRCode("qrcode", {
+                            text: shareUrl,
+                            width: 112,
+                            height: 112,
+                            colorDark : "#000000",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.M
+                        });
+
+                        if (isWeiBo()) {
+                            var $src = $('iframe').attr('src').replace('xxxxxxx', encodeURIComponent(shareUrl))
+                                .replace('zzzzzzz', encodeURI('【' + $userName + '】在许愿树发起许愿'));
+                                    // alert(2+' '+$('iframe').attr('src'));
+                            $('iframe').attr('src', $src);
+                        } else {
+                            configShare();
+                        }
+                        
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+
+            })
+        }
+    })
+
+    $('.interaction .join').click(function(){
+        $('#qrcode_cover').fadeIn();
+    })
+
+    $('#qrcode_cover').click(function(){
+        $(this).fadeOut();
+    })
+
+    $('.interaction .reward').click(function(){
+        if(!isWeiBo()){
+            window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
+        }
+    })
+
+    function configShare(){
+        $userDeclaration = $content ? $content : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
+        alert('$userDeclaration:'+$userDeclaration+' shareUrl:'+shareUrl);
+        if (isWeiXin()) {
+            $.ajax({
+                url: JSSDKCONFIG,
+                type: 'post',
+                dataType: 'json',
+                data: { 'url': window.location.href, signType: 1 },
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc);
+                    if (data.responseCode == 2000) {
+                        wx.config({
+                            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: data.data.appId, // 必填，公众号的唯一标识
+                            timestamp: data.data.timestamp, // 必填，生成签名的时间戳
+                            nonceStr: data.data.nonceStr, // 必填，生成签名的随机串
+                            signature: data.data.signature, // 必填，签名，见附录1
+                            jsApiList: ['onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'hideMenuItems'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                        });
+                        wx.ready(function () {
+                            // alert('$userName'+$userName+'$userDeclaration'+$userDeclaration+'shareUrl'+shareUrl+''http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png''+'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png')
+                            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                            wx.onMenuShareAppMessage({
+                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
+                                type: '', // 分享类型,music、video或link，不填默认为link
+                                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareTimeline({
+                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareQQ({
+                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: shareUrl, // 分享链接
+                                imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareWeibo({
+                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: shareUrl, // 分享链接
+                                imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareQZone({
+                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: shareUrl, // 分享链接
+                                imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        } else {
+            // alert("不是来自微信内置浏览器");
+        }
+
+    }
+
+
+
+
+</script>
+</html>

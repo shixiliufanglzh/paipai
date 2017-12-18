@@ -122,10 +122,11 @@
         })
 
 
-        $('#birth').date(null,function(str){
-            console.log(str);
-            changMsg({birthday: str}, "修改生日成功",function(){
-                $('#birth').val(str);
+        $('#birth').date(null,function(fn){
+            var dateStr = fn();
+            console.log(dateStr);
+            changMsg({birthday: dateStr}, "修改生日成功",function(){
+                $('#birth').val(dateStr);
             });
         });
     })

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>减价拍</title>
+    <title>全球购物</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -24,37 +24,13 @@
         })(document, window);
     </script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="../bower_components/swiper/dist/css/swiper.min.css">
-    <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/index.css">
 </head>
 <body>
-    <div id="viewTotal">
-        <section class="swiper-container">
-            <div class="swiper-wrapper">
-                <!-- <img class="swiper-slide" src="./imgs/banner_01.jpg" />
-                <img class="swiper-slide" src="./imgs/banner_02.jpg" />
-                <img class="swiper-slide" src="./imgs/banner_03.jpg" />
-                <img class="swiper-slide" src="./imgs/banner_04.jpg" /> -->
-                <img class="swiper-slide" src="./imgs/banner_05.jpg" />
-                <!--<img class="swiper-slide" src="./imgs/banner_06.jpg" />-->
-            </div>
-            <div class="swiper-pagination"></div>
-        </section>
+    <div id="viewTotal" style="margin-bottom:0">
 
-        <section id="guide">
-            <ul class="clearfix">
-                <li class="video"><i></i><span>视频教程</span></li>
-                <!-- <li class="like"><i></i><span>关注商城</span></li> -->
-                <li class="reward"><i></i><span>众赏购物</span></li>
-                <li class="wish"><i></i><span>心愿树</span></li>
-                <li class="global"><i></i><span>全球购物</span></li>
-                <li class="money"><i></i><span>获取拍币</span></li>
-            </ul>
-        </section>
-
-        <section id="special"></section>
-
-        <section id="filters">
+        <section id="filters" style="position:fixed;top:0;width:100%">
             <div class="filtersWrap">
                 <div class="filter sorts"><span>全部类型</span><i></i></div>
                 <div class="filter states"><span>全部状态</span><i></i></div>
@@ -63,7 +39,7 @@
             </div>
         </section>
 
-        <section id="goods" class="clearfix">
+        <section id="goods" class="clearfix" style="margin-top: 0.82rem">
 
             <!--<div class="single_good">-->
                 <!--<div class="item_img"></div>-->
@@ -105,11 +81,11 @@
 
 
 </body>
-<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-<script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
-<script src="./script/paipaiCompnt.js"></script>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-<script src="script/wx_browser_api.js"></script>
+<script src="../script/wx_browser_api.js"></script>
 <script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
@@ -238,7 +214,7 @@
         }
 
         //生成底部导航
-        commonCompt.mainNav(1);
+        // commonCompt.mainNav(1);
 
         //获取商品分类
         $.ajax({
@@ -280,13 +256,6 @@
         //商品列表初始化
         bindGoodsList($filters,$pageNum);
         lastTime = new Date().getTime();
-
-        var mySwiper = new Swiper ('.swiper-container', {
-            direction: 'horizontal',
-            loop: true,
-            autoplay: 3000,
-            pagination : '.swiper-pagination'
-        })
 
         timer = setInterval(function(){
             var currentTime = new Date().getTime();
@@ -376,8 +345,7 @@
 
     //选择筛选类型
     $('#sortsWrap ul').on('click','li',function(){
-        // $(document).scrollTop(0);
-        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
+        $(document).scrollTop(0);
         
         $('#sortsWrap ul li').removeClass('current');
         $(this).addClass('current');
@@ -396,7 +364,6 @@
 
     //选择筛选状态
     $('#statesWrap ul').on('click','li',function(){
-        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
         $('#statesWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
@@ -429,8 +396,7 @@
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
 
-        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
-        // $(document).scrollTop(0);
+        $(document).scrollTop(0);
         $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
         $('body').css("overflow", "auto");
@@ -458,8 +424,7 @@
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
 
-        // $(document).scrollTop(0);
-        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
+        $(document).scrollTop(0);
         
         $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
@@ -478,24 +443,12 @@
 //    })
 
     $(document).scroll(function(){
-        //菜单顶部吸附
-        var max_distance = $('.swiper-container').height() + $('#special').height() + $('#guide').height() + $('#filters').height()/2;
-        if($(document).scrollTop() > max_distance){
-            $('#filters').addClass('fixed_top');
-        }else {
-            if($('.sortsWrap').eq(0).css('display') == "none" && $('.sortsWrap').eq(1).css('display') == "none"){
-                $('#filters').removeClass('fixed_top');
-            }
-        }
-
         //加载下一页
-        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#mainNav').height()){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
             $pageNum ++;
             console.log("第"+$pageNum+"页");
             finishLoading = true;
-//            setTimeout(function(){
-                bindGoodsList($filters,$pageNum);
-//            },1000)
+            bindGoodsList($filters,$pageNum);
         }
     })
 
@@ -527,7 +480,7 @@
         }
         paraData.pageNum = pageNum;
         paraData.pageSize = $pageSize;
-        paraData.goodsLabel = 1;
+        paraData.goodsLabel = 2;
 
         console.log(paraData);
 
@@ -615,44 +568,24 @@
     }
 
     $('#goods').on('click','.single_good',function(){
-        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
+        window.location.href = 'detail.html?good_id=' + $(this).attr('data-goods-id');
     })
     $('#special').on('click','.special_good',function(){
-        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
+        window.location.href = 'detail.html?good_id=' + $(this).attr('data-goods-id');
     })
 
 
-    $('body').on('click','#mainNav button',function(){
-        if($(this).attr('class') == 'collection'){
-            window.location.href = 'html/collection.html'
-        }else if($(this).attr('class') == 'grab'){
-            window.location.href = 'html/orderGenerate.html'
-        }else if($(this).attr('class') == 'order'){
-            window.location.href = 'html/order.html'
-        }else if($(this).attr('class') == 'personal'){
-            window.location.href = 'html/personal.html'
-        }
-    })
-
-    $('#guide .video').click(function(){
-        window.location.href = "http://mp.weixin.qq.com/s/NmroHaz5e5F8rgLmUWOQ_g";
-    })
-
-    $('#guide .wish').click(function(){
-        // window.location.href = 'html/wishingTreeType.html';
-    })
-
-    $('#guide .global').click(function(){
-        window.location.href = 'html/globalShopping.html';
-    })
-
-    $('#guide .money').click(function(){
-        window.location.href = 'html/personalPurse.html';
-    })
-
-    $('#guide .reward').click(function(){
-        window.location.href = 'http://mp.weixin.qq.com/s/24fe_7n78S1li8WbDY9zRA';
-    })
+    // $('body').on('click','#mainNav button',function(){
+    //     if($(this).attr('class') == 'collection'){
+    //         window.location.href = 'collection.html'
+    //     }else if($(this).attr('class') == 'grab'){
+    //         window.location.href = 'orderGenerate.html'
+    //     }else if($(this).attr('class') == 'order'){
+    //         window.location.href = 'order.html'
+    //     }else if($(this).attr('class') == 'personal'){
+    //         window.location.href = 'personal.html'
+    //     }
+    // })
 
     commonCompt.screenVisibleChange();
 

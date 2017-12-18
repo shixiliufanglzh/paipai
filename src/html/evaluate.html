@@ -101,7 +101,7 @@
 
     var imgListBase64 = [];
     $('#uploadImg').change(function(e){
-        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'));
+        commonCompt.readFile(e.target,imgListBase64,$('#pics_box'),$('label.add_pic'),4);
     })
 
     $('#pics_box').on('click', '.picture i',function(){

@@ -54,18 +54,23 @@ var LOGIN_WITH_PWD = apiHost + "login/loginCheck.jhtml";  //账号密码登录
 var FORGET_PWD = apiHost + "login/forgetPsw.jhtml";  //忘记密码修改密码
 var GET_SHARE_URL = apiHost + "activity/getShareUrl.jhtml";  //获取分享链接
 
-var ADD_REFUND_TRACK_NUM = apiHost + "order/addRefundTrackNum.jhtml";  //.买家添加退换货物流单号
-var GET_ORDER_REFUND = apiHost + "order/getOrderRefund.jhtml";  //.用户获取订单全额退款售后列表
-var GET_ORDER_GOOD_REFUND = apiHost + "goods/getOrderGoodsRefund.jhtml";  //.用户获取订单指定商品售后列表
-var GET_REFUND = apiHost + "crmRefund/getRefund.jhtml";  //.获取售后申请列表
+var ADD_REFUND_TRACK_NUM = apiHost + "order/addRefundTrackNum.jhtml";  //买家添加退换货物流单号
+var GET_ORDER_REFUND = apiHost + "order/getOrderRefund.jhtml";  //用户获取订单全额退款售后列表
+var GET_ORDER_GOOD_REFUND = apiHost + "goods/getOrderGoodsRefund.jhtml";  //用户获取订单指定商品售后列表
+var GET_REFUND = apiHost + "crmRefund/getRefund.jhtml";  //获取售后申请列表
 
-var GET_REWARD_SHARE_URL = apiHost + "crowdFund/getShareUrl.jhtml";  //.获取众筹订单分享链接****
-var GET_USER_RECORD = apiHost + "crowdFund/getUserRecord.jhtml";  //.用户获取自己的众筹记录****
-var GET_RECORD_DETAIL = apiHost + "crowdFund/getRecordDetail.jhtml";  //.获取众筹记录详情****
-var GET_SELF_REWARDER_LIST = apiHost + "crowdFund/getSelfRecordUser.jhtml";  //.用户获取自己的众筹记录打赏人列表****
-var GET_OTHER_REWARDER_LIST = apiHost + "crowdFund/getRecordUser.jhtml";  //.观众获取众筹记录打赏人列表****
-// var GET_MSG_RECORD = apiHost + "crowdFund/getRecordMsg.jhtml";  //.获取众筹记录留言列表
-var CANCEL_REWARD = apiHost + "crowdFund/cancelCrowd.jhtml";  //.用户取消众筹
+var GET_REWARD_SHARE_URL = apiHost + "crowdFund/getShareUrl.jhtml";  //获取众筹订单分享链接****
+var GET_USER_RECORD = apiHost + "crowdFund/getUserRecord.jhtml";  //用户获取自己的众筹记录****
+var GET_RECORD_DETAIL = apiHost + "crowdFund/getRecordDetail.jhtml";  //获取众筹记录详情****
+var GET_SELF_REWARDER_LIST = apiHost + "crowdFund/getSelfRecordUser.jhtml";  //用户获取自己的众筹记录打赏人列表****
+var GET_OTHER_REWARDER_LIST = apiHost + "crowdFund/getRecordUser.jhtml";  //观众获取众筹记录打赏人列表****
+// var GET_MSG_RECORD = apiHost + "crowdFund/getRecordMsg.jhtml";  //获取众筹记录留言列表
+var CANCEL_REWARD = apiHost + "crowdFund/cancelCrowd.jhtml";  //用户取消众筹
+
+var ADD_WISH = apiHost + "wish/addWish.jhtml";  //添加愿望
+var GET_WISH_SHARE_URL = apiHost + "wish/getShareUrl.jhtml";  //获取愿望分享链接
+var WITH_DRAW = apiHost + "wish/withDraw.jhtml";  //提现愿望资金到账户
+var UPDATE_WISH_STATE = apiHost + "wish/updateStatus.jhtml";  //修改愿望记录状态
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -503,6 +508,144 @@ var commonCompt = {
             }
         }
         //console.log("添加结束",imgListBase64);
+
+    },
+
+    //上传图片返回链接
+    getImgUrl: function (obj, imgList, position, addBtn, count, hasPicDesc, imgDescList) {
+
+        //var windowURL = window.URL || window.webkitURL;
+
+        var popPrompt = commonCompt.popPrompt;
+        var files = obj.files;
+        var imgCount = 0;
+        if (files.length + imgList.length > count) {
+            addBtn.hide();
+            imgCount = count - imgList.length;
+            popPrompt('最多只能上传4张！');
+        } else if (files.length + imgList.length == count) {
+            addBtn.hide();
+            imgCount = files.length;
+        } else {
+            //addBtn.hide();
+            imgCount = files.length;
+        }
+        if (imgCount > 0) {
+            commonCompt.addMask("图片加载中...");
+        }
+        for (var i = 0; i < imgCount; i++) {
+            //判断类型是不是图片
+            if (!/image\/\w+/.test(files[i].type)) {
+                popPrompt("请确保文件为图像类型");
+                return false;
+            }
+
+            //var dataURL = windowURL.createObjectURL(files[i]);
+            //imgListUrl.push(dataURL);
+            //position.html('');
+            //for(var j=0;j<imgListUrl.length;j++){
+            //    position.append('<span class="picture" style="background: url('+ imgListUrl[j] +') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i></span>');
+            //}
+
+            //获取照片的拍摄方向
+            var orient;
+            EXIF.getData(files[i], function () {
+                orient = EXIF.getTag(this, 'Orientation');
+            });
+
+            var reader = new FileReader();
+            reader.readAsDataURL(files[i]);
+            reader.onload = function (e) {
+
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+                var image = new Image();
+                // var image = $('#photo')[0];
+                image.src = this.result;
+                //imgListUrl.push(this.result);
+                //position.html('');
+                //for(var j=0;j<imgListUrl.length;j++){
+                //    position.append('<span class="picture" style="background: url('+ imgListUrl[j] +') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i></span>');
+                //}
+
+                image.onload = function () {
+                    //alert(orient);
+                    var cw = image.width;
+                    var ch = image.height;
+                    var w = image.width;
+                    var h = image.height;
+                    canvas.width = w;
+                    canvas.height = h;
+
+
+                    if (cw > 960 && cw > ch) {
+                        w = 960;
+                        h = (960 * ch) / cw;
+                        canvas.width = w;
+                        canvas.height = h;
+                    }
+                    if (ch > 960 && ch > cw) {
+                        h = 960;
+                        w = (960 * cw) / ch;
+                        canvas.width = w;
+                        canvas.height = h;
+                    }
+
+                    if (orient == 6) {
+                        canvas.width = h;
+                        canvas.height = w;
+                        ctx.rotate(90 * Math.PI / 180);
+                        ctx.drawImage(image, 0, -h, w, h);
+                    } else {
+                        // 执行Canvas的drawImage语句
+                        ctx.drawImage(image, 0, 0, w, h);
+                    }
+
+                    var imgBase64 = canvas.toDataURL("image/jpeg");
+
+                    $.ajax({
+                        url: 'http://116.62.116.5/rshop-crm/crmUtil/addPic.jhtml',
+                        contentType: 'application/x-www-form-urlencoded',
+                        data: {
+                            picType: 'wish',
+                            picfile: JSON.stringify({0:imgBase64})
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        async:false,
+                        success:function(data){
+                            console.log(data);
+                            apiResponse(data.responseCode,data.responseDesc,data.data);
+                            if(data.responseCode == 2000){
+                                imgList.push({
+                                    commonUrl: data.data.url,
+                                    picName: data.data.picNames[0]
+                                });
+
+                                if (imgDescList !== undefined && imgDescList !== null) {
+                                    imgDescList.push('');
+                                }
+                                position.html('');
+                                var picDesc = !!hasPicDesc ? '<textarea maxlength="30" class="pic_desc" placeholder="添加图片描述（限30个字）"></textarea>' : '';
+                                for (var j = 0; j < imgList.length; j++) {
+                                    position.append('<span class="picture" style="background: url(' + imgList[j].commonUrl + imgList[j].picName + ') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i>' + picDesc + '</span>');
+                                    $('.pic_desc').eq(j).val(imgDescList[j]);
+                                }
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+
+
+                    if ($('#mask')) {
+                        $('#mask').remove();
+                    }
+                }
+
+            }
+        }
 
     },
 
