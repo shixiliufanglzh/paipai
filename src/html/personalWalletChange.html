@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>拍币记录</title>
+    <title>提现记录</title>
     <script>
         (function (doc, win) {
             var docEl = doc.documentElement,
@@ -51,7 +51,7 @@
     <div class="img" >
         <img src="../imgs/blank_order.png" alt="" style="height: 1.83rem;width: 2.73rem">
     </div>
-    <h6>还没有拍币记录呢~</h6>
+    <h6>还没有提现记录呢~</h6>
 </div>
 
 
@@ -76,12 +76,15 @@
         if($('.change_detail').length <= 0){
             $('body').css('background-color','#fff');
             $('#blank').show();
+
+            finishLoading =true
+            $('.loading').hide();
         }
 
     })
 
 
-    //获取商品列表
+    //获取列表
     function bindRecordsList(pageNum){
         //如果是获取第一页，就应该先清空订单列表
         if(pageNum <= 1){
@@ -90,7 +93,7 @@
 
         //请求数据
         $.ajax({
-            url: GETUSERPOINTRECORD,
+            url: GET_MONEY_RECORD,
             type:'GET',
             dataType:'json',
             async: false,
@@ -102,28 +105,26 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var records = data.data;
-                    console.log(records);
                     if(records.length > 0){
                         $('#blank').hide();
                         $('body').css('background-color','#f0f0f0');
                     }
                     var recordsListHtml = "";
                     for(var i=0; i<records.length; i++){
-                        var changeNum = '', changeState = '';
-                        if(records[i].pointType == -1){
-                            changeNum = '-' + records[i].pointAmount;
+                        if(records[i].recordType.toString() === '2'){
+                            changeNum = '-' + records[i].money;
                             changeState = '';
-                        }else if(records[i].pointType == 2 || records[i].pointType == 3){
-                            changeNum = '+' + records[i].pointAmount;
+                        }else if(records[i].recordType.toString() === '1'){
+                            changeNum = '+' + records[i].money;
                             changeState = 'plus';
                         }
 
                         recordsListHtml +=  '<div class="change_detail clearfix">'+
                                                 '<div class="left">'+
-                                                    '<h4>' + records[i].pointDesc + '</h4>'+
+                                                    '<h4>'+ records[i].recordMsg +'</h4>'+
                                                     '<p>' + records[i].createDate + '</p>'+
                                                 '</div>'+
-                                                '<div class="right ' + changeState + '">' + changeNum + '</div>'+
+                                                '<div class="right '+ changeState +'">' + changeNum + '</div>'+
                                             '</div>'
                     }
                     $('#purseChange').append(recordsListHtml);

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的许愿</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body>
+<div id="order">
+    <div id="orderSorts">
+        <div class="nav_wrap">
+            <div class="tab tab_underway current"><a>许愿中</a></div>
+            <div class="tab tab_complete"><a>许愿结束</a></div>
+        </div>
+    </div>
+    <div class="orders_list">
+
+    </div>
+    <div class="loading"><i></i><span>加载中...</span></div>
+</div>
+
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_order.png" alt="">
+    </div>
+    <h6>还没有愿望呢~</h6>
+    <button onclick="window.location.href='../html/wishingTreeType.html'">去许愿</button>
+</div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+
+<script>
+    var $pageNum = 1;
+    var $pageSize = 5;
+    var $wishStatus = 1;  //状态(1进行中，2已结束)
+    var ordersListAll = [];
+    var finishLoading = true;
+    var $userName = '';
+
+    $(function(){
+
+        bindRewardList($pageNum,$wishStatus);
+
+        //没有订单时的显示
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+
+    })
+
+    //切换分类
+    $('#orderSorts .nav_wrap').on('click', '.tab', function(){
+        ordersListAll = [];
+        $pageNum = 1;
+        $('.nav_wrap .tab').removeClass('current');
+        $(this).addClass('current');
+        if($(this).hasClass('tab_underway')){
+            $wishStatus = 1;
+        }else if($(this).hasClass('tab_complete')){
+            $wishStatus = 2;
+        }
+        bindRewardList($pageNum,$wishStatus);
+
+        if($('.singleOrder').length <= 0){
+            $('#orderSorts').css('border-bottom','0.2rem solid #f0f0f0')
+            $('body').css('background-color','#fff');
+            $('#blank').show();
+            finishLoading =true
+            $('.loading').hide();
+        }
+    })
+
+    //加载下一页
+    $(document).scroll(function(){
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+            bindRewardList($pageNum,$wishStatus);
+        }
+    })
+
+    //查看订单详情
+    $('.orders_list').on('click', '.singleOrder .order_head,.singleOrder .goods_detail,.singleOrder .total', 
+    function(){
+        var $wishId = $(this).parents('.singleOrder').attr('data-wish-id');
+        window.location.href = 'wishingTreeDetail.html?wish_id='+ $wishId;
+    })
+
+
+    //关闭许愿（状态转化为结束）
+    $('.orders_list').on('click', 'button.close', function(){
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "关闭后将停止打赏，未提现金额可在【许愿结束】列表页进行提现，确认关闭许愿么？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: UPDATE_WISH_STATE,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: $curOrder.attr('data-wish-id'),
+                        wishStatus: 2
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+                            $curOrder.remove();
+                            ordersListAll.splice($curOrder.index(),1);
+                            commonCompt.popPrompt('已关闭该许愿');
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+                                $pageNum ++;
+                                console.log("第"+$pageNum+"页");
+                                finishLoading = true;
+                                bindRewardList($pageNum,$wishStatus);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //删除许愿（状态转化为删除）
+    $('.orders_list').on('click', 'button.delete', function(){
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认删除该许愿吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: UPDATE_WISH_STATE,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: $curOrder.attr('data-wish-id'),
+                        wishStatus: 3
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+                            $curOrder.remove();
+                            ordersListAll.splice($curOrder.index(),1);
+                            commonCompt.popPrompt('已删除该许愿');
+                            if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+                                $pageNum ++;
+                                console.log("第"+$pageNum+"页");
+                                finishLoading = true;
+                                bindRewardList($pageNum,$wishStatus);
+                            }
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //退还账户（状态转化为退款）
+    $('.orders_list').on('click', 'button.return', function(){
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: false,
+            title: "",
+            contentText: "确认进行退款操作吗？",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                $.ajax({
+                    url: UPDATE_WISH_STATE,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: $curOrder.attr('data-wish-id'),
+                        wishStatus: 5
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+                            commonCompt.popPrompt('已成功退款');
+                            setTimeout(function(){
+                                location.reload();
+                            },1500)
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            },
+            leftBtnClick: function(){
+
+            }
+        })
+    })
+
+    //提前提现
+    $('.orders_list').on('click', 'button.withdraw_part', function(){
+        var mostCount = Number($(this).attr('data-left-money'));
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: true,
+            showInput: true,
+            title: "提现到【我的钱包】",
+            contentText: "",
+            cancleText: "取消",
+            certainText: "确认",
+            inputPlace: "输入提现金额",
+            inputType: 'number',
+            rightBtnClick: function(val){
+                var inputCount = Number(val).toFixed(2);
+                if( val !== 0 && !val){
+                    commonCompt.popPrompt("不能为空");
+                }else if(inputCount > mostCount || inputCount <= 0){
+                    commonCompt.popPrompt('金额超出提现范围');
+                    $(this).val('');
+                }else {
+                    console.log(mostCount,inputCount);
+                    $.ajax({
+                        url: WITH_DRAW,
+                        type: 'POST',
+                        dataType: 'json',
+                        data: {
+                            id: $curOrder.attr('data-wish-id'),
+                            withdrawMoney: inputCount
+                        },
+                        success: function (data) {
+                            apiResponse(data.responseCode,data.responseDesc,data.data);
+                            if(data.responseCode == 2000){
+                                commonCompt.popPrompt('成功提现￥'+ inputCount +'至钱包');
+                                setTimeout(function(){
+                                    location.reload();
+                                },1500)
+                            }
+                        },
+                        error: function (err) {
+                            console.log(err);
+                        }
+                    })
+                }
+            },
+            leftBtnClick: function(){
+            }
+        })
+    })
+
+    //全部余额提现
+    $('.orders_list').on('click', 'button.withdraw_all', function(){
+        var mostCount = Number($(this).attr('data-left-money'));
+        var $curOrder = $(this).parents('.singleOrder');
+        commonCompt.Confirm({
+            hasTitle: true,
+            showInput: false,
+            title: "余额提现",
+            contentText: "是否将余额￥"+ mostCount +"提现到【我的钱包】",
+            cancleText: "取消",
+            certainText: "确认",
+            rightBtnClick: function(){
+                console.log(mostCount);
+                $.ajax({
+                    url: UPDATE_WISH_STATE,
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: $curOrder.attr('data-wish-id'),
+                        wishStatus: 4
+                    },
+                    success: function (data) {
+                        apiResponse(data.responseCode, data.responseDesc, data.data);
+                        if (data.responseCode == 2000) {
+                            commonCompt.popPrompt('成功将余额￥' + mostCount + '提现至钱包');
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1500)
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+                
+            },
+            leftBtnClick: function(){
+            }
+        })
+    })
+
+    //获取商品列表
+    function bindRewardList(pageNum,wishStatus){
+        //如果是获取第一页，就应该先清空订单列表
+        if(pageNum <= 1){
+            $('.orders_list').html('');
+        }
+
+        //设置订单列表请求参数
+        var paraData = {};
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.wishStatus = wishStatus;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GET_USER_WISH,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            async:false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                console.log(data);
+                if(data.responseCode == 2000){
+                    var orders = data.data;
+                    console.log(orders);
+                    if(orders.length > 0){
+                        $('#blank').hide();
+                        $('body').css('background-color','#f0f0f0');
+                    }
+                    ordersListAll = ordersListAll.concat(orders);
+                    var ordersListHtml = "";
+                    
+                    for(var i=0; i<orders.length; i++){
+                        var endTime = (!orders[i].endDate || orders[i].endDate.toString() === '0') ? '长期有效' : orders[i].endDate;
+                        var leftMoney = commonCompt.accSub(Number(orders[i].totalMoney),Number(orders[i].realMoney)).toFixed(2);
+                        var mostMoney = commonCompt.accSub(Number(orders[i].realMoney),Number(orders[i].withdrawMoney)).toFixed(2);
+                        ordersListHtml +=   '<div class="singleOrder clearfix" data-wish-id="'+ orders[i].id +'">'+
+                                                '<div class="order_head">截止时间：<span class="order_number">'+ endTime +'</span></div>'+
+                                                '<div class="goods_detail">'+
+                                                    '<div class="order_detail clearfix">'+
+                                                        '<div class="product_pic" style="background: url(../imgs/type_0'+ orders[i].wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                        '<div class="product_desc">'+
+                                                            '<p class="name">'+ orders[i].title +'</p>'+
+                                                            '<p class="parameter">'+ orders[i].content +'</p>'+
+                                                        '</div>'+
+                                                        '<div class="price">'+
+                                                            '<span class="price_now">￥'+ orders[i].totalMoney.toFixed(2) + '</span><br>'+
+                                                        '</div>'+
+                                                    '</div>'+
+                                                '</div>' +
+                                                '<p class="total" style="text-align:left">已筹划'+
+                                                    '<span class="deal_price">￥'+ Number(orders[i].realMoney).toFixed(2) +'</span>&nbsp;&nbsp;还差'+
+                                                    '<span class="deal_price">￥'+ leftMoney +'</span>&nbsp;&nbsp;已提现'+
+                                                    '<span class="deal_price">￥'+ Number(orders[i].withdrawMoney).toFixed(2) +'</span>'+
+                                                '</p>'
+
+
+                        if(orders[i].wishStatus.toString() === '1') {
+                            ordersListHtml +=   '<button class="order_edit close">关闭许愿</button>' +
+                                                '<button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' +
+                                            '</div>'
+                        }else if(orders[i].wishStatus.toString() === '2') {
+                            ordersListHtml +=   (orders[i].refundStatus.toString()==='1'?('<button class="order_edit return">退还账户</button>') : '') +
+                                                '<button class="order_edit red withdraw_all" data-left-money="'+mostMoney+'">余额提现</button>' +
+                                            '</div>'
+                        }else if(orders[i].wishStatus.toString() === '4' || orders[i].wishStatus.toString() === '5') {
+                            ordersListHtml +=   '<button class="order_edit delete">删除许愿</button>' +
+                                            '</div>'
+                        }
+
+                    }
+
+                    $('.orders_list').append(ordersListHtml);
+
+                    if(orders.length < $pageSize){
+                        finishLoading =true
+                        $('.loading').hide();
+                    }else {
+                        $('.loading').show();
+                        finishLoading = false;
+                    }
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    }
+
+</script>
+<script src="../script/wx_browser_api.js"></script>
+</html>

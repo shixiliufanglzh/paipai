@@ -16,8 +16,10 @@
         var indexH = 1,
             indexI = 1,
             indexS = 0;
-        var initY = parseInt((nowdate.getYear() + "").substr(1, 2));
-        var initM = parseInt(nowdate.getMonth() + "") + 1;
+
+        var nowMonth = parseInt(nowdate.getMonth() + "") + 1;
+        var initY = parseInt((( nowMonth>=12 ? (nowdate.getYear() + 1) : nowdate.getYear()) + "").substr(1, 2));
+        var initM = (nowMonth + 1) % 12;
         var initD = parseInt(nowdate.getDate() + "");
         var initH = parseInt(nowdate.getHours());
         var initI = parseInt(nowdate.getMinutes());

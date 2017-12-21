@@ -33,7 +33,7 @@
     <div class="block">
         <div class="single_option clearfix">
             <span class="left">许愿标题</span>
-            <input type="text" maxlength="20" id="title" class="right" placeholder="请输入许愿标题" />
+            <input type="text" maxlength="20" id="title" class="right" placeholder="请输入许愿标题(20字以内)" />
         </div>
     </div>
     <div class="block">
@@ -53,12 +53,12 @@
 
     <div id="declaration">
         <h3>许愿宣言：</h3>
-        <textarea maxlength="140" placeholder="输入你的宣言&#10;举例1：参与人数需要最多10人。参与的人至少打赏26元...&#10;举例2：我们将会一起爬山"></textarea>
+        <textarea maxlength="100" placeholder="输入你的宣言&#10;举例1：许愿成功，打赏榜第一名可以相约同行&#10;举例2：聚会时间2018.8.8晚上6点，地点待定，参加活动的打赏100元，不参加活动的随意打赏以作活动经费，8人成席不封顶，有钱的捧个钱场，没钱的捧个人场"></textarea>
     </div>
 
     <div id="wishIntroduction" class="clearfix">
         <h3>上传图片<span>（最多上传3组）</span>：</h3>
-        <input type="file" id="uploadImg" accept="image/*" multiple="multiple" capture=“camera”>
+        <input type="file" id="uploadImg" accept="image/*" multiple="multiple">
         <div id="pics_box">
             <!--<span class="picture"><i></i></span>-->
         </div>
@@ -66,10 +66,10 @@
     </div>
 
     <button id="msgSubmit">提交</button>
-    <div class="interaction" style="display:none">
+    <div class="interaction" style="display:none;margin-top:0.4rem">
         <div class="button_wrap clearfix">
-            <button class="reward" style="width:2.3rem">如何获取众赏</button>
-            <button class="join" style="width:2.3rem">生成众赏二维码</button>
+            <button class="reward" style="width:2.3rem">如何获取赞赏</button>
+            <button class="join" style="width:2.3rem">生成愿望二维码</button>
         </div>
     </div>
 </div>
@@ -104,7 +104,7 @@
     var $timeStr = '';
     var $userName = '';
     var shareUrl = '';
-    var $content = '';
+    var $title = '';
 
     if(isWeiBo()){
         $('.interaction .button_wrap').append('<wb:share-button size="big" class="weibo_share_btn" appkey="1490666142" type="button" default_text="zzzzzzz" url="xxxxxxx" pic="http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png"></wb:share-button>');
@@ -119,6 +119,7 @@
             type: 'GET',
             dataType: 'json',
             async: false,
+            cache: false,
             success: function (data) {
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -141,6 +142,10 @@
             $('#endTime').val($wishData.endDate);
             imgList = $wishData.imgList;
             imgDescList = $wishData.imgDescList;
+
+            // $content = $wishData.content;
+            $title = $wishData.title;
+            shareUrl = localStorage.shareWishUrl;
             
             for (var j = 0; j < imgList.length; j++) {
                 var picDesc = !!imgDescList[j] ? '<textarea class="pic_desc" placeholder="'+ imgDescList[j] +'"></textarea>' : '';
@@ -165,6 +170,15 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.M
             });
+
+            if (isWeiBo()) {
+                var $src = $('iframe').attr('src').replace('xxxxxxx', encodeURIComponent(shareUrl))
+                    .replace('zzzzzzz', encodeURI('【' + $userName + '】许愿树下发起许愿'));
+                // alert(2+' '+$('iframe').attr('src'));
+                $('iframe').attr('src', $src);
+            } else {
+                configShare();
+            }
         }
 
         //时间插件初始化
@@ -207,7 +221,7 @@
             $('#pics_box').append('<span class="picture" style="background: url('+ 
                 imgList[i].commonUrl + imgList[i].picName +
                 ') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i>'+
-                '<textarea maxlength="30" class="pic_desc" placeholder="添加图片描述（限30个字）"></textarea></span>');
+                '<textarea maxlength="22" class="pic_desc" placeholder="添加图片描述（限22个字）"></textarea></span>');
 
             $('.pic_desc').eq(i).val(imgDescList[i]);
         }
@@ -226,7 +240,7 @@
             })
         }
         var $title = $('#title').val();
-        $content = $('#declaration textarea').val();
+        var $content = $('#declaration textarea').val();
         var $totalMoney = $('#count').val();
 
         if($title.length <= 0){
@@ -254,7 +268,7 @@
                     content: $content,
                     totalMoney: $totalMoney,
                     endDate: $endTime,
-                    files: files
+                    files: JSON.stringify(files)
                 },
                 success: function (data) {
                     console.log(data);
@@ -314,8 +328,8 @@
     })
 
     function configShare(){
-        $userDeclaration = $content ? $content : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
-        alert('$userDeclaration:'+$userDeclaration+' shareUrl:'+shareUrl);
+        $userDeclaration = $title ? $title : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
+        // alert('$userDeclaration:'+$userDeclaration+' shareUrl:'+shareUrl);
         if (isWeiXin()) {
             $.ajax({
                 url: JSSDKCONFIG,

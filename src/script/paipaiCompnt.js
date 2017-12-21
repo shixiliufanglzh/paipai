@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://47.96.186.64/app/";
-// var apiHost = "http://www.jianbid.com/app/";
+// var apiHost = "http://47.96.186.64/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -71,6 +71,16 @@ var ADD_WISH = apiHost + "wish/addWish.jhtml";  //添加愿望
 var GET_WISH_SHARE_URL = apiHost + "wish/getShareUrl.jhtml";  //获取愿望分享链接
 var WITH_DRAW = apiHost + "wish/withDraw.jhtml";  //提现愿望资金到账户
 var UPDATE_WISH_STATE = apiHost + "wish/updateStatus.jhtml";  //修改愿望记录状态
+var GET_USER_WISH = apiHost + "wish/getUserWish.jhtml";  //获取用户愿望列表
+var GET_WISH_DETAIL = apiHost + "wish/getWishDetail.jhtml";  //获取用户愿望详情
+var GET_USER_WISH_RECODER = apiHost + "wish/getUserWishRecord.jhtml";  //用户获取自己的愿望记录打赏人列表
+var GET_OTHER_WISH_RECODER = apiHost + "wish/getRecordUser.jhtml";  //观众获取愿望记录打赏人列表
+var WISH_PAY = apiHost + "pay/wishPay.jhtml";  //愿望支付
+var TRANSFER = apiHost + "pay/transfer.jhtml";  //提现
+var ADD_CARD = apiHost + "user/addCard.jhtml";  //用户添加提现账户
+var DEL_CARD = apiHost + "user/delCard.jhtml";  //删除提现账户
+var GET_CARD = apiHost + "user/getCard.jhtml";  //获取用户提现账户列表
+var GET_MONEY_RECORD = apiHost + "user/getMoneyRecord.jhtml";  //获取用户提现记录
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -82,7 +92,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
         case "4000":
             //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                window.location.href = redirectUrl;
+                // window.location.href = redirectUrl;
             }
             break;
         case "4001":
@@ -185,7 +195,7 @@ var commonCompt = {
                             '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
                             '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
                             '<div class="input" style="display:none;font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+
-                                '<input type="text" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.6rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
+                                '<input type="'+ (!!objPara.inputType ? objPara.inputType : 'text')+'" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.6rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
                             '</div>'+
                             '<div class="action" style="font-size:0;">'+
                                 '<button class="cancel" style="width:50%;background-color:#fff;border:none;outline:none;text-align:center;border-right:1px solid #c5c5c5;color:#858585;line-height:0.66rem;">'+objPara.cancleText+'</button>'+
@@ -626,7 +636,7 @@ var commonCompt = {
                                     imgDescList.push('');
                                 }
                                 position.html('');
-                                var picDesc = !!hasPicDesc ? '<textarea maxlength="30" class="pic_desc" placeholder="添加图片描述（限30个字）"></textarea>' : '';
+                                var picDesc = !!hasPicDesc ? '<textarea maxlength="22" class="pic_desc" placeholder="添加图片描述（限22个字）"></textarea>' : '';
                                 for (var j = 0; j < imgList.length; j++) {
                                     position.append('<span class="picture" style="background: url(' + imgList[j].commonUrl + imgList[j].picName + ') center center no-repeat;-webkit-background-size: cover;background-size: cover"><i></i>' + picDesc + '</span>');
                                     $('.pic_desc').eq(j).val(imgDescList[j]);
