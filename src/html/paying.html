@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/paying.css">
 </head>
 <body>
@@ -43,6 +45,14 @@
     <section id="payingPath">
         <div class="alipay"><i class="icon_pay"></i><span>支付宝支付</span><i class="arrow"></i></div>
         <div class="wechat"><i class="icon_pay"></i><span>微信支付</span><i class="arrow"></i></div>
+        <div class="zhongshang"><i class="icon_pay"></i><span type="color:#e02532">众赏支付（推荐）</span><i class="arrow"></i></div>
+    </section>
+
+    <section id="instruction">
+        <h5>众赏支付说明：</h5>
+        <p>1、由粉丝/好友打赏替你支付购物<br>
+            2、打赏金额不足订单总额部分可自行补足完成订单支付<br>
+            3、订单失败则已打赏或支付金额将原路径退回</p>
     </section>
 
 </div>
@@ -50,12 +60,15 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $hideCrowd = commonCompt.GetUrlPara('hide_crowd');
     var wxPayPara = {};
     var timer = null;
 //    var clientIp =  get_client_ip();
@@ -63,6 +76,11 @@
     $(function(){
         if(commonCompt.GetUrlPara('isVirtual')){
             $('#addrMsg').hide();
+        }
+
+        if($hideCrowd.toString() !== '1'){
+            $('.zhongshang').show();
+            $('#instruction').show();
         }
 
         $.ajax({
@@ -74,7 +92,7 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
-                    $('#payingDetail .order_price').html("￥"+ orderMsg.orderPrice.toFixed(2));
+                    $('#payingDetail .order_price').html("￥"+ Number(orderMsg.leftPrice).toFixed(2));
                     $('#payingDetail .order_num').html(orderMsg.orderNum);
                     if(orderMsg.name){
                         $('.addressee .name').html(orderMsg.name);
@@ -93,27 +111,32 @@
 
     })
 
+    $('.zhongshang').click(function(){
+        window.location.href = 'createCrowdFunding.html?order_id='+ $curOrderId;
+    })
+
 
     $('.alipay').click(function(){
-        $.ajax({
-            url: ORDERPAY,
-            type: 'GET',
-            dataType: 'json',
-            data: {
-                payType: 2,
-                orderId: $curOrderId
-            },
-            success: function (data) {
-//                console.log('请求参数:',$curOrderId,2,'返回',data);
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    $('body').html(data.data);
-                }
-            },
-            error: function (err) {
-//                console.log('请求参数:',$curOrderId,2,'返回',err);
-            }
-        })
+        // alert(JSON.stringify('$curOrderId:'+$curOrderId));
+        window.location.href = ORDERPAY+'?payType=2&orderId='+$curOrderId;
+        // $.ajax({
+        //     url: ORDERPAY,
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     data: {
+        //         payType: 2,
+        //         orderId: $curOrderId
+        //     },
+        //     success: function (data) {
+        //         apiResponse(data.responseCode,data.responseDesc,data.data);
+        //         if(data.responseCode == 2000){
+        //             $('body').html(data.data);
+        //         }
+        //     },
+        //     error: function (err) {
+        //         alert(JSON.stringify('error:'+err));
+        //     }
+        // })
     })
 
     $('.wechat').click(function(){
@@ -129,27 +152,33 @@
 //                console.log('请求参数:',$curOrderId,2,'返回',data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
+                    // alert(JSON.stringify(data.data));
 //                    window.location.href = data.data;
 //                    $('body').html(data.data);
 //                    alert(JSON.stringify(data));
-                    wxPayPara.appId = data.data.appId;
-                    wxPayPara.timeStamp = data.data.timeStamp;
-                    wxPayPara.nonceStr = data.data.nonceStr;
-                    wxPayPara.prepayId = data.data.package;
-                    wxPayPara.paySign = data.data.paySign;
-                    wxPayPara.signType = data.data.signType;
+                    if(isWeiXin()){
+                        wxPayPara.appId = data.data.appId;
+                        wxPayPara.timeStamp = data.data.timeStamp;
+                        wxPayPara.nonceStr = data.data.nonceStr;
+                        wxPayPara.prepayId = data.data.package;
+                        wxPayPara.paySign = data.data.paySign;
+                        wxPayPara.signType = data.data.signType;
 
-                    onBridgeReady(wxPayPara);
+                        onBridgeReady(wxPayPara);
 
-                    if (typeof WeixinJSBridge == "undefined"){
-                        if( document.addEventListener ){
-                            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                        }else if (document.attachEvent){
-                            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                        if (typeof WeixinJSBridge == "undefined"){
+                            if( document.addEventListener ){
+                                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                            }else if (document.attachEvent){
+                                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                            }
+                        }else{
+                            onBridgeReady();
                         }
-                    }else{
-                        onBridgeReady();
+                    }else {
+                        window.location.href = data.data.mweb_url;
+                        // alert(data.data);
                     }
                 }
             },

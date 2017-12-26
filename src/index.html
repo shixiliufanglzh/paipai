@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,7 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
     <link rel="stylesheet" href="../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="./style/index.css">
 </head>
@@ -30,15 +31,28 @@
     <div id="viewTotal">
         <section class="swiper-container">
             <div class="swiper-wrapper">
-                <img class="swiper-slide" src="./imgs/banner_01.jpg" />
+                <!-- <img class="swiper-slide" src="./imgs/banner_01.jpg" />
                 <img class="swiper-slide" src="./imgs/banner_02.jpg" />
                 <img class="swiper-slide" src="./imgs/banner_03.jpg" />
-                <img class="swiper-slide" src="./imgs/banner_04.jpg" />
+                <img class="swiper-slide" src="./imgs/banner_04.jpg" /> -->
                 <img class="swiper-slide" src="./imgs/banner_05.jpg" />
                 <!--<img class="swiper-slide" src="./imgs/banner_06.jpg" />-->
             </div>
             <div class="swiper-pagination"></div>
         </section>
+
+        <section id="guide">
+            <ul class="clearfix">
+                <li class="video"><i></i><span>视频教程</span></li>
+                <!-- <li class="like"><i></i><span>关注商城</span></li> -->
+                <li class="reward"><i></i><span>众赏购物</span></li>
+                <li class="wish"><i></i><span>许愿树</span></li>
+                <li class="global"><i></i><span>全球购</span></li>
+                <li class="money"><i></i><span>获取拍币</span></li>
+            </ul>
+        </section>
+
+        <section id="special"></section>
 
         <section id="filters">
             <div class="filtersWrap">
@@ -74,13 +88,6 @@
                 <!--<li data-sort-id="1" class="current">全部类型</li>-->
                 <!--<li data-sort-id="2">手机电脑</li>-->
                 <!--<li data-sort-id="3">珠宝首饰</li>-->
-                <!--<li data-sort-id="4">数码产品</li>-->
-                <!--<li data-sort-id="5">美妆护肤</li>-->
-                <!--<li data-sort-id="6">虚拟物品</li>-->
-                <!--<li data-sort-id="7">箱包皮具</li>-->
-                <!--<li data-sort-id="8">生活家电</li>-->
-                <!--<li data-sort-id="9">户外运动</li>-->
-                <!--<li data-sort-id="10">日用百货</li>-->
             </ul>
         </div>
     </div>
@@ -102,6 +109,8 @@
 <script src="../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="./script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
 
@@ -134,31 +143,94 @@
 
     var $pageNum = 1;
     var goodsList = [];
+    var headerGoodsList = [];
     var timer = null;
     var finishLoading = true;
     var $pageSize = 10;
+    var lastTime = 0;
 
 
     $(function(){
+        // $.ajax({
+        //     url: GETUSERINFO,
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     async: false,
+        //     success: function (data) {
+        //         console.log(data);
+        //         apiResponse(data.responseCode,data.responseDesc,data.data);
+                
+        //     },
+        //     error: function (err) {
+        //         console.log(err);
+        //     }
+        // })
+        // commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
 
+        //获取特别展示商品
         $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                console.log(data);
+            url: GET_GOOD_SHOW,
+            type:'GET',
+            dataType:'json',
+            async:false,
+            cache: false,
+            success: function(data){
+                console.log('大图',data);
+                //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.id){
-                        userId = data.data.id;
-                        localStorage.setItem('userId', userId);
+                if(data.responseCode == 2000) {
+                    headerGoodsList = data.data;
+                    console.log(data.data);
+                    var html = '';
+                    for(var i=0; i<headerGoodsList.length; i++){
+
+                        if (headerGoodsList[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                cache: false,
+                                data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        headerGoodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
+                        var button = ''
+                        if(headerGoodsList[i].saleStatus.toString() === '1'){
+                            button = '<button class="on_bid">减价拍</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '2'){
+                            button = '<button class="pre_sale">预拍中</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '3'){
+                            button = '<button class="sold_out">已售罄</button>';
+                        }
+
+                        html += '<div class="special_good" data-goods-id="'+ headerGoodsList[i].id +'">'+
+                                    '<div class="img_wrap" style="background:url('+ headerGoodsList[i].goodsPic +') center center no-repeat;background-size:cover;-webkit-background-size:cover;"></div>'+
+                                    '<p>'+ headerGoodsList[i].goodsName +'</p>'+
+                                    '<div class="actions clearfix">'+
+                                        '<span class="current_price_pre">当前价:</span><span class="current_price">￥'+ headerGoodsList[i].nowPrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>起拍价:</span><span class="start_price">￥'+ headerGoodsList[i].salePrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>已拍:</span><span class="sale_num">'+ headerGoodsList[i].saleNum +'</span>'+ button +
+                                    '</div>'+
+                                '</div>'
                     }
+
+                    $('#special').html(html);
                 }
             },
-            error: function (err) {
+            error: function(err){
                 console.log(err);
             }
-        })
+        });
 
         if($('.single_good').length <=0 ){
             finishLoading =true
@@ -173,7 +245,7 @@
             url: GETLABELS,
             type:'GET',
             dataType:'json',
-//            async:false,
+            cache: false,
             success: function(data){
                 //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
                 apiResponse(data.responseCode,data.responseDesc,data.data);
@@ -207,6 +279,7 @@
 
         //商品列表初始化
         bindGoodsList($filters,$pageNum);
+        lastTime = new Date().getTime();
 
         var mySwiper = new Swiper ('.swiper-container', {
             direction: 'horizontal',
@@ -216,17 +289,52 @@
         })
 
         timer = setInterval(function(){
-            for(var i=0; i<$('.single_good').length; i++){
-                if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1) {
-                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice);
-                    if(goodsList[i].nowPrice <= 0){
-                        goodsList[i].nowPrice = 0;
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
+            for(var i=0; i<headerGoodsList.length; i++){
+                if(headerGoodsList[i].saleStatus == 1 && headerGoodsList[i].timeStatus == 1) {
+                    headerGoodsList[i].nowPrice = commonCompt.accSub(headerGoodsList[i].nowPrice, headerGoodsList[i].reducePrice*subTime/1000);
+                    if(headerGoodsList[i].nowPrice <= 0){
+                        headerGoodsList[i].nowPrice = 0;
                     };
-                    if (goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)) {
+                    if (headerGoodsList[i].nowPrice <= commonCompt.randomNum(headerGoodsList[i].limitPrice,headerGoodsList[i].salePrice)) {
                         $.ajax({
                             url: REFRESHGOODS,
                             type: 'GET',
                             dataType: 'json',
+                            cache: false,
+                            data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc);
+                                if (data.responseCode == 2000) {
+                                    headerGoodsList[i] = data.data;
+                                    // var changeGoodDom = $('.special_good').eq(i);
+                                    // changeGoodDom.children('.current_price').html()
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    } else {
+                        $('.special_good').eq(i).find('.current_price').html('￥' + headerGoodsList[i].nowPrice.toFixed(2));
+                    }
+                }
+            }
+
+            for(var i=0; i<$('.single_good').length; i++){
+                if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1) {
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice*subTime/1000);
+                    if(goodsList[i].nowPrice <= 0){
+                        goodsList[i].nowPrice = 0;
+                    };
+                    if (goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)) {
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
                             data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
                             async: false,
                             success: function (data) {
@@ -244,6 +352,7 @@
                     }
                 }
             }
+            lastTime = currentTime;
         },1000);
 
     })
@@ -252,6 +361,7 @@
     //打开类型列表
     $('#filters .sorts').click(function(){
         $('#filters').addClass('fixed_top');
+        $('body').css("overflow", "hidden");
         $('#statesWrap').hide();
         $('#sortsWrap').fadeIn(300);
     })
@@ -259,13 +369,16 @@
     //打开状态列表
     $('#filters .states').click(function(){
         $('#filters').addClass('fixed_top');
+        $('body').css("overflow", "hidden");
         $('#sortsWrap').hide();
         $('#statesWrap').fadeIn(300);
     })
 
     //选择筛选类型
     $('#sortsWrap ul').on('click','li',function(){
-        $(document).scrollTop(0);
+        // $(document).scrollTop(0);
+        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
+        
         $('#sortsWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
@@ -273,6 +386,7 @@
 
         $('#sortsWrap').hide();
         $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
 
         $filters.sortId = labels[$index].id;
 
@@ -282,7 +396,7 @@
 
     //选择筛选状态
     $('#statesWrap ul').on('click','li',function(){
-        $(document).scrollTop(0);
+        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
         $('#statesWrap ul li').removeClass('current');
         $(this).addClass('current');
         var $index = $(this).index();
@@ -290,6 +404,7 @@
 
         $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
 
         $filters.stateId = states[$index].id;
 
@@ -314,9 +429,11 @@
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
 
-        $(document).scrollTop(0);
+        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
+        // $(document).scrollTop(0);
         $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
     })
 
     //价格升序/降序
@@ -341,15 +458,19 @@
         $pageNum = 1;
         bindGoodsList($filters,$pageNum);
 
-        $(document).scrollTop(0);
+        // $(document).scrollTop(0);
+        $(document).scrollTop($('.swiper-container').height()+$('#guide').height()+$('#special').height());
+        
         $('#statesWrap').hide();
         $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
     })
 
     //点击其他部分隐藏
     $('.sortsWrap').on('click',function(){
         $('.sortsWrap').hide();
         $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
     })
 
 //    $('.sortsWrap .sorts').on('click',function(e){
@@ -358,7 +479,7 @@
 
     $(document).scroll(function(){
         //菜单顶部吸附
-        var max_distance = $('.swiper-container').height() + $('#filters').height()/2;
+        var max_distance = $('.swiper-container').height() + $('#special').height() + $('#guide').height() + $('#filters').height()/2;
         if($(document).scrollTop() > max_distance){
             $('#filters').addClass('fixed_top');
         }else {
@@ -406,6 +527,7 @@
         }
         paraData.pageNum = pageNum;
         paraData.pageSize = $pageSize;
+        paraData.goodsLabel = 1;
 
         console.log(paraData);
 
@@ -416,6 +538,7 @@
             dataType:'json',
             data: paraData,
             async:false,
+            cache: false,
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
@@ -425,14 +548,28 @@
                     var goodsListHtml = "";
                     for (var i = 0; i < addGoods.length; i++) {
                         var cur_state;
+
+                        if (addGoods[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                cache: false,
+                                data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        goodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
                         if (addGoods[i].saleStatus == 1) {
-//                            var timestamp = new Date().getTime();
-//                            var todayTimestamp = timestamp % 86400000;
-//                            if (todayTimestamp > 57600000) {
-//                                cur_state = "out_time";
-//                            } else {
-//                                cur_state = "salling_cut";
-//                            }
                             if (addGoods[i].timeStatus == 1) {
                                 cur_state = "salling_cut";
                             } else {
@@ -478,30 +615,46 @@
     }
 
     $('#goods').on('click','.single_good',function(){
-        window.location.href = 'html/detail.html?good_id='+$(this).attr('data-goods-id');
+        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
+    })
+    $('#special').on('click','.special_good',function(){
+        window.location.href = 'html/detail.html?good_id=' + $(this).attr('data-goods-id');
     })
 
 
     $('body').on('click','#mainNav button',function(){
-//        var hasRegister = shouldRegister();
-//        if(hasRegister){
-//            if($('this').attr('class') == 'home'){
-//                window.location.href = 'index.html'
-//            }else
-            if($(this).attr('class') == 'collection'){
-                window.location.href = 'html/collection.html'
-            }else if($(this).attr('class') == 'grab'){
-                window.location.href = 'html/orderGenerate.html'
-            }else if($(this).attr('class') == 'order'){
-                window.location.href = 'html/order.html'
-            }else if($(this).attr('class') == 'personal'){
-                window.location.href = 'html/personal.html'
-            }
-//        }
+        if($(this).attr('class') == 'collection'){
+            window.location.href = 'html/collection.html'
+        }else if($(this).attr('class') == 'grab'){
+            window.location.href = 'html/orderGenerate.html'
+        }else if($(this).attr('class') == 'order'){
+            window.location.href = 'html/order.html'
+        }else if($(this).attr('class') == 'personal'){
+            window.location.href = 'html/personal.html'
+        }
+    })
+
+    $('#guide .video').click(function(){
+        window.location.href = "http://mp.weixin.qq.com/s/NmroHaz5e5F8rgLmUWOQ_g";
+    })
+
+    $('#guide .wish').click(function(){
+        window.location.href = 'html/wishingTreeType.html';
+    })
+
+    $('#guide .global').click(function(){
+        window.location.href = 'html/globalShopping.html';
+    })
+
+    $('#guide .money').click(function(){
+        window.location.href = 'html/personalPurse.html';
+    })
+
+    $('#guide .reward').click(function(){
+        window.location.href = 'http://mp.weixin.qq.com/s/24fe_7n78S1li8WbDY9zRA';
     })
 
     commonCompt.screenVisibleChange();
 
 </script>
-<script src="script/wx_browser_api.js"></script>
 </html>

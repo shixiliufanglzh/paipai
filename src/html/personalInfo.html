@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/personal.css">
 </head>
 <body>
@@ -54,18 +56,24 @@
     </div>
 </div>
 
+<div id="authPic">
+    
+</div>
+
 <div id="datePlugin"></div>
 
 
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="../script/picker.min.js"></script>
 <script src="../script/iscroll.js"></script>
 <script src="../script/date.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
 
@@ -118,10 +126,11 @@
         })
 
 
-        $('#birth').date(null,function(str){
-            console.log(str);
-            changMsg({birthday: str}, "修改生日成功",function(){
-                $('#birth').val(str);
+        $('#birth').date(null,function(fn){
+            var dateStr = fn();
+            console.log(dateStr);
+            changMsg({birthday: dateStr}, "修改生日成功",function(){
+                $('#birth').val(dateStr);
             });
         });
     })

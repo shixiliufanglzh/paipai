@@ -51,10 +51,13 @@ body {
         @include smallIcon(0.44rem,0.44rem,url("../imgs/zone_money.png"));
         vertical-align: middle;
         margin-right: 0.1rem;
-        &.order {
-          background-image: url("../imgs/zone_order.png");
+        &.wallet {
+          background-image: url("../imgs/zone_wallet.png");
         }
-        &.collection {
+        &.reward {
+          background-image: url("../imgs/zone_reward.png");
+        }
+        &.wishing {
           background-image: url("../imgs/zone_collection.png");
         }
         &.services {
@@ -244,9 +247,18 @@ body {
     padding: 0.1rem 0.24rem;
     background-color: #fff;
     font-size: 0.24rem;
+    .weibo_share_text {
+      position: relative;
+      .weibo_share_btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
     h4 {
       font-size: 0.3rem;
       font-weight: 500;
+      margin-bottom: 0.1rem;
       i.rule {
         @include smallIcon(0.35rem,0.35rem,url("../imgs/rule_caution.png"));
         margin-right: 0.1rem;
@@ -264,12 +276,62 @@ body {
       padding-left: 0.52rem;
       line-height: 0.36rem;
     }
+    .account_list {
+      .account_item {
+        border-top: 1px solid #f0f0f0;
+        i {
+          @include smallIcon(0.32rem,0.32rem,url("../imgs/unselected.png"));
+          vertical-align: middle;
+          margin-top: -0.06rem;
+          margin-right: 0.1rem;
+        }
+        i.checked {
+          @include smallIcon(0.32rem,0.32rem,url("../imgs/selected.png"));
+        }
+        .account {
+          font-size: 0.3rem;
+          line-height: 0.72rem;
+        }
+        .unbind_btn {
+          width: 1.02rem;
+          height: 0.32rem;
+          background-color: #858585;
+          color: #e2e2e2;
+          font-size: 0.2rem;
+          border-radius: 4px;
+          border: none;
+          outline: none;
+          float: right;
+          margin-top: 0.2rem;
+        }
+      }
+    }
   }
 
   #bottomBtn {
     position: fixed;
     bottom: 0;
     width: 100%;
+  }
+
+  .withdraw_wrapper {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0.6rem 0;
+    background-color: #f0f0f0;
+    font-size: 0;
+    .withdraw {
+      background-color: $paiRed;
+      color: #fff;
+      font-size: 0.3rem;
+      width: 72%;
+      margin-left: 14%;
+      line-height: 0.9rem;
+      border-radius: 0.06rem;
+      border: none;
+      outline: none;
+    }
   }
 }
 
@@ -278,11 +340,16 @@ body {
   .change_detail {
     padding: 0.24rem;
     border-bottom: 1px solid #E8E8E8;
+    background-color: #fff;
     .left {
       float: left;
       h4 {
         font-size: 0.24rem;
         font-weight: 500;
+        span {
+          font-size: 0.2rem;
+          color: #858585;
+        }
       }
       p {
         font-size: 0.22rem;
@@ -532,24 +599,5 @@ body {
     margin-top: 0.1rem;
     font-size: 0.26rem;
     color: #858585;
-  }
-}
-
-#sharePrompt {
-  display: none;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(0,0,0,0.8);
-  .guide {
-    position: absolute;
-    right: 0;
-    top: 0;
-    max-width: 80%;
-    img {
-      width: 100%;
-    }
   }
 }

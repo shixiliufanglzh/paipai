@@ -46,20 +46,20 @@ a,button,input,textarea{
   height: 0;
 }
 
-::-webkit-input-placeholder { /* WebKit browsers */
-  color:    #666;
-}
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color:    #666;
-  opacity:  1;
-}
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color:    #666;
-  opacity:  1;
-}
-:-ms-input-placeholder { /* Internet Explorer 10+ */
-  color:    #666;
-}
+// ::-webkit-input-placeholder { /* WebKit browsers */
+//   color:    #666;
+// }
+// :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+//   color:    #666;
+//   opacity:  1;
+// }
+// ::-moz-placeholder { /* Mozilla Firefox 19+ */
+//   color:    #666;
+//   opacity:  1;
+// }
+// :-ms-input-placeholder { /* Internet Explorer 10+ */
+//   color:    #666;
+// }
 
 .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;line-height: 0;
   font-size: 0;}

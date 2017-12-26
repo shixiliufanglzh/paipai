@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,7 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>        
     <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/detail.css">
 </head>
@@ -84,11 +85,21 @@
     <section id="about">
         <div class="nav">
             <div class="tab tab_good_detail current">商品详情</div>
-            <div class="tab tab_deal_record">成交记录</div>
             <div class="tab tab_evaluate_list">用户评价</div>
+            <!-- <div class="tab tab_deal_record">成交记录</div> -->
         </div>
         <div class="about_sorts">
             <div class="good_detail"></div>
+
+            <div class="evaluate_list" style="min-height:6rem">
+                <!--<div class="single_evaluate">-->
+                    <!--<div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
+                    <!--<p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>-->
+                    <!--&lt;!&ndash;<div class="imgs"><span></span><span></span><span></span><span></span></div>&ndash;&gt;-->
+                    <!--<p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>-->
+                <!--</div>-->
+
+            </div>
 
             <div class="deal_record" style="min-height:6rem">
                 <!--<div class="single_deal">-->
@@ -101,15 +112,7 @@
                 <!--</div>-->
             </div>
 
-            <div class="evaluate_list" style="min-height:6rem">
-                <!--<div class="single_evaluate">-->
-                    <!--<div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
-                    <!--<p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>-->
-                    <!--&lt;!&ndash;<div class="imgs"><span></span><span></span><span></span><span></span></div>&ndash;&gt;-->
-                    <!--<p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>-->
-                <!--</div>-->
-
-            </div>
+            
             <div class="loading"><i></i><span>加载中...</span></div>
         </div>
     </section>
@@ -135,7 +138,7 @@
 
         <div class="parameters">
             <div class="sorts_para">
-                <h6>请选择参数</h6>
+                <h6>请选择商品型号规格</h6>
 
             </div>
 
@@ -164,19 +167,22 @@
 <div id="evaluateImgs">
     <div class="eva-swiper-container">
         <div class="swiper-wrapper">
+            <!-- <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
             <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
-            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
-            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div>
+            <div class="swiper-slide" style="background: url('http://118.31.40.221/pic/goods/0086.jpg') center center / cover no-repeat; width: 375px;" data-swiper-slide-index="1"></div> -->
         </div>
         <div class="swiper-pagination"></div>
     </div>
 </div>
+
+<div id="detailPic"></div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 <script>
     var goodsPara,paraList,reloadMsg;
     var timer = null;
@@ -192,29 +198,12 @@
     var $curAbout = 0;
     var showEvaluateImgs = [];
     var hasPhone = false;
+    var $userPoint = 0;
+    var $consumePoint = 0;
+    var lastTime = 0;
 
 
     $(function(){
-
-        $.ajax({
-            url: GETUSERINFO,
-            type: 'GET',
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-                console.log(data);
-                apiResponse(data.responseCode,data.responseDesc,data.data);
-                if(data.responseCode == 2000){
-                    if(data.data.id){
-                        userId = data.data.id;
-                        localStorage.setItem('userId', userId);
-                    }
-                }
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        })
 
         $('.loading').hide();
 
@@ -231,7 +220,25 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
                     goodsPara = data.data;
-//                    alert(goodsPara.labelType.length);
+                    if(goodsPara.nowPrice <=0 ){
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc, data.data);
+                                if (data.responseCode == 2000) {
+                                    location.reload(true);
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    }
                     if(commonCompt.trim(goodsPara.labelType) && commonCompt.trim(goodsPara.labelType).length > 0){
                         $goodType = "virtual";
                     }
@@ -245,6 +252,7 @@
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                     $('#sortsList .consume_count').html(goodsPara.pieNum);
+                    $consumePoint = goodsPara.pieNum;
 
                     if (goodsPara.limitNum > 0 && goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
                         $('#summary .store_count').html(goodsPara.stockNum + '件（每次限拍' + goodsPara.limitNum + '件,累计限拍' + goodsPara.totalLimitNum + '件）');
@@ -285,7 +293,6 @@
                         } else {
                             $('.action_wrap .purchase span').html('正价购买');
                             $('#sortsList .purchase').html('正价购买');
-//                            $('.rate').html('减价抢拍时间：(每天8:00-24:00)');
                             $('.rate').html('');
                         }
 
@@ -295,7 +302,7 @@
                         //倒计时
                         var timerList = [];
                         var addOrderTimer = new Paipai;
-                        addOrderTimer.addOrderTimer(goodsPara.timeLeft, $('.rate .left_time'), timerList);
+                        addOrderTimer.addOrderTimer(Number(goodsPara.timeLeft), $('.rate .left_time'), timerList);
                         $('.action_wrap .purchase span').html('正价购买');
                         $('#sortsList .purchase').html('正价购买');
 
@@ -316,6 +323,8 @@
                 console.log(err);
             }
         });
+
+        lastTime = new Date().getTime();
 
         $.ajax({
             url: GETGODDSSKU,
@@ -352,12 +361,15 @@
         });
 
         timer = setInterval(function () {
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
             if (goodsPara.saleStatus == 1 && goodsPara.timeStatus == 1) {
-                if (goodsPara.nowPrice <= commonCompt.randomNum(goodsPara.limitPrice)) {
+                if (goodsPara.nowPrice <= commonCompt.randomNum(goodsPara.limitPrice,goodsPara.salePrice)) {
                     $.ajax({
                         url: REFRESHGOODS,
                         type: 'GET',
                         dataType: 'json',
+                        cache: false,
                         data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
                         async: false,
                         success: function (data) {
@@ -371,7 +383,7 @@
                         }
                     });
                 }
-                goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice);
+                goodsPara.nowPrice = commonCompt.accSub(goodsPara.nowPrice, goodsPara.reducePrice*subTime/1000);
                 if(goodsPara.nowPrice <= 0){
                     goodsPara.nowPrice = 0;
                 };
@@ -389,8 +401,28 @@
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                 }
-                if(reloadMsg){
-                    reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice);
+                if(!!reloadMsg){
+                    // if (reloadMsg.nowPrice <= commonCompt.randomNum(reloadMsg.limitPrice,reloadMsg.salePrice)) {
+                    //     $.ajax({
+                    //         url: REFRESHGOODS,
+                    //         type: 'GET',
+                    //         dataType: 'json',
+                    //         cache: false,
+                    //         data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
+                    //         async: false,
+                    //         success: function (data) {
+                    //             apiResponse(data.responseCode, data.responseDesc, data.data);
+                    //             if (data.responseCode == 2000) {
+                    //                 location.reload(true);
+                    //             }
+                    //         },
+                    //         error: function (err) {
+                    //             console.log(err);
+                    //         }
+                    //     });
+                    // }
+
+                    reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice*subTime/1000);
                     if(reloadMsg.nowPrice <= 0){
                         reloadMsg.nowPrice = 0;
                     };
@@ -399,7 +431,7 @@
                     $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
                 }
             }
-
+            lastTime = currentTime;
         }, 1000);
     })
 
@@ -411,22 +443,25 @@
             url: GETUSERINFO,
             type: 'GET',
             dataType: 'json',
+            cache: false,
             success: function (data) {
                 console.log(data);
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
+                    // alert('获取'+JSON.stringify(data));
                     if(data.data.userTel){
                         hasPhone = true;
                     }
                     if(data.data.userPoint){
-                        $('.current_left').html(data.data.userPoint);
+                        $userPoint = data.data.userPoint;
+                        $('.current_left').html($userPoint);
                     }else {
                         $('.current_left').html(0);
                     }
                 }
-                if(!hasPhone){
-                    hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-                }
+                // if(!hasPhone){
+                //     hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
+                // }
             },
             error: function (err) {
                 console.log(err);
@@ -464,7 +499,7 @@
         console.log(userSel);
     })
 
-    //选择参数
+    //选择商品型号规格
     $('#sortsList .sorts_para').on('click', 'span',function(){
         var $curClickParent = $(this).parents('.single_para_container');
         var skuIndex = $curClickParent.index() - 1;
@@ -474,13 +509,13 @@
             $(this).siblings('span').removeClass('selected');
             if(!$(this).hasClass('selected')){
                 $(this).addClass('selected');
-                if(paraList[skuIndex].goodsSpu[spuIndex].picUrl){
-                    $('#sortsList .good_img').css({
-                        'background': '#fff url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
-                        'background-size': 'cover',
-                        '-webkit-background-size': 'cover'
-                    })
-                }
+                // if(paraList[skuIndex].goodsSpu[spuIndex].picUrl){
+                //     $('#sortsList .good_img').css({
+                //         'background': '#fff url('+ paraList[skuIndex].goodsSpu[spuIndex].picUrl +') center center no-repeat',
+                //         'background-size': 'cover',
+                //         '-webkit-background-size': 'cover'
+                //     })
+                // }
                 var sku_id = $(this).parents('.single_para_container').attr('data-sku-id');
                 var spu_id = $(this).attr('data-spu-id');
                 var flag_exist = false;
@@ -528,9 +563,25 @@
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000) {
                         reloadMsg = data.data;
+                        // goodsPara = reloadMsg;
                         userSel.mixId = reloadMsg.mixId
 
                         //价格、库存等信息展示
+                        if(!!reloadMsg.goodsPic){
+                            $('#sortsList .good_img').css({
+                                'background': '#fff url('+ reloadMsg.goodsPic +') center center no-repeat',
+                                'background-size': 'cover',
+                                '-webkit-background-size': 'cover'
+                            })
+                        }
+
+                        // $('#summary .desc').html(goodsPara.goodsDesc);
+                        // $('#summary .primary_range').html('￥' + goodsPara.salePrice.toFixed(2));
+                        // $('#summary .market_range').html('￥' + goodsPara.marketPrice.toFixed(2));
+                        // $('#summary .sold_count').html(goodsPara.saleNum + '件');
+                        // $('#summary .cur_price').html('当前价：￥' + goodsPara.nowPrice.toFixed(2));
+                        
+                        // alert('nowPrice:'+reloadMsg.nowPrice+' salePrice:'+reloadMsg.salePrice);
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
                         $('#sortsList .left_price span').html(reloadMsg.stockNum + '件');
@@ -575,7 +626,6 @@
 
     //评论列表展示
     function showComments(pageNum){
-
         finishLoading = true;
         $('.loading').hide();
 
@@ -616,7 +666,6 @@
                         }
 
                         $('.evaluate_list').append(commentsHtml);
-
                         if (commentsList.length < $pageSize) {
                             finishLoading = true;
                             $('.loading').hide();
@@ -624,7 +673,7 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
-                    }else {
+                    }else if($('.single_evaluate').length <=0) {
                         $('.evaluate_list').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无评论</h4>')
                     }
                 }
@@ -680,7 +729,7 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
-                    }else {
+                    }else if($('.single_deal').length <=0) {
                         $('.deal_record').html('<h4 style="font-size:0.24rem;text-align:center;color:#ccc;font-weight:500;">暂无交易记录</h4>')
                     }
                 }
@@ -693,17 +742,16 @@
     }
 
     $(document).scroll(function(){
-
         //加载下一页
         if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#action').height()){
-            if($curAbout == 2 && $('.single_evaluate').length >0){
+            if($curAbout == 1 && $('.single_evaluate').length >0){
                 $pageNum ++;
                 console.log("评论记录","第"+$pageNum+"页");
                 finishLoading = true;
                 setTimeout(function(){
                     showComments($pageNum);
                 },1000);
-            }else if($curAbout == 1 && $('.single_deal').length >0){
+            }else if($curAbout == 2 && $('.single_deal').length >0){
                 $pageNum ++;
                 console.log("交易记录","第"+$pageNum+"页");
                 finishLoading = true;
@@ -729,6 +777,7 @@
                     url: ADDSTORE,
                     type: 'POST',
                     dataType: 'json',
+                    cache: false,
                     data: paraData,
                     success: function (data) {
                         console.log(data);
@@ -746,16 +795,25 @@
                 commonCompt.popPrompt('请选择数量');
             }
         }else {
-            commonCompt.popPrompt('请选择参数');
+            commonCompt.popPrompt('请选择商品型号规格');
         }
     })
 
     //立即购买
     $('#bottomBtn .purchase').click(function() {
-        //如果是未绑定手机号的用户
-//        if(!hasPhone){
-//            hasPhone = commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-//        }else {
+        if(!$userPoint || (Number($userPoint) < Number($consumePoint))){
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<p style="font-size:0.36rem;text-align:center;margin-top:0.3rem">拍币不足，立即前往获取拍币</p>'+
+                                '<button id="regSubmit">我知道了</button>'+
+                            '</div>'+
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
+            $('#regSubmit').on('click', function(){
+                window.location.href = 'personalPurse.html'
+            })
+        }else {
             if (userSel.spu_id.length >= paraList.length) {
                 if (userSel.count > 0) {
                     var paraData = {
@@ -765,11 +823,11 @@
                         goodsIssueno: goodsPara.goodsIssueno
                     }
                     commonCompt.addMask('抢拍中...');
-//                    alert(JSON.stringify(paraData));
                     $.ajax({
                         url: ADDCART,
                         type: 'POST',
                         dataType: 'json',
+                        cache: false,
                         data: paraData,
                         success: function (data) {
                             $('#mask').fadeOut(200,function(){
@@ -808,13 +866,27 @@
                     commonCompt.popPrompt('请选择数量');
                 }
             } else {
-                commonCompt.popPrompt('请选择参数');
+                commonCompt.popPrompt('请选择商品型号规格');
             }
-//        }
+        }
     })
 
     $('.action_wrap .chat').click(function(){
         window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
+    })
+
+    //查看具体规格图片
+    $('.sorts_wrap .good_img').click(function(){
+        console.log(goodsPara.goodsPic);
+        $('#detailPic').css({
+            'background': 'rgba(0,0,0,0.8) url('+ (reloadMsg && reloadMsg.goodsPic ? reloadMsg.goodsPic : goodsPara.goodsPic) +') center center no-repeat',
+            'background-size': 'contain',
+            '-webkit-background-size': 'contain'
+        })
+        $('#detailPic').fadeIn();
+    })
+    $('#detailPic').click(function(){
+        $(this).fadeOut();
     })
 
     //检查库存的方法
@@ -844,9 +916,10 @@
     }
 
     commonCompt.screenVisibleChange();
+
+    var evaluateSwiper;
     $('.evaluate_list').on('click','.single_evaluate .imgs span', function(){
         $('.eva-swiper-container .swiper-wrapper').html('');
-        $('#evaluateImgs').fadeIn();
         var curIndex = $(this).index();
         var imgsWrapList = $(this).parent().children('span');
         for(var i=0; i<imgsWrapList.length; i++){
@@ -861,12 +934,11 @@
             }
             $('.eva-swiper-container .swiper-wrapper').append('<div class="swiper-slide" style="background: url('+ img +') center center no-repeat;background-size: contain;-webkit-background-size: contain;"></div>')
         }
-
+        $('#evaluateImgs').fadeIn();
         //评论轮播图
-        var evaluateSwiper = new Swiper('.eva-swiper-container', {
+        evaluateSwiper = new Swiper('.eva-swiper-container', {
             direction: 'horizontal',
             loop: false,
-//            autoplay: 3000,
             initialSlide: curIndex,
             pagination: '.swiper-pagination'
         })
@@ -875,6 +947,7 @@
     $('body').on('click','#evaluateImgs',function(){
         if($(this).css('display') != 'none'){
             $(this).fadeOut();
+            evaluateSwiper.destroy(true,true);
         }
     })
 </script>

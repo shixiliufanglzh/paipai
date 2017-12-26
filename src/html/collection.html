@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/personal.css">
 </head>
 <body style="background-color:#fff;padding-bottom: 1.1rem;">
@@ -78,8 +80,10 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 
 <script>
@@ -90,9 +94,31 @@
     var timer = null;
     var goodsList = [];
     var hasPhone = false;
+    var $userPoint = 0;
+    var $consumePoint = 0;
+    var lastTime = 0;
 
     $(function(){
-        hasRegister = shouldRegister();
+        // hasRegister = shouldRegister();
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    if(data.data.userPoint){
+                        $userPoint = data.data.userPoint;
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
 
         showCollectionList($pageNum);
 
@@ -106,14 +132,16 @@
         commonCompt.mainNav(2);
 
         timer = setInterval(function(){
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
             for(var i=0; i<$('.single_collect').length; i++){
                 //alert("i "+i+" nowPrice "+goodsList[i].nowPrice + " limitPrice " + goodsList[i].limitPrice+" saleStatus "+goodsList[i].saleStatus);
                 if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1){
-                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice);
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice,goodsList[i].reducePrice*subTime/1000);
                     if(goodsList[i].nowPrice <= 0){
                         goodsList[i].nowPrice = 0;
                     };
-                    if(goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
+                    if(goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)){
                         reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }else {
                         $('.single_collect').eq(i).find('.price_now').html('￥'+goodsList[i].nowPrice.toFixed(2));
@@ -136,11 +164,12 @@
                     }
                     timePrompt += cal_time + "秒";
                     $('.single_collect').eq(i).find('.time_left').html(timePrompt);
-                    if(goodsList[i].restTime <= 0 || goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice)){
+                    if(goodsList[i].restTime <= 0 || goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)){
                         reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
                     }
                 }
             }
+            lastTime = currentTime;
         },1000);
 
     })
@@ -160,6 +189,7 @@
                     url: CANCELSTORE,
                     type: 'POST',
                     dataType: 'json',
+                    cache: false,
                     data: {
                         storeId: curGood.attr('data-store-id')
                     },
@@ -199,7 +229,7 @@
         if ($(e.target).is('button') || $(e.target).is('.close')){
             return;
         }else {
-//            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id')+'&count='+$(this).attr('data-count')+'&mix_spu='+$(this).attr('data-mix-spu');
+//            window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id')+'&count='+$(this).attr('data-count')+'&mix_spu='+$(this).attr('data-mix-id');
             window.location.href = 'detail.html?good_id='+$(this).attr('data-good-id');
         }
     })
@@ -207,28 +237,36 @@
     $('#collection').on('click', '.single_collect.grab button,.single_collect.primary button', function(){
         var $selParent = $(this).parents('.single_collect');
         var thisBtn = $(this);
-        //alert('detail.html?good_id='+$selParent.attr('data-good-id')+'&count='+$selParent.attr('data-count')+'&mix_spu='+$selParent.attr('data-mix-spu')+'&goodsIssueno='+$selParent.attr('data-goodsIssueno'));
+        var $consumePoint = $(this).attr('data-consume');
 
-//        //如果是未绑定手机号的用户
-//        if(!hasPhone){
-//            hasPhone = commonCompt.verifyPhone(60,"新用户注册",false,3,"注册成功",null);
-//        }else {
+        if(!$userPoint || (Number($userPoint) < Number($consumePoint))){
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<p style="font-size:0.36rem;text-align:center;margin-top:0.3rem">拍币不足，立即前往获取拍币</p>'+
+                                '<button id="regSubmit">我知道了</button>'+
+                            '</div>'+
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
+            $('#regSubmit').on('click', function(){
+                window.location.href = 'personalPurse.html'
+            })
+        }else {
             var paraData = {
                 goodsId: $selParent.attr('data-good-id'),
-                mixId: $selParent.attr('data-mix-spu'),
+                mixId: $selParent.attr('data-mix-id'),
                 goodsAmount: $selParent.attr('data-count'),
                 goodsIssueno: $selParent.attr('data-goodsIssueno')
             }
-            //alert(JSON.stringify(paraData));
             $.ajax({
                 url: ADDCART,
                 type: 'POST',
                 dataType: 'json',
+                cache: false,
                 data: paraData,
                 success: function (data) {
                     apiResponse(data.responseCode, data.responseDesc,data.data);
                     if (data.responseCode == 2000) {
-//                        alert(thisBtn.attr('data-virtual'));
                         if(thisBtn.attr('data-virtual') && thisBtn.attr('data-virtual').length > 0){
                             window.location.href = 'orderGenerateVirtual.html?cartId='+data.data;
                         }else {
@@ -254,7 +292,7 @@
                     commonCompt.popPrompt("购买失败，请刷新后再尝试");
                 }
             });
-//        }
+        }
     })
 
     $('body').on('click','#mainNav button',function(){
@@ -288,31 +326,29 @@
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
-//                    alert(JSON.stringify(data.data));
                     if (data.data.length > 0) {
                         $('#blank').hide();
                         $('body').css('background-color','#f0f0f0');
 
                         var collectionList = data.data;
                         for (var i = 0; i < collectionList.length; i++) {
-//                            alert(collectionList[i].limitPrice);
                             goodsList.push(collectionList[i]);
                             var collectionHtml = '';
                             var state = "";
                             var stateHtml = "";
                             if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 1) {
                                 state = "grab";
-                                stateHtml = '<button data-virtual="'+collectionList[i].labelType+'">立即抢拍</button>' +
+                                stateHtml = '<button data-virtual="'+collectionList[i].labelType+'" data-consume="'+ collectionList[i].pieNum +'">立即抢拍</button>' +
                                         '</div>'
                             } else if (collectionList[i].saleStatus == 1 && collectionList[i].timeStatus == 2) {
                                 state = "primary";
                                 stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
-                                        '<button data-virtual="'+collectionList[i].labelType+'">正价购买</button>' +
+                                        '<button data-virtual="'+collectionList[i].labelType+'" data-consume="'+ collectionList[i].pieNum +'">正价购买</button>' +
                                         '</div>'
                             } else if (collectionList[i].saleStatus == 2) {
                                 state = "primary";
                                 stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
-                                        '<button data-virtual="'+collectionList[i].labelType+'">正价购买</button>' +
+                                        '<button data-virtual="'+collectionList[i].labelType+'" data-consume="'+ collectionList[i].pieNum +'">正价购买</button>' +
                                         '</div>'
                             } else if (collectionList[i].saleStatus == 3) {
                                 state = "sold_out";
@@ -320,7 +356,7 @@
                                         '</div>'
                             }
 
-                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '" ' + ' data-count="' + collectionList[i].goodsAmount + '" data-mix-spu="' + collectionList[i].mixSpuId + '" data-goodsIssueno="' + collectionList[i].goodsIssueno + '">' +
+                            collectionHtml += '<div class="single_collect ' + state + '" data-store-id="' + collectionList[i].storeId + '" data-good-id="' + goodsList[i].goodsId + '" ' + ' data-count="' + collectionList[i].goodsAmount + '" data-mix-id="' + collectionList[i].mixId + '" data-goodsIssueno="' + collectionList[i].goodsIssueno + '">' +
                                     '<span class="img" style="background: url(' + collectionList[i].goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></span>' +
                                     '<div class="content">' +
                                     '<p class="title">' + collectionList[i].goodsDesc + '</p>' +
@@ -332,6 +368,10 @@
 
 
                             $('#collection').append(collectionHtml);
+
+                            if(goodsList[i].nowPrice <= 0 ){
+                                reloadSingleGood(goodsList[i],$('.single_collect').eq(i));
+                            }
                         }
                         if(collectionList.length < $pageSize || !collectionList){
                             finishLoading =true
@@ -340,6 +380,9 @@
                             $('.loading').show();
                             finishLoading = false;
                         }
+                    }else {
+                        finishLoading =true
+                        $('.loading').hide();
                     }
                 }
 
@@ -361,7 +404,6 @@
             success: function(data){
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000) {
-//                    alert(JSON.stringify(goodPara));
                     goodPara.goodsIssueno = data.data.goodsIssueno;
                     $.ajax({
                         url: GETGOODSMIXSKU,
@@ -386,15 +428,15 @@
                                 var stateHtml = "";
                                 if (goodPara.saleStatus == 1 && goodPara.timeStatus == 1) {
                                     state = "grab";
-                                    stateHtml = '<button data-virtual="'+goodpara.labelType+'">立即抢拍</button>'
+                                    stateHtml = '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">立即抢拍</button>'
                                 } else if (goodPara.saleStatus == 1 && goodPara.timeStatus == 2) {
                                     state = "primary";
                                     stateHtml = '<span class="grab_prompt">减价时间：8:00-24:00</span>' +
-                                            '<button data-virtual="'+goodpara.labelType+'">正价购买</button>'
+                                            '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">正价购买</button>'
                                 } else if (goodPara.saleStatus == 2) {
                                     state = "primary";
                                     stateHtml = '<span class="grab_prompt">距正式减拍还有<span class="time_left">0天0时0分0秒</span></span>' +
-                                            '<button data-virtual="'+goodpara.labelType+'">正价购买</button>'
+                                            '<button data-virtual="'+goodPara.labelType+'" data-consume="'+ goodPara.pieNum +'">正价购买</button>'
                                 } else if (goodPara.saleStatus == 3) {
                                     state = "sold_out";
                                     stateHtml = '<button>销售告罄</button>'

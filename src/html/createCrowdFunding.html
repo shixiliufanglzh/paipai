@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>我的众赏</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body style="background-color:#fff">
+    <div id="order" style="margin-bottom:0">
+
+        <section class="orders_list"></section>
+
+        <section class="process">
+            <div class="bar_wrap">
+                <div class="process_bar">
+                    <div class="base">
+                        <div class="fill">0%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="count_wrap">
+                <div class="count">订单金额<br><span class="order_price">￥0.00</span></div>
+                <div class="count">还需金额<br><span class="left_price">￥0.00</span></div>
+                <div class="count">打赏人数<br><span class="rewarder_num">0</span></div>
+                <span class="divide"></span>
+            </div>
+            <div class="declaration clearfix">
+                <span class="title" style="font-size:0.3rem">打赏宣言：</span>
+                <textarea name="" id="userMsg" maxlength="40" placeholder="输入你的宣言（字数不能超过40个字符）&#10;举例1：打赏前三名可以相约视频通话，共进晚餐...&#10;举例2：真爱有没有，一试就知道"></textarea>
+            </div>
+            <div class="interaction" style="display:none">
+                <div class="button_wrap clearfix">
+                    <button class="reward" style="width:2.3rem">如何获取众赏</button>
+                    <button class="join" style="width:2.3rem">生成众赏二维码</button>
+                </div>
+            </div>
+            <div class="submit">
+                <button>提交众赏信息</button>
+                <p>提示：只有提交众赏信息后才能进行有效的众赏分享，并且众赏宣言在提交后不可更改。</p>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="qrcode_cover" style="display:none;position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,0.5);">
+        <div class="qrcode_wrap" style="position: relative;left:50%;width:122px;margin-top:4.4rem;margin-left:-56px;padding:5px;background-color:rgba(255,255,255,0.7);">
+            <div id="qrcode"></div>
+        </div>
+    </div>
+
+    <div id="sharePrompt">
+        <div class="guide">
+            <img src="../imgs/share_prompt.png" alt="">
+        </div>
+    </div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/qrcode.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+    var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $crowdStatus = 2;  //众筹状态(1成功，2进行中，3失败)
+    var crowdShareUrl = '';
+    var $userName = '';
+    var $shareImg = '';
+    var $userDeclaration = '';
+    var $hasCommit = false;
+
+    if(isWeiBo()){
+        $('.interaction .button_wrap').append('<wb:share-button size="big" class="weibo_share_btn" appkey="1490666142" type="button" default_text="zzzzzzz" url="xxxxxxx" pic="yyyyyyy"></wb:share-button>');
+        $('.interaction .reward').html('分享到我的微博');
+    }
+
+    $(function(){
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    $userName = data.data.userName ? data.data.userName : data.data.nikeName
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+        shouldRegister();
+        
+        //获取商品列表
+        $.ajax({
+            url: GETORDERDETAIL,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            async:false,
+            cache: false,
+            success: function(data){
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                // alert(data.data.payType);
+                
+                if(data.responseCode == 2000){
+                    var order = data.data;
+                    $shareImg = order.goods[0].goodsPic;
+                    if(order.payType.toString() === '3'){
+                        $('textarea').attr('disabled','disabled');
+                        $('textarea').val(order.userMsg ? order.userMsg : '无宣言');
+                        $hasCommit = true;
+                        $('.submit p').hide();
+                        $('.submit button').hide();
+                        $('.interaction').show();
+                        // $('.submit button').html('分享');
+                        // $('.submit button').html('点击查看如何获得好友众赏');
+                        $.ajax({
+                            url: GET_REWARD_SHARE_URL,
+                            type: 'GET',
+                            dataType: 'json',
+                            data: {
+                                orderId: $curOrderId
+                            },
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc, data.data);
+                                if (data.responseCode == 2000) {
+                                    crowdShareUrl = data.data;
+                                    if(isWeiBo()){
+                                        // alert($('iframe').attr('src'));
+                                        var $src = $('iframe').attr('src').replace('xxxxxxx',encodeURIComponent(crowdShareUrl))
+                                            .replace('yyyyyyy',encodeURI($shareImg)).replace('zzzzzzz',encodeURI('【' + $userName + '】发起了众赏购物 '));
+                                        // alert($src);
+                                        $('iframe').attr('src',$src);
+                                    }else {
+                                        configShare();
+                                    }
+                                    
+                                    var qrcode = new QRCode("qrcode", {
+                                        text: crowdShareUrl,
+                                        width: 112,
+                                        height: 112,
+                                        colorDark : "#000000",
+                                        colorLight : "#ffffff",
+                                        correctLevel : QRCode.CorrectLevel.M
+                                    });
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+
+                        })
+                    }
+
+                    
+                    $('.order_price').html('￥'+order.orderPrice);
+                    $('.left_price').html('￥'+order.orderPrice);
+                    var ordersListHtml = "";
+                    var $amount = 0;
+                    ordersListHtml +=   '<div class="singleOrder reward_order clearfix" data-order-id="'+ order.orderId +'">'+
+                                            '<div class="order_head">'+ $userName +'发起了众赏购物，订单共计'+
+                                                '<span class="amount"></span>件商品<i class="more"></i>'+
+                                            '</div>'+
+                                            '<div class="goods_detail">'
+
+                    for(var j=0; j<order.goods.length; j++){
+                        $amount += order.goods[j].goodsAmount;
+                        var save =((Number(order.goods[j].salePrice) - Number(order.goods[j].buyPrice))*Number(order.goods[j].goodsAmount)).toFixed(2);
+                        ordersListHtml +=       '<div class="order_detail clearfix">'+
+                                                    '<div class="product_pic" style="background: url('+ order.goods[j].goodsPic +') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
+                                                    '<div class="product_desc">'+
+                                                        '<p class="name">'+ order.goods[j].goodsName +'</p>'+
+                                                        '<p class="parameter">'+ order.goods[j].goodsSpu +'</p>'+
+                                                        '<p class="prompt">减价拍节省￥'+ save +'</p>'+
+                                                    '</div>'+
+                                                    '<div class="price"><span class="price_now">￥'+ order.goods[j].buyPrice.toFixed(2) +'</span><br><span class="price_primary">'+ order.goods[j].salePrice.toFixed(2) +'</span><br><span class="count">×'+ order.goods[j].goodsAmount +'</span></div>'+
+                                                '</div>'
+                    }
+                    ordersListHtml +=       '</div>' +
+                                            '<div class="bottom"></div>'
+                                        '</div>'
+
+                    $('.orders_list').append(ordersListHtml);
+                    $('.singleOrder .order_head .amount').html($amount);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+    })
+
+
+    $('.orders_list').on('click', '.singleOrder .order_head', function(){
+        $('.singleOrder').toggleClass('unfold');
+    })
+
+    $('.submit button').click(function(){
+        $userDeclaration = $('#userMsg').val();
+        if(!$hasCommit){
+            // alert(1);
+            $.ajax({
+                url: ORDERPAY,
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    payType: 3,
+                    orderId: $curOrderId,
+                    userMsg: $userDeclaration.replace(/\n|\r\n/g,"<br>")
+                },
+                success: function (data) {
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
+                    if(data.responseCode == 2000){
+                        $('textarea').attr('disabled','disabled');
+                        commonCompt.popPrompt('众赏订单提交成功！');
+                        // $('.submit button').html('分享');
+                        // $('.submit button').html('点击查看如何获得好友众赏');
+                        $('.submit button').hide();
+                        $('.interaction').show();
+                        // $('.interaction .reward').html('分享到我的微博');
+                        $('.submit p').hide();
+                        $hasCommit = true;
+                        crowdShareUrl = data.data;
+                        if(isWeiBo()){
+                            var $src = $('iframe').attr('src').replace('xxxxxxx',encodeURIComponent(crowdShareUrl))
+                                .replace('yyyyyyy',encodeURI($shareImg)).replace('zzzzzzz',encodeURI('【' + $userName + '】发起了众赏购物 '));
+                            $('iframe').attr('src',$src);
+                        }else {
+                            configShare();
+                        }
+                        var qrcode = new QRCode("qrcode", {
+                            text: crowdShareUrl,
+                            width: 112,
+                            height: 112,
+                            colorDark : "#000000",
+                            colorLight : "#ffffff",
+                            correctLevel : QRCode.CorrectLevel.M
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }else {
+            // $('#sharePrompt').fadeIn();
+            // window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
+            commonCompt.popPrompt('众筹信息未成功提交')
+        }
+    })
+
+    // $('#sharePrompt').click(function (){
+    //     $('#sharePrompt').fadeOut();
+    // });
+
+    $('.interaction .join').click(function(){
+        $('#qrcode_cover').fadeIn();
+    })
+
+    $('#qrcode_cover').click(function(){
+        $(this).fadeOut();
+    })
+
+    $('.interaction .reward').click(function(){
+        if(!isWeiBo()){
+            window.location.href = 'http://mp.weixin.qq.com/s/pqSQcQIVgGx8fL0vI6hIVA';
+        }
+    })
+
+    function configShare(){
+        $userDeclaration = $userDeclaration ? $userDeclaration : '测一测：你有多少真爱粉，有多少狐朋狗友，有多少关爱你的亲人，点我看一眼就知道！'
+        if (isWeiXin()) {
+            $.ajax({
+                url: JSSDKCONFIG,
+                type: 'post',
+                dataType: 'json',
+                data: { 'url': window.location.href, signType: 1 },
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc);
+                    if (data.responseCode == 2000) {
+                        wx.config({
+                            debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: data.data.appId, // 必填，公众号的唯一标识
+                            timestamp: data.data.timestamp, // 必填，生成签名的时间戳
+                            nonceStr: data.data.nonceStr, // 必填，生成签名的随机串
+                            signature: data.data.signature, // 必填，签名，见附录1
+                            jsApiList: ['onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'hideMenuItems'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                        });
+                        wx.ready(function () {
+                            // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+                            wx.onMenuShareAppMessage({
+                                title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                imgUrl: $shareImg, // 分享图标
+                                type: '', // 分享类型,music、video或link，不填默认为link
+                                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareTimeline({
+                                title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                                imgUrl: $shareImg, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareQQ({
+                                title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: crowdShareUrl, // 分享链接
+                                imgUrl: $shareImg, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareWeibo({
+                                title: '【' + $userName + '】发起了众赏购物 ', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: crowdShareUrl, // 分享链接
+                                imgUrl: $shareImg, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                            wx.onMenuShareQZone({
+                                title: '【' + $userName + '】发起了众赏购物', // 分享标题
+                                desc: $userDeclaration, // 分享描述
+                                link: crowdShareUrl, // 分享链接
+                                imgUrl: $shareImg, // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+                                },
+                            });
+
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        } else {
+            // alert("不是来自微信内置浏览器");
+        }
+    }
+
+</script>
+<!-- <script src="../script/wx_browser_api.js"></script> -->
+</html>

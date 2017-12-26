@@ -7,7 +7,9 @@
 
 #bottomBtn {
   display: flex;
+  display: -webkit-flex;
   flex-wrap: nowrap;
+  -webkit-flex-wrap: nowrap;
   button {
     border: none;
     outline: none;
@@ -16,6 +18,7 @@
     color: #fff;
     font-size: 0.3rem;
     flex-grow: 1;
+    -webkit-flex-grow: 1;
   }
   .like {
     background-color: $paiYellow;
@@ -138,7 +141,7 @@
     }
     input {
       height: 0.7rem;
-      line-height: 0.7rem;
+      // line-height: 0.7rem;
       padding-left: 0.32rem;
       border: 1px solid #e8e8e8;
       border-radius: 0.04rem;
@@ -166,11 +169,32 @@
         float: right;
       }
     }
+    #password {
+      width: 100%;
+      margin-top: 0.3rem;
+    }
+    #doubleBtn {
+      margin-top: 0.75rem;
+      button {
+        width: 2.5rem;
+        border-radius: 0.1rem;
+        line-height: 0.8rem;
+        font-size: 0.3rem;
+        border-radius: 4px;
+      }
+      .skip {
+        float: left;
+        background-color: #858585;
+      }
+      .regSubmit {
+        float: right;
+      }
+    }
     #regSubmit {
       line-height: 0.8rem;
       width: 100%;
       font-size: 0.3rem;
-      border-radius: 0.04rem;
+      border-radius: 4px;
       margin-top: 0.75rem;
     }
   }
@@ -192,8 +216,7 @@
 }
 
 #fixedLink {
-  .code_wrap {
-    display: none;
+  .pop_cover {
     position: fixed;
     left: 0;
     right: 0;
@@ -201,29 +224,68 @@
     bottom: 0;
     background-color: rgba(0,0,0,0.6);
     z-index: 9999;
-    .code {
-      width: 3.28rem;
-      height: 3.28rem;
-      position: absolute;
+    .code-container {
+      width: 6.4rem;
+      height: 7.6rem;
+      border-radius: 6px;
+      background-color: #fff;
+      margin-top: 1.6rem;
+      position: relative;
       left: 50%;
-      margin-left: -1.64rem;
-      -webkit-background-size: contain;
-      background-size: contain;
-      margin-top: 4rem;
-      img {
-        display: block;
-        width: 100%;
-        height: 100%;
+      margin-left: -3.2rem;
+      overflow: hidden;
+      font-size: 0;
+      .swiper-wrapper {
+        h3 {
+          font-size: 0.36rem;
+          text-align: center;
+          font-weight: 500;
+          margin-top: 1.06rem;
+        }
+        .weibo {
+          text-align: center;
+          margin: 0.3rem 0;
+          .WB_follow_ex {
+            position: relative;
+            left: 50%;
+            margin-left: -33.5px !important;
+            .follow_text {
+              width: 40px;
+            }
+          }
+        }
+        .code {
+          width: 2.24rem;
+          height: 2.24rem;
+          position: relative;
+          left: 50%;
+          margin-left: -1.12rem;
+          margin-top: 0.6rem;
+          background-size: contain;
+          img {
+            display: block;
+            width: 100%;
+            height: 100%;
+          }
+        }
+        p {
+          font-size: 0.36rem;
+          color: $paiRed;
+          text-align: center;
+          margin-top: 0.66rem;
+        }
       }
+      
     }
-    p {
-      width: 100%;
-      color: #fff;
-      font-size: 0.26rem;
-      position: absolute;
-      text-align: center;
-      margin-top: 7.5rem;
-    }
+    
+    // p {
+    //   width: 100%;
+    //   color: #fff;
+    //   font-size: 0.26rem;
+    //   position: absolute;
+    //   text-align: center;
+    //   margin-top: 7.5rem;
+    // }
   }
   .btn_wrap {
     font-size: 0;
@@ -232,7 +294,7 @@
     border-radius: 0.04rem;
     background-color: rgba(0,0,0,0.5);
     position: fixed;
-    bottom: 3rem;
+    top: 6.4rem;
     right: 0;
     padding: 0.24rem 0.144rem 0.144rem 0.144rem;
     z-index: 9997;
@@ -243,5 +305,47 @@
       @include smallIcon(0.432rem,0.432rem,url("../imgs/qrcode.png"));
       margin-top: 0.432rem;
     }
+  }
+}
+
+#sharePrompt {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  .guide {
+    position: absolute;
+    right: 0;
+    top: 0;
+    max-width: 80%;
+    img {
+      width: 100%;
+    }
+  }
+}
+
+#qrcode_cover {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.5);
+  .qrcode_wrap {
+    position: relative;
+    left: 50%;
+    width: 122px;
+    margin-top: 4.4rem;
+    margin-left: -56px;
+    padding: 5px;
+    background-color: rgba(255,255,255,0.7);
+    // border: 1px solid #858585;
+    #qrcode {
+
+    } 
   }
 }

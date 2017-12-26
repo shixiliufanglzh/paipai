@@ -9,6 +9,108 @@
     height: 3.2rem;
   }
 
+  #guide {
+    position: relative;
+    height: 2.1rem;
+    border-bottom: 0.09rem solid #f0f0f0;
+    ul {
+      position: absolute;
+      left: 50%;
+      margin-left: -3.6rem;
+      margin-top: 0.33rem;
+      li {
+        width: 1.14rem;
+        float: left;
+        font-size: 0;
+        text-align: center;
+        margin: 0 0.15rem;
+        span {
+          font-size: 0.2rem;
+          line-height: 2.4em;
+        }
+        &.video {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_video.png"));
+          }
+        }
+        &.like {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_like.png"));
+          }
+        }
+        &.wish {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_wish.png"));
+          }
+        }
+        &.reward {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_reward.png"));
+          }
+        }
+        &.global {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_global.png"));
+          }
+        }
+        &.money {
+          i {
+            @include smallIcon(1.14rem,1.14rem,url("../imgs/guide_money.png"));
+          }
+        }
+      }
+    }
+  }
+
+  #special {
+    .special_good {
+      border-bottom: 0.09rem solid #f1f1f1;
+      padding-bottom: 0.1rem;
+      .img_wrap {
+        width: 100%;
+        height: 3.45rem;
+        background: #fff url("../imgs/placeholder.jpg") center center no-repeat;
+        background-size: cover;
+        margin-bottom: 0.1rem;
+      }
+      p {
+        font-size: 0.22rem;
+        padding: 0 0.24rem;
+        margin-bottom: 0.1rem;
+      }
+      .actions {
+        padding: 0 0.24rem;
+        font-size: 0.2rem;
+        color: #858585;
+        .current_price_pre {
+          color: #2f2f2f;
+        }
+        .current_price {
+          font-size: 0.36rem;
+          color: $paiRed;
+        }
+        button {
+          width: 1.12rem;
+          height: 0.5rem;
+          color: #fff;
+          border-radius: 6px;
+          outline: none;
+          border: none;
+          float: right;
+          &.on_bid{
+            background-color: $paiRed;
+          }
+          &.sold_out{
+            background-color: #999;
+          }
+          &.pre_sale{
+            background-color: $paiYellow;
+          }
+        }
+      }
+    }
+  }
+
   #filters {
     background-color: #fff;
     transition: all 0.3s ease;

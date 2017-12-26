@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>全球购物</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/index.css">
+</head>
+<body>
+    <div id="viewTotal" style="margin-bottom:0">
+
+        <section id="filters" style="position:fixed;top:0;width:100%">
+            <div class="filtersWrap">
+                <div class="filter sorts"><span>全部类型</span><i></i></div>
+                <div class="filter states"><span>全部状态</span><i></i></div>
+                <div class="filter sales"><span>销量优先</span></div>
+                <div class="filter price"><span>价格</span><i class="price_sort"></i></div>
+            </div>
+        </section>
+
+        <section id="goods" class="clearfix" style="margin-top: 0.82rem">
+
+            <!--<div class="single_good">-->
+                <!--<div class="item_img"></div>-->
+                <!--<div class="about">-->
+                    <!--<p class="desc">某低级发vDVDvDVD是dff搜集反对法发集反对法发vDVDvDVD是dffdd韩国ref</p>-->
+                    <!--<div class="price">-->
+                        <!--<span class="price_now">￥8388999.26</span>-->
+                        <!--<span class="price_primary">4868999.00</span>-->
+                        <!--<i class="hummer"></i>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </section>
+
+        <div class="loading"><i></i><span>加载中...</span></div>
+    </div>
+    
+    <div class="sortsWrap" id="sortsWrap">
+        <div class="sorts">
+            <ul>
+                <!--<li data-sort-id="1" class="current">全部类型</li>-->
+                <!--<li data-sort-id="2">手机电脑</li>-->
+                <!--<li data-sort-id="3">珠宝首饰</li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="sortsWrap" id="statesWrap">
+        <div class="sorts">
+            <ul>
+                <!--<li data-state-id="1" class="current">全部状态</li>-->
+                <!--<li data-state-id="2">减价中</li>-->
+                <!--<li data-state-id="3">待拍中</li>-->
+                <!--<li data-state-id="4">已售罄</li>-->
+            </ul>
+        </div>
+    </div>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+
+    var labels;
+    var states = [
+        {
+            id: 0,
+            state_name: "全部状态"
+        },
+        {
+            id: 1,
+            state_name: "抢拍中"
+        },
+        {
+            id: 2,
+            state_name: "预拍中"
+        },
+        {
+            id: 3,
+            state_name: "已售罄"
+        }
+
+    ];
+    var $filters = {
+        sortId: 0,
+        stateId: 0,
+        sales: false,  //true按销量排序
+        price: 0  //无0降序1升序2
+    };
+
+    var $pageNum = 1;
+    var goodsList = [];
+    var headerGoodsList = [];
+    var timer = null;
+    var finishLoading = true;
+    var $pageSize = 10;
+    var lastTime = 0;
+
+
+    $(function(){
+        // $.ajax({
+        //     url: GETUSERINFO,
+        //     type: 'GET',
+        //     dataType: 'json',
+        //     async: false,
+        //     success: function (data) {
+        //         console.log(data);
+        //         apiResponse(data.responseCode,data.responseDesc,data.data);
+                
+        //     },
+        //     error: function (err) {
+        //         console.log(err);
+        //     }
+        // })
+        // commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
+
+        //获取特别展示商品
+        $.ajax({
+            url: GET_GOOD_SHOW,
+            type:'GET',
+            dataType:'json',
+            async:false,
+            cache: false,
+            success: function(data){
+                console.log('大图',data);
+                //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000) {
+                    headerGoodsList = data.data;
+                    console.log(data.data);
+                    var html = '';
+                    for(var i=0; i<headerGoodsList.length; i++){
+
+                        if (headerGoodsList[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                cache: false,
+                                data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        headerGoodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
+                        var button = ''
+                        if(headerGoodsList[i].saleStatus.toString() === '1'){
+                            button = '<button class="on_bid">减价拍</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '2'){
+                            button = '<button class="pre_sale">预拍中</button>';
+                        }else if(headerGoodsList[i].saleStatus.toString() === '3'){
+                            button = '<button class="sold_out">已售罄</button>';
+                        }
+
+                        html += '<div class="special_good" data-goods-id="'+ headerGoodsList[i].id +'">'+
+                                    '<div class="img_wrap" style="background:url('+ headerGoodsList[i].goodsPic +') center center no-repeat;background-size:cover;-webkit-background-size:cover;"></div>'+
+                                    '<p>'+ headerGoodsList[i].goodsName +'</p>'+
+                                    '<div class="actions clearfix">'+
+                                        '<span class="current_price_pre">当前价:</span><span class="current_price">￥'+ headerGoodsList[i].nowPrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>起拍价:</span><span class="start_price">￥'+ headerGoodsList[i].salePrice.toFixed(2) +'</span>&nbsp;&nbsp;'+
+                                        '<span>已拍:</span><span class="sale_num">'+ headerGoodsList[i].saleNum +'</span>'+ button +
+                                    '</div>'+
+                                '</div>'
+                    }
+
+                    $('#special').html(html);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        if($('.single_good').length <=0 ){
+            finishLoading =true
+            $('.loading').hide();
+        }
+
+        //生成底部导航
+        // commonCompt.mainNav(1);
+
+        //获取商品分类
+        $.ajax({
+            url: GETLABELS,
+            type:'GET',
+            dataType:'json',
+            cache: false,
+            success: function(data){
+                //alert(data.responseCode+" "+data.responseDesc+" "+JSON.stringify(data.data));
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000) {
+                    labels = data.data;
+                    labels.unshift({
+                        id: 0,
+                        labelName: "全部类型"
+                    })
+                    //商品类型筛选列表生成
+                    var sortListHtml = "";
+                    sortListHtml += '<li data-sort-id="' + labels[0].id + '" class="current">' + labels[0].labelName + '</li>'
+                    for (var i = 1; i < labels.length; i++) {
+                        sortListHtml += '<li data-sort-id="' + labels[i].id + '">' + labels[i].labelName + '</li>'
+                    }
+                    $('#sortsWrap ul').html(sortListHtml);
+
+                    //商品状态筛选列表生成
+                    var stateListHtml = "";
+                    stateListHtml += '<li data-state-id="' + states[0].id + '" class="current">' + states[0].state_name + '</li>'
+                    for (var i = 1; i < states.length; i++) {
+                        stateListHtml += '<li data-state-id="' + states[i].id + '">' + states[i].state_name + '</li>'
+                    }
+                    $('#statesWrap ul').html(stateListHtml);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        //商品列表初始化
+        bindGoodsList($filters,$pageNum);
+        lastTime = new Date().getTime();
+
+        timer = setInterval(function(){
+            var currentTime = new Date().getTime();
+            var subTime = currentTime - lastTime;
+            for(var i=0; i<headerGoodsList.length; i++){
+                if(headerGoodsList[i].saleStatus == 1 && headerGoodsList[i].timeStatus == 1) {
+                    headerGoodsList[i].nowPrice = commonCompt.accSub(headerGoodsList[i].nowPrice, headerGoodsList[i].reducePrice*subTime/1000);
+                    if(headerGoodsList[i].nowPrice <= 0){
+                        headerGoodsList[i].nowPrice = 0;
+                    };
+                    if (headerGoodsList[i].nowPrice <= commonCompt.randomNum(headerGoodsList[i].limitPrice,headerGoodsList[i].salePrice)) {
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            data: {goodsId: headerGoodsList[i].id, goodsIssueno: headerGoodsList[i].goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc);
+                                if (data.responseCode == 2000) {
+                                    headerGoodsList[i] = data.data;
+                                    // var changeGoodDom = $('.special_good').eq(i);
+                                    // changeGoodDom.children('.current_price').html()
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    } else {
+                        $('.special_good').eq(i).find('.current_price').html('￥' + headerGoodsList[i].nowPrice.toFixed(2));
+                    }
+                }
+            }
+
+            for(var i=0; i<$('.single_good').length; i++){
+                if(goodsList[i].saleStatus == 1 && goodsList[i].timeStatus == 1) {
+                    goodsList[i].nowPrice = commonCompt.accSub(goodsList[i].nowPrice, goodsList[i].reducePrice*subTime/1000);
+                    if(goodsList[i].nowPrice <= 0){
+                        goodsList[i].nowPrice = 0;
+                    };
+                    if (goodsList[i].nowPrice <= commonCompt.randomNum(goodsList[i].limitPrice,goodsList[i].salePrice)) {
+                        $.ajax({
+                            url: REFRESHGOODS,
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
+                            async: false,
+                            success: function (data) {
+                                apiResponse(data.responseCode, data.responseDesc);
+                                if (data.responseCode == 2000) {
+                                    goodsList[i] = data.data;
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    } else {
+                        $('.single_good').eq(i).find('.price_now').html('￥' + goodsList[i].nowPrice.toFixed(2));
+                    }
+                }
+            }
+            lastTime = currentTime;
+        },1000);
+
+    })
+
+
+    //打开类型列表
+    $('#filters .sorts').click(function(){
+        $('#filters').addClass('fixed_top');
+        $('body').css("overflow", "hidden");
+        $('#statesWrap').hide();
+        $('#sortsWrap').fadeIn(300);
+    })
+
+    //打开状态列表
+    $('#filters .states').click(function(){
+        $('#filters').addClass('fixed_top');
+        $('body').css("overflow", "hidden");
+        $('#sortsWrap').hide();
+        $('#statesWrap').fadeIn(300);
+    })
+
+    //选择筛选类型
+    $('#sortsWrap ul').on('click','li',function(){
+        $(document).scrollTop(0);
+        
+        $('#sortsWrap ul li').removeClass('current');
+        $(this).addClass('current');
+        var $index = $(this).index();
+        $('#filters .sorts span').html(labels[$index].labelName);
+
+        $('#sortsWrap').hide();
+        $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
+
+        $filters.sortId = labels[$index].id;
+
+        $pageNum = 1;
+        bindGoodsList($filters,$pageNum);
+    })
+
+    //选择筛选状态
+    $('#statesWrap ul').on('click','li',function(){
+        $('#statesWrap ul li').removeClass('current');
+        $(this).addClass('current');
+        var $index = $(this).index();
+        $('#filters .states span').html(states[$index].state_name);
+
+        $('#statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
+
+        $filters.stateId = states[$index].id;
+
+        $pageNum = 1;
+        bindGoodsList($filters,$pageNum);
+    })
+
+    //是否销量优先
+    $('#filters .sales').click(function(){
+        $filters.price = 0;
+        if($filters.price == 0){
+            $('#filters .price i').attr('class','price_sort');
+        }
+
+        $(this).toggleClass('active');
+        if($(this).hasClass('active')){
+            $filters.sales = true;
+        }else {
+            $filters.sales = false;
+        }
+
+        $pageNum = 1;
+        bindGoodsList($filters,$pageNum);
+
+        $(document).scrollTop(0);
+        $('#statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
+    })
+
+    //价格升序/降序
+    $('#filters .price').click(function(){
+        $filters.sales = false;
+        if(!$filters.sales){
+            $('#filters .sales').removeClass('active');
+        }
+
+        var $arrow = $(this).find('i');
+        if($arrow.hasClass('up')) {
+            $arrow.removeClass('up').addClass('down');
+            $filters.price = 1;
+        }else if($arrow.hasClass('down')){
+            $arrow.removeClass('down').addClass('up');
+            $filters.price = 2;
+        }else {
+            $arrow.addClass('down');
+            $filters.price = 1;
+        }
+
+        $pageNum = 1;
+        bindGoodsList($filters,$pageNum);
+
+        $(document).scrollTop(0);
+        
+        $('#statesWrap').hide();
+        $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
+    })
+
+    //点击其他部分隐藏
+    $('.sortsWrap').on('click',function(){
+        $('.sortsWrap').hide();
+        $('#filters').removeClass('fixed_top');
+        $('body').css("overflow", "auto");
+    })
+
+//    $('.sortsWrap .sorts').on('click',function(e){
+//        e.stopPropagation();
+//    })
+
+    $(document).scroll(function(){
+        //加载下一页
+        if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
+            $pageNum ++;
+            console.log("第"+$pageNum+"页");
+            finishLoading = true;
+            bindGoodsList($filters,$pageNum);
+        }
+    })
+
+    //获取商品列表
+    function bindGoodsList(filterData,pageNum){
+        //如果是获取第一页，就应该先清空商品列表
+        if(pageNum <= 1){
+            $('#goods').html('');
+            goodsList = [];
+        }
+
+        //设置商品列表请求参数
+        var paraData = {};
+        if(filterData.sortId){
+            paraData.labelId = filterData.sortId;
+        }
+        if(filterData.stateId){
+            paraData.goodsStatus = filterData.stateId;
+        }
+        if($filters.sales){
+            paraData.order = "saleNum";
+            paraData.sort = 0;
+        }else if($filters.price == 1){
+            paraData.order = "salePrice";
+            paraData.sort = 0;
+        }else if($filters.price == 2){
+            paraData.order = "salePrice";
+            paraData.sort = 1;
+        }
+        paraData.pageNum = pageNum;
+        paraData.pageSize = $pageSize;
+        paraData.goodsLabel = 2;
+
+        console.log(paraData);
+
+        //请求数据
+        $.ajax({
+            url: GETGOODS,
+            type:'GET',
+            dataType:'json',
+            data: paraData,
+            async:false,
+            cache: false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000) {
+                    console.log(data);
+                    var addGoods = data.data;
+                    goodsList = goodsList.concat(addGoods);
+                    var goodsListHtml = "";
+                    for (var i = 0; i < addGoods.length; i++) {
+                        var cur_state;
+
+                        if (addGoods[i].nowPrice <= 0) {
+                            $.ajax({
+                                url: REFRESHGOODS,
+                                type: 'GET',
+                                dataType: 'json',
+                                cache: false,
+                                data: {goodsId: goodsList[i].id, goodsIssueno: goodsList[i].goodsIssueno},
+                                async: false,
+                                success: function (data) {
+                                    apiResponse(data.responseCode, data.responseDesc);
+                                    if (data.responseCode == 2000) {
+                                        goodsList[i] = data.data;
+                                    }
+                                },
+                                error: function (err) {
+                                    console.log(err);
+                                }
+                            });
+                        }
+                        
+                        if (addGoods[i].saleStatus == 1) {
+                            if (addGoods[i].timeStatus == 1) {
+                                cur_state = "salling_cut";
+                            } else {
+                                cur_state = "out_time";
+                            }
+                        } else if (addGoods[i].saleStatus == 2) {
+                            cur_state = "pre_sale";
+                        } else if (addGoods[i].saleStatus == 3) {
+                            cur_state = "sold_out";
+                        }
+                        goodsListHtml += '<div class="single_good" data-goods-id="' + addGoods[i].id + '">' +
+                                '<div class="item_img" style="background: url(' + addGoods[i].goodsPic + ') center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>' +
+                                '<div class="about">' +
+                                '<p class="desc">' + addGoods[i].goodsName + '</p>' +
+                                '<div class="price">' +
+                                '<span class="price_now">￥' + addGoods[i].nowPrice.toFixed(2) + '</span>' +
+                                '<span class="price_primary">' + addGoods[i].salePrice.toFixed(2) + '</span>' +
+                                '<i class="sales_state ' + cur_state + '"></i>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>'
+                    }
+                }
+
+                $('#goods').append(goodsListHtml);
+
+                if(addGoods.length < $pageSize){
+                    finishLoading =true
+                    $('.loading').hide();
+                }else {
+                    $('.loading').show();
+                    finishLoading = false;
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        if(goodsList.length <= 0){
+            commonCompt.popPrompt('暂无商品');
+        }
+    }
+
+    $('#goods').on('click','.single_good',function(){
+        window.location.href = 'detail.html?good_id=' + $(this).attr('data-goods-id');
+    })
+    $('#special').on('click','.special_good',function(){
+        window.location.href = 'detail.html?good_id=' + $(this).attr('data-goods-id');
+    })
+
+
+    // $('body').on('click','#mainNav button',function(){
+    //     if($(this).attr('class') == 'collection'){
+    //         window.location.href = 'collection.html'
+    //     }else if($(this).attr('class') == 'grab'){
+    //         window.location.href = 'orderGenerate.html'
+    //     }else if($(this).attr('class') == 'order'){
+    //         window.location.href = 'order.html'
+    //     }else if($(this).attr('class') == 'personal'){
+    //         window.location.href = 'personal.html'
+    //     }
+    // })
+
+    commonCompt.screenVisibleChange();
+
+</script>
+</html>

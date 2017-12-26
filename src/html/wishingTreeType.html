@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>生成愿望</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/wishingTree.css">
+   
+</head>
+<body>
+<div id="createWish" style="font-size:0">
+    <div id="typeCard">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <h3>旅行</h3>
+                    <p style="margin-bottom: 0">世界这么大，我还没去看过</p>
+                    <p style="margin-top: 0">想去哪儿，许下愿望<br>邀请好友/粉丝打赏助你实现</p>
+                    <div class="img_wrapper"><img src="../imgs/type_01.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>美食</h3>
+                    <p style="margin-bottom: 0">尝遍人间美食，尽享人间乐趣</p>
+                    <p style="margin-top: 0">想吃啥儿，许下愿望<br>邀请好友/粉丝打赏助你实现</p>
+                    <div class="img_wrapper"><img src="../imgs/type_02.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>购物</h3>
+                    <p style="margin-bottom: 0">宝宝不开心，我要买买买</p>
+                    <p style="margin-top: 0">想买啥儿，许下愿望<br>邀请好友/粉丝打赏助你实现</p>
+                    <div class="img_wrapper"><img src="../imgs/type_03.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>公益</h3>
+                    <p style="margin-bottom: 0">一花一草皆生命，一枝一叶总关情</p>
+                    <p style="margin-top: 0">想做公益，许下愿望<br>邀请好友/粉丝打赏助你实现</p>
+                    <div class="img_wrapper"><img src="../imgs/type_04.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>活动</h3>
+                    <p style="margin-bottom: 0">线上轻松相约，线下开心相聚</p>
+                    <p style="margin-top: 0">组织聚会，发起活动<br>在线报名付款，吃瓜群众打赏赞助</p>
+                    <div class="img_wrapper"><img src="../imgs/type_05.png" alt=""></div>
+                </div>
+                <div class="swiper-slide">
+                    <h3>其他</h3>
+                    <p style="margin-bottom: 0">我有心愿尽许，众友助你成功</p>
+                    <p style="margin-top: 0">给爸妈祝寿<br>召集亲朋关爱家人送上祝福</p>
+                    <div class="img_wrapper"><img src="../imgs/type_06.png" alt=""></div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+    <button id="msgSubmit" style="margin-top:0.4rem">我要许愿</button>
+</div>
+
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+    var mySwiper = null;
+    $(function(){
+
+        if(localStorage.wishData){
+            localStorage.removeItem('wishData');
+            localStorage.removeItem('wishSubmitState');
+            localStorage.removeItem('shareWishUrl');
+        }
+
+        mySwiper = new Swiper ('.swiper-container', {
+            direction: 'horizontal',
+            loop: true,
+        })
+
+    })
+
+    //提交
+    $('#msgSubmit').click(function(){
+        window.location.href = 'wishingTreeCreate.html?typeIndex='+mySwiper.realIndex;
+    })
+
+
+
+
+</script>
+</html>

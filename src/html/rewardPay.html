@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>众赏支付</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/order.css">
+</head>
+<body style="background-color:#fff">
+    <div id="rewardPay">
+        <div class="user_msg">
+            <span class="avatar"></span>
+            <p>打赏给<span class="name"></span></p>
+        </div>
+
+        <div class="left_space clearfix">
+            <span>还需众赏金额</span>
+            <span class="count"></span>
+        </div>
+
+        <div class="reward_count">
+            <div class="count_input clearfix">
+                <span class="label">打赏金额</span>
+                <input type="number" class="input_num" placeholder="输入最多">
+                <input class="real_name" style="float:right" maxlength="10" type="text" placeholder="输入昵称（选填）"></span>
+                <span class="label" style="float:right">打赏昵称</span>
+                <!-- <span class="most">全部金额</span> -->
+            </div>
+            <div class="options_wrap">
+                <!-- <span class="valid">5.20<s>元</s></span>
+                <span>7758<s>元</s></span> -->
+            </div>
+        </div>
+
+        <div class="pay_type clearfix">
+            <div class="alipay"><i class="check"></i><i class="icon"></i><span>支付宝支付</span></div>
+            <div class="wechat"><i class="check"></i><i class="icon"></i><span>微信支付</span></div>
+        </div>
+
+        <div class="leave_msg">
+            <div class="head">
+                <span class="title">添加留言(140字以内)</span>
+                <span class="mode"><input class="anonymous_check" maxlength="10" type="checkbox" style="margin-bottom: 0.04rem">匿名打赏</span>
+                <!-- <span class="mode"><input class="real_name" type="text" placeholder="自定义打赏昵称"></span> -->
+            </div>
+            <textarea name="" id="" maxlength="140"></textarea>
+            <button class="commit">确认打赏</button>
+            <p class="prompt">新用户需授权登录并注册,否则众赏订单失败后将无法退款到您的支付账户。如需重新授权,请刷新页面。</p>
+        </div>
+    </div>
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+
+<script>
+    var $curOrderId = commonCompt.GetUrlPara('order_id');
+    var $sign = commonCompt.GetUrlPara('sign');
+    var $leftPrice = 0;
+    var countOptions = ['1.18','5.20','9.99','25.8','88.88','131.4','157.3','666'];
+    var currentPayType = 0; //1微信，2支付宝
+    var isAnonymous = 1; //1实名，2匿名
+    var wxPayPara = {};
+
+
+    $(function(){
+        
+        $.ajax({
+            url: GET_RECORD_DETAIL,
+            type:'GET',
+            dataType:'json',
+            data: {orderId: $curOrderId},
+            async:false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                console.log(GET_RECORD_DETAIL,data);
+                // $('textarea').val(data.data.userPortrait);
+                if(data.responseCode == 2000){
+                    $('.user_msg .avatar').css({
+                        'background': 'url('+ data.data.userPortrait +') center center no-repeat',
+                        'background-size': 'cover',
+                        '-webkit-background-size': 'cover'
+                    });
+                    $leftPrice = data.data.leftPrice ? data.data.leftPrice : 0;
+                    $('.user_msg .name').html(data.data.nikeName);
+                }
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+
+        $('.left_space .count').html('￥' + $leftPrice);
+        $('.reward_count .input_num').attr('placeholder','输入最多￥' + $leftPrice);
+
+        for(var i=0; i<countOptions.length; i++){
+            $('.options_wrap').append('<span class="'+ (Number(countOptions[i])<=Number($leftPrice)?'valid':'') +'">'+ countOptions[i] +'<s>元</s></span>');
+        }
+
+        $.ajax({
+            url: GETUSERINFO,
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    
+                    // if(!data.data.userTel){
+                    //     commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单众赏失败后，打赏金额将原路径退回）',true);
+                    // }
+                    if(data.data.id){
+                        sessionStorage.setItem('userId', data.data.id);
+                    }
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+
+    })
+
+    $('.reward_count .most').click(function(){
+        $('.reward_count .input_num').val($leftPrice);
+    })
+
+    $('.options_wrap').on('click', '.valid', function(){
+        $('.reward_count .input_num').val(countOptions[$(this).index()]);
+    })
+
+    $('.pay_type div').click(function(){
+        $('.pay_type div').removeClass('selected');
+        $(this).addClass('selected');
+        if($(this).hasClass('selected')){
+            if($(this).hasClass('alipay')){
+                currentPayType = 2;
+            }else if($(this).hasClass('wechat')){
+                currentPayType = 1;
+            }
+        }
+        console.log(currentPayType);
+    })
+
+    $('.anonymous_check').click(function(){
+        if($(this).is(':checked')){
+            isAnonymous = 2;
+        }else {
+            isAnonymous = 1;
+        }
+    })
+
+    $('.reward_count .input_num').blur(function(){
+        var moneyCount = Number($('.reward_count .input_num').val()).toFixed(2);
+        $(this).val(moneyCount);
+    })
+
+    $('.commit').click(function(){
+        // alert($curOrderId);
+        var moneyCount = Number($('.reward_count .input_num').val()).toFixed(2);
+        if(moneyCount.length <= 0){
+            commonCompt.popPrompt('请输入打赏金额');
+        }else if(moneyCount < 0.01){
+            commonCompt.popPrompt('最低金额不得小于0.01');
+        }else if(Number(moneyCount) > Number($leftPrice)){
+            commonCompt.popPrompt('您输入的金额超过剩余打赏金额哦~');
+        }else if(currentPayType === 0){
+            commonCompt.popPrompt('请选择支付方式');
+        }else {
+            if(currentPayType === 2){  //支付宝支付
+                window.location.href = CROWD_FUND+'?payType=2&orderId='+$curOrderId+
+                    '&payMoney='+moneyCount+
+                    '&crownType='+isAnonymous+
+                    '&sign='+$sign+
+                    '&leaveMsg='+$('textarea').val();
+            }else if(currentPayType === 1){  //微信支付
+                $.ajax({
+                    url: CROWD_FUND,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        orderId: $curOrderId,
+                        payType: currentPayType,
+                        payMoney: moneyCount,
+                        crownType: isAnonymous,
+                        sign: $sign,
+                        realName: $('.real_name').val(),
+                        leaveMsg: $('textarea').val()
+                    },
+                    success: function (data) {
+        //                console.log('请求参数:',$curOrderId,2,'返回',data);
+                        apiResponse(data.responseCode,data.responseDesc,data.data);
+                        if(data.responseCode == 2000){
+                            // alert(JSON.stringify(data));
+                            if(isWeiXin()){
+                                wxPayPara.appId = data.data.appId;
+                                wxPayPara.timeStamp = data.data.timeStamp;
+                                wxPayPara.nonceStr = data.data.nonceStr;
+                                wxPayPara.prepayId = data.data.package;
+                                wxPayPara.paySign = data.data.paySign;
+                                wxPayPara.signType = data.data.signType;
+
+                                onBridgeReady(wxPayPara);
+
+                                if (typeof WeixinJSBridge == "undefined"){
+                                    if( document.addEventListener ){
+                                        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                                    }else if (document.attachEvent){
+                                        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                                        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                                    }
+                                }else{
+                                    onBridgeReady();
+                                }
+                            }else {
+                                window.location.href = data.data.mweb_url;
+                            }
+                        }
+                    },
+                    error: function (err) {
+        //                console.log(err);
+                    }
+                })
+            }
+        }
+    })
+
+    function onBridgeReady(wxPayPara){
+        WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    "appId": wxPayPara.appId,     //公众号名称，由商户传入
+                    "timeStamp": wxPayPara.timeStamp,         //时间戳，自1970年以来的秒数
+                    "nonceStr": wxPayPara.nonceStr, //随机串
+                    "package": wxPayPara.prepayId,
+                    "signType": wxPayPara.signType,         //微信签名方式：
+                    "paySign": wxPayPara.paySign //微信签名
+                },
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        window.location.href = '../index.html';
+
+                    }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                }
+        );
+    }
+
+</script>
+<script src="../script/wx_browser_api.js"></script>
+</html>

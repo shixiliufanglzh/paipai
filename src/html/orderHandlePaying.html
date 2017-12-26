@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/order.css">
 </head>
 <body>
@@ -32,7 +34,7 @@
             <div class="order_state">
                 <h3>待支付</h3>
                 <p>等待买家支付</p>
-                <p>距订单关闭还剩：<span class="time_left">0天0小时0分0秒</span></p>
+                <p class="time_left_wrap">距订单关闭还剩：<span class="time_left">0天0小时0分0秒</span></p>
             </div>
             <i class="caution"></i>
         </div>
@@ -59,7 +61,7 @@
                 <p><span>物流费用：</span><span class="count_detail freight">￥10.00</span></p>
             </div>
             <div class="price_total clearfix">
-                <p>共<span class="count">2</span>件商品，共<span class="fee">￥3999.00</span>元</p>
+                <p>共<span class="count">2</span>件商品，需支付<span class="fee">￥3999.00</span>元</p>
                 <button class="order_edit red pay">付款</button>
                 <button class="order_edit cancel">取消订单</button>
             </div>
@@ -73,13 +75,15 @@
     </div>
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script src="../script/wx_browser_api.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
-
+    var $payType;
     $(function(){
 
         $.ajax({
@@ -91,6 +95,11 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orderMsg = data.data;
+                    $payType = orderMsg.payType;
+                    if(orderMsg.payType.toString() === '3'){
+                        $('.time_left_wrap').html('等待好友打赏');
+                    }
+
                     if(orderMsg.rechargeType) {
                         $('#chargePhone').show();
                         $('.phoneNum').html(orderMsg.rechargeAccount);
@@ -125,7 +134,7 @@
 
                     $('.count_detail.primary').html("￥"+ $primaryPriceSum.toFixed(2));
                     $('.count_detail.now').html("￥"+ $dealPriceSum.toFixed(2));
-                    $('.price_total .fee').html("￥"+ orderMsg.orderPrice.toFixed(2));
+                    $('.price_total .fee').html("￥"+ orderMsg.leftPrice.toFixed(2));
                     $('.price_total .count').html(totalCount);
                     $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
                     $('.count_detail.freight').html("￥"+ orderMsg.freight.toFixed(2));
@@ -136,7 +145,10 @@
                     var timeLeft = orderMsg.remainEffectiveTime;
                     var timerList = [];
                     var addOrderTimer = new Paipai;
-                    addOrderTimer.addOrderTimer(timeLeft,$('#state .time_left'),timerList);
+
+                    // if(orderMsg.payType.toString() !== '3'){
+                        addOrderTimer.addOrderTimer(timeLeft,$('#state .time_left'),timerList);
+                    // }
                 }
             },
             error: function(err){
@@ -183,7 +195,11 @@
 
     //支付
     $('.order_edit.pay').on('click', function(){
-        window.location.href = 'paying.html?order_id='+ $curOrderId;
+        if($payType.toString() === '3'){
+            window.location.href = 'paying.html?order_id='+ $curOrderId+'&hide_crowd=1';
+        }else {
+            window.location.href = 'paying.html?order_id='+ $curOrderId+'&hide_crowd=0';
+        }
     })
 
     commonCompt.screenVisibleChange();

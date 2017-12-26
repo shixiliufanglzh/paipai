@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/personal.css">
 </head>
 <body style="background-color: #fff;">
@@ -42,12 +44,16 @@
                 <i class="pre_icon"></i><span class="title">我的拍币</span><i class="icon_enter"></i><span class="money"></span>
             </li>
 
-            <li class="single_btn loc_order">
-                <i class="pre_icon order"></i><span class="title">我的订单</span><i class="icon_enter"></i>
+            <li class="single_btn loc_reward">
+                <i class="pre_icon reward"></i><span class="title">我的众赏</span><i class="icon_enter"></i>
             </li>
 
-            <li class="single_btn loc_collection">
-                <i class="pre_icon collection"></i><span class="title">我的关注</span><i class="icon_enter"></i>
+            <li class="single_btn loc_wallet">
+                <i class="pre_icon wallet"></i><span class="title">我的钱包</span><i class="icon_enter"></i>
+            </li>
+
+            <li class="single_btn loc_wishing">
+                <i class="pre_icon wishing"></i><span class="title">我的许愿</span><i class="icon_enter"></i>
             </li>
 
             <li class="single_btn loc_services">
@@ -73,9 +79,10 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
-
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
     var hasPhone = false;
@@ -110,9 +117,10 @@
                         $('.money').html(data.data.userPoint + '拍币');
                     }
 
-                    if(!hasPhone){
-                        commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-                    }
+                    // if(!hasPhone){
+                        // commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
+                    //     commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null,'',true);
+                    // }
                 }
             },
             error: function (err) {
@@ -142,10 +150,12 @@
     $('#selection').on('click','.single_btn',function(){
         if($(this).hasClass('loc_purse')){
             window.location.href = 'personalPurse.html';
-        }else if($(this).hasClass('loc_order')){
-            window.location.href = 'order.html';
-        }else if($(this).hasClass('loc_collection')){
-            window.location.href = 'collection.html';
+        }else if($(this).hasClass('loc_reward')){
+            window.location.href = 'rewardList.html';
+        }else if($(this).hasClass('loc_wallet')){
+            window.location.href = 'personalWallet.html';
+        }else if($(this).hasClass('loc_wishing')){
+            window.location.href = 'wishingTreeList.html';
         }else if($(this).hasClass('loc_services')){
 //            window.location.href = 'Q&A.html';
         }else if($(this).hasClass('loc_address')){

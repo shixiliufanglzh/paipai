@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
@@ -23,6 +23,8 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/order.css">
 </head>
 <body>
@@ -52,8 +54,10 @@
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
 <script src="../script/paipaiCompnt.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 
 <script>
@@ -66,7 +70,7 @@
 
     $(function(){
 
-        shouldRegister();
+        // shouldRegister();
 
         //生成底部导航
         commonCompt.mainNav(4);
@@ -102,7 +106,7 @@
                     }
                     timePrompt += cal_time + "秒";
                     $('.singleOrder').eq(i).find('.time_left').html(timePrompt);
-                    if(ordersListAll[i].remainEffectiveTime === 0){
+                    if(ordersListAll[i].remainEffectiveTime === 0 && ordersListAll[i].payType.toString() !== '3'){
                         location.reload(true);
                     }
                 }
@@ -329,8 +333,15 @@
 
     //支付
     $('.orders_list').on('click', 'button.pay', function(){
-        var $curOrderId = $(this).parents('.singleOrder').attr('data-order-id');
-        window.location.href = 'paying.html?order_id='+ $curOrderId;
+        var $curOrde = $(this).parents('.singleOrder');
+        var $curOrderId = $curOrde.attr('data-order-id');
+        // alert(ordersListAll[$curOrde.index()].payType);
+        if(ordersListAll[$curOrde.index()].payType.toString() === '3'){
+            window.location.href = 'paying.html?order_id='+ $curOrderId+'&hide_crowd=1';
+        }else {
+            window.location.href = 'paying.html?order_id='+ $curOrderId+'&hide_crowd=0';
+        }
+        
     })
 
     //获取商品列表
@@ -359,30 +370,45 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orders = data.data;
+                    console.log(orders)
                     if(orders.length > 0){
                         $('#blank').hide();
                         $('body').css('background-color','#f0f0f0');
                     }
                     ordersListAll = ordersListAll.concat(orders);
                     var ordersListHtml = "";
-                    var $amount = 0;
                     for(var i=0; i<orders.length; i++){
-
+                        var $amount = 0;
                         if(orders[i].orderStatus == 1){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeSend" data-order-id="'+ orders[i].orderId +'">'+
-                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">待发货</span></div>'
+                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span class="orde_status">待发货</span></div>'
                         }else if(orders[i].orderStatus == 2){
-                            ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
-                                    '<div class="order_head"><i class="clock"></i>距订单关闭剩余：<span class="time_left">0天0小时0分0秒</span><span class="orde_status">待支付</span></div>'
+                            if(orders[i].payType.toString()==='3'){
+                                ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
+                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
+                                        '</span><span style="color:#e02532">（众赏订单）</span><span class="orde_status">待支付</span></div>'
+                            }else {
+                                ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
+                                                        '<div class="order_head"><i class="clock"></i>距订单关闭剩余：<span class="time_left">0天0小时0分0秒</span><span class="orde_status">待支付</span></div>'
+                            }
+                            
                         }else if(orders[i].orderStatus == 4){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="close" data-order-id="'+ orders[i].orderId +'">'+
-                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">交易关闭</span></div>'
+                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span class="orde_status">交易关闭</span></div>'
                         }else if(orders[i].orderStatus == 5){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeReceived" data-order-id="'+ orders[i].orderId +'">'+
-                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">待收货</span></div>'
+                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span class="orde_status">待收货</span></div>'
                         }else if(orders[i].orderStatus == 6){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="complete" data-order-id="'+ orders[i].orderId +'">'+
-                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +'</span><span class="orde_status">交易成功</span></div>'
+                                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span class="orde_status">交易成功</span></div>'
                         }
 
 
@@ -401,7 +427,7 @@
                         }
 
                         ordersListHtml +=       '</div>' +
-                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>合计：</span><span class="deal_price">￥'+ orders[i].orderPrice.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
+                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>支付金额：</span><span class="deal_price">￥'+ orders[i].payMoney.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
                                                 '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'
 
 
