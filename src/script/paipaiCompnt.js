@@ -81,6 +81,7 @@ var ADD_CARD = apiHost + "user/addCard.jhtml";  //用户添加提现账户
 var DEL_CARD = apiHost + "user/delCard.jhtml";  //删除提现账户
 var GET_CARD = apiHost + "user/getCard.jhtml";  //获取用户提现账户列表
 var GET_MONEY_RECORD = apiHost + "user/getMoneyRecord.jhtml";  //获取用户提现记录
+var CANCEL_REGISTER = apiHost + "login/cancelRegister.jhtml";  //取消注册
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -132,10 +133,10 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             commonCompt.popPrompt("需特殊处理，第三方浏览器登录，弹出登录遮罩");
             break;
         case "4009":
-            if(window.location.href.indexOf('rewardPay') != -1){
-                commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单众赏失败后，打赏金额将原路径退回）',true);
+            if(window.location.href.indexOf('rewardPay') != -1 || window.location.href.indexOf('wishPay') != -1){
+                commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单失败后，打赏金额将原路径退回）',true);
             }else {
-                commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null);
+                commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null,'',true);
             }
             break;
         case "5000":
@@ -188,12 +189,15 @@ Paipai.prototype = {
 
 var commonCompt = {
 
+    //是否刚注册
+    firstRegister: false,
+
     //弹出对话框
-    Confirm: function (objPara){
+    Confirm: function (objPara,callBack){
         var html =  '<div id="confirm" style="position:fixed;background-color:rgba(0,0,0,0.8);top:0;left:0;right:0;bottom:0;z-index:10001;display:none">'+
                         '<div class="content" style="width:4.5rem;position:absolute;left:50%;margin-left:-2.25rem;margin-top:4rem;background-color:#fff;-webkit-border-radius:0.1rem;-moz-border-radius:0.1rem;border-radius:0.1rem;overflow:hidden;">'+
                             '<div class="title" style="color:#f95454;font-size:0.3rem;text-align: center;padding:0.24rem 0 0.14rem;border-bottom:1px solid #c5c5c5;display:none">'+objPara.title+'</div>'+
-                            '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
+                            '<p class="text" style="font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;border-bottom:1px solid #c5c5c5;">'+objPara.contentText+'</p>'+
                             '<div class="input" style="display:none;font-size:0.28rem;color:#2f2f2f;line-height:0.4rem;padding:0.3rem 0.6rem;text-align: center;border-bottom:1px solid #c5c5c5;">'+
                                 '<input type="'+ (!!objPara.inputType ? objPara.inputType : 'text')+'" placeholder="'+objPara.inputPlace+'" style="padding:0 0.1rem;width:100%;line-height:0.6rem;outline:none;border:1px solid #858585;border-radius:0.06rem">'+
                             '</div>'+
@@ -232,6 +236,9 @@ var commonCompt = {
             $('body').css("overflow", "auto");
             $('#confirm').fadeOut(300,function(){
                 $('#confirm').remove();
+                if(!!callBack){
+                    callBack();
+                }
             });
         })
     },
@@ -360,13 +367,15 @@ var commonCompt = {
                                     '<div class="swiper-slide">'+
                                         '<h3>关注微信公众号</h3>'+
                                         '<div class="code">'+ wechatCodeImg +'</div>'+
-                                        '<p>保存减价拍商城入口</p>'+
+                                        '<p style="font-size:0.24rem;margin-bottom:0">（微信内长按图片识别二维码）</p>'+
+                                        '<p style="margin-top:0">保存减价拍商城入口</p>'+
                                     '</div>'+
                                     '<div class="swiper-slide">'+
                                         '<h3>关注官方微博</h3>'+
                                         '<div class="weibo"><wb:follow-button uid="6411194176" type="red_1" width="67" height="24" ></wb:follow-button></div>'+
                                         '<div class="code" style="margin-top:0">'+ weiboCodeImg +'</div>'+
-                                        '<p>保存减价拍商城入口</p>'+
+                                        '<p style="font-size:0.24rem;margin-bottom:0">（微博内保存图片扫描二维码）</p>'+
+                                        '<p style="margin-top:0">保存减价拍商城入口</p>'+
                                     '</div>'+
                                 '</div>'+
                                 '<div class="swiper-pagination" style="bottom:20px"></div>'+
@@ -396,6 +405,9 @@ var commonCompt = {
             }else {
                 $(this).fadeOut();
                 $('body').css("overflow", "auto");
+                if(commonCompt.firstRegister){
+                    location.reload(true);
+                }
             }
         })
 
@@ -407,8 +419,8 @@ var commonCompt = {
             e.preventDefault();
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             var elm = $(this).offset();
-            var y = $(window).height() - touch.pageY + $(document).scrollTop() - $(this).height()/2;
-            $(this).css('bottom', y+'px');
+            var y = touch.pageY - $(document).scrollTop() - $(this).height()/2;
+            $(this).css('top', y+'px');
         });
 
     },
@@ -519,6 +531,11 @@ var commonCompt = {
         }
         //console.log("添加结束",imgListBase64);
 
+    },
+
+    //图片加水印
+    markPic: function(){
+        
     },
 
     //上传图片返回链接
@@ -927,8 +944,10 @@ var commonCompt = {
                                 _that.popPrompt(submitPrompt);
                                 if(callBack){
                                     callBack($phoneNum);
+
                                 }else {
-                                    location.reload(true);
+                                    $('.show_code').trigger('click');
+                                    _that.firstRegister = true;
                                 }
                                 $('body').css("overflow", "auto");
                                 $('#registerWrap').fadeOut(300,function(){
@@ -946,6 +965,21 @@ var commonCompt = {
             })
 
             $('.verify_close, .skip').on('click',function(){
+                $.ajax({
+                    url: CANCEL_REGISTER,
+                    type:'POST',
+                    dataType:'json',
+                    success:function(data){
+                        apiResponse(data.responseCode,data.responseDesc);
+                        if(data.responseCode == 2000){
+                            $('.show_code').trigger('click');
+                            _that.firstRegister = true;
+                        }
+                    },
+                    error: function(err){
+                        console.log(err);
+                    }
+                })
                 $('body').css("overflow", "auto");
                 $('#registerWrap').fadeOut(300,function(){
                     $('#registerWrap').remove();
@@ -1004,15 +1038,15 @@ var commonCompt = {
     //区间随机数
     randomNum: function(limitNum,startNum){
         var trueNum = Number(limitNum);
-        if(trueNum < 100){
+        if(startNum < 100){
             trueNum =  (trueNum + (Number(startNum)-trueNum)*0.1*Math.random());
-        }else if(trueNum >= 100 && trueNum < 500){
+        }else if(startNum >= 100 && trueNum < 500){
             trueNum =  (trueNum + (Number(startNum)-trueNum)*0.05*Math.random());
-        }else if(trueNum >= 500 && trueNum < 1000){
+        }else if(startNum >= 500 && trueNum < 1000){
             trueNum =  (trueNum + (Number(startNum)-trueNum)*0.03*Math.random());
-        }else if(trueNum >= 1000 && trueNum < 3000){
+        }else if(startNum >= 1000 && trueNum < 3000){
             trueNum =  (trueNum + (Number(startNum)-trueNum)*0.02*Math.random());
-        }else if(trueNum >= 3000){
+        }else if(startNum >= 3000){
             trueNum =  (trueNum + (Number(startNum)-trueNum)*0.01*Math.random());
         }
         return parseFloat(trueNum.toFixed(2));

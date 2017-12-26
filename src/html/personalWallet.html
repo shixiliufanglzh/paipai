@@ -283,10 +283,10 @@
                         psw: passward
                     },
                     success: function (data) {
+                        $('#mask').hide();
                         apiResponse(data.responseCode, data.responseDesc, data.data);
                         if (data.responseCode == 2000) {
                             $('#withdrawSubmit').fadeOut();
-                            $('#mask').hide();
                             commonCompt.popPrompt('成功提现￥' + withdrawCount + '至钱包');
                             setTimeout(function () {
                                 location.reload();
@@ -294,6 +294,7 @@
                         }
                     },
                     error: function (err) {
+                        $('#mask').hide();
                         console.log(err);
                     }
                 })

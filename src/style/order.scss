@@ -85,11 +85,19 @@ body {
       height: 0.2rem;
     }
     .crowd_status {
-      @include smallIcon(1.22rem,1.22rem,url('../imgs/crowd_finish.png'));
       position: absolute;
       right: 1rem;
       top: 1.4rem;
       z-index: 9999;
+      &.complete {
+        @include smallIcon(1.22rem,1.22rem,url('../imgs/crowd_complete.png'));
+      }
+      &.cancel {
+        @include smallIcon(1.22rem,1.22rem,url('../imgs/crowd_cancel.png'));
+      }
+      &.delete {
+        @include smallIcon(1.22rem,1.22rem,url('../imgs/crowd_delete.png'));
+      }
     }
     .order_detail {
       height: 1.9rem;
@@ -111,6 +119,7 @@ body {
         float: left;
         .name {
           font-size: 0.22rem;
+          line-height: 0.33rem;
           height: 0.66rem;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -122,6 +131,13 @@ body {
           font-size: 0.2rem;
           color: #858585;
           margin-top: 0.08rem;
+          line-height: 0.3rem;
+          max-height: 0.9rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;//被自动清除，后期手动补上
+          -webkit-line-clamp: 3;
         }
         .prompt {
           position: absolute;
@@ -737,17 +753,20 @@ body {
     background-color: #fff;
     border-bottom: 0.1rem solid #f0f0f0;
     .count_input {
-      font-size: 0.24rem;
+      font-size: 0;
       border-bottom: 1px solid #f0f0f0;
       span {
-        line-height: 0.64rem;
+        font-size: 0.24rem;
+        line-height: 0.66rem;
         float: left;
+        margin-right: 0.2rem;
       }
       input {
         height: 0.64rem;
-        min-width: 60%;
+        width: 30%;
         border: none;
         font-size: 0.24rem;
+        float: left;
         &::-webkit-input-placeholder { /* WebKit browsers */
           color:    #999;
         }
@@ -764,6 +783,7 @@ body {
         }
       }
       .most {
+        font-size: 0.24rem;
         float: right;
         color: $paiRed;
       }
@@ -772,9 +792,10 @@ body {
       padding: 0.2rem 0.01rem 0.02rem;
       span {
         display: inline-block;
-        background-color: #858585;
+        // background-color: #858585;
+        border: 1px solid #858585;
         border-radius: 4px;
-        color: #fff;
+        color: #858585;
         font-size: 0.38rem;
         width: 1.6rem;
         line-height: 0.64rem;
@@ -786,7 +807,9 @@ body {
           text-decoration: none;
         }
         &.valid {
-          background-color: $paiRed;
+          // background-color: $paiRed;
+          border: 1px solid $paiRed;
+          color: $paiRed;
         }
         &:nth-child(4n) {
           margin-right: 0;

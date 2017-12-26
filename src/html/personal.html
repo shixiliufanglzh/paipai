@@ -53,7 +53,7 @@
             </li>
 
             <li class="single_btn loc_wishing">
-                <i class="pre_icon wishing"></i><span class="title">我的心愿</span><i class="icon_enter"></i>
+                <i class="pre_icon wishing"></i><span class="title">我的许愿</span><i class="icon_enter"></i>
             </li>
 
             <li class="single_btn loc_services">
@@ -117,9 +117,10 @@
                         $('.money').html(data.data.userPoint + '拍币');
                     }
 
-                    if(!hasPhone){
-                        commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
-                    }
+                    // if(!hasPhone){
+                        // commonCompt.verifyPhone(60,"新用户注册",true,3,"注册成功",null);
+                    //     commonCompt.registerPhone(60,"手机号注册",false,3,"注册成功",null,'',true);
+                    // }
                 }
             },
             error: function (err) {

@@ -55,82 +55,66 @@
                 </div>
             </section> -->
             <!----------------slide3-------------->
-            <!-- <section class="swiper-slide slide_03">
-                <div class="pic ani resize" swiper-animate-effect="fadeInLeft" swiper-animate-duration="1s" swiper-animate-delay="0s"></div>
-                <div class="els_wrapper">
-                    <img src="../imgs/h5/third_frame.png" class="frame ani resize" swiper-animate-effect="fadeInLeft" swiper-animate-duration="2s"
-                        swiper-animate-delay="0.2s">
-                    <img src="../imgs/h5/third_H.png" class="H ani resize" swiper-animate-effect="fadeInLeft" swiper-animate-duration="2s" swiper-animate-delay="0.5s">
-                    <img src="../imgs/h5/third_t.png" class="t ani resize" swiper-animate-effect="fadeInLeft" swiper-animate-duration="2s" swiper-animate-delay="1s">
-                    <p class="text ani resize" swiper-animate-effect="fadeInDown" swiper-animate-duration="2s" swiper-animate-delay="1.2s">让我们深记着相聚的时刻 让我们珍惜这难得的缘分</p>
-                </div>
-            </section> -->
-            <!-- -----------slide4--------------- -->
-            <section class="swiper-slide" style="height:auto">
-                <div id="order" class="swiper-container" style="margin-bottom:0">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide" style="height:auto">
-                            <div class="orders_list"></div>
-                        
-                            <div class="process">
-                                <div class="bar_wrap">
-                                    <div class="process_bar">
-                                        <div class="base">
-                                            <div class="fill">0.0%</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="count_wrap">
-                                    <div class="count">订单金额
-                                        <br>
-                                        <span class="order_price">￥0.00</span>
-                                    </div>
-                                    <div class="count">还需金额
-                                        <br>
-                                        <span class="left_price">￥0.00</span>
-                                    </div>
-                                    <div class="count">打赏人次
-                                        <br>
-                                        <span class="rewarder_num" style="margin-top:0.06rem;display:inline-block">0</span>
-                                    </div>
-                                    <span class="divide"></span>
-                                </div>
-                                <div class="declaration clearfix">
-                                    <span class="title">发起人宣言：</span>
-                                    <span class="content">无</span>
-                                </div>
-                                <div class="interaction">
-                                    <div class="button_wrap clearfix">
-                                        <button class="reward">我要打赏</button>
-                                        <button class="join">我要参与</button>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                            <div class="reward_list">
-                                <h6 class="clearfix">
-                                    <span class="left">打赏排行榜</span>
-                                    <span class="right">查看留言</span>
-                                </h6>
-                                
-                        
-                                <div class="list_wrap"> </div>
-                        
-                                <div class="loading">
-                                    <i></i>
-                                    <span>加载中...</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <section class="swiper-slide slide_03">
                 
-                </div>
             </section>
 
         </div>
-    
         <img src="../imgs/web-swipe-tip.png" id="array" class="resize">
         <div class="swiper-pagination"></div>
+    </div>
+
+    <div id="order" style="margin-bottom:0;display:none">
+        <div class="orders_list"></div>
+        <div class="process">
+            <div class="bar_wrap">
+                <div class="process_bar">
+                    <div class="base">
+                        <div class="fill">0.0%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="count_wrap">
+                <div class="count">许愿金额
+                    <br>
+                    <span class="order_price">￥0.00</span>
+                </div>
+                <div class="count">已打赏金额
+                    <br>
+                    <span class="left_price">￥0.00</span>
+                </div>
+                <div class="count">打赏人次
+                    <br>
+                    <span class="rewarder_num" style="margin-top:0.06rem;display:inline-block">0</span>
+                </div>
+                <span class="divide"></span>
+            </div>
+            <div class="declaration clearfix">
+                <span class="title">发起人宣言：</span>
+                <span class="content">无</span>
+            </div>
+            <div class="interaction">
+                <div class="button_wrap clearfix">
+                    <button class="reward">打赏TA</button>
+                    <button class="join">发起许愿</button>
+                </div>
+            </div>
+        </div>
+    
+        <div class="reward_list">
+            <h6 class="clearfix">
+                <span class="left">打赏排行榜</span>
+                <span class="right">查看留言</span>
+            </h6>
+    
+    
+            <div class="list_wrap"> </div>
+    
+            <div class="loading">
+                <i></i>
+                <span>加载中...</span>
+            </div>
+        </div>
     </div>
 
 </body>
@@ -149,7 +133,9 @@
     var $msgUnfold = false;
 
     var $pageNum = 1;
-    var $pageSize = 8;
+    var $pageSize = 20;
+
+    var mySwiper;
 
     var $urlCode = commonCompt.GetUrlPara('urlCode');
 
@@ -170,54 +156,58 @@
                 if(data.responseCode == 2000){
                     var order = data.data;
                     // alert(order);
-                    if(!order || order.wishStatus.toString() !== '1'){
-                        window.location.href = 'rewardLost.html';
+                    // if(!order || order.wishStatus.toString() !== '1'){
+                    //     window.location.href = 'rewardLost.html';
+                    // }
+                    if(order.wishStatus.toString() !== '1'){
+                        $('.interaction .reward').attr('disabled','disabled');
+                        $('.interaction .reward').css('background-color','#858585');
                     }
 
                     if(!!order){
+                        if(order.wishPics.length > 0){
+                            var slideHtml = '';
+                            var slideDirection = [['Down','Right','Up'],['Right','Down','Up'],['Left','Left','Down']]
+                            for(var i=0; i<order.wishPics.length; i++){
+                                slideHtml +=    '<section class="swiper-slide slide_0'+ (i+1) +'">'+
+                                                    '<div class="pic ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][0] +'" swiper-animate-duration="1s" swiper-animate-delay="0s" style="background:url('+ 
+                                                        order.wishPics[i].filePath +') center center no-repeat;background-size:cover;-webkit-background-size:cover;"></div>'+
+                                                    '<div class="els_wrapper">'+
+                                                        '<div class="frame ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="0.2s">'+
+                                                            '<img class="frame_cut_01" src="../imgs/h5/frame_0'+(i+1)+'_01.png">'+
+                                                            '<img class="frame_cut_03" src="../imgs/h5/frame_0'+(i+1)+'_03.png">'+
+                                                        '<div>'+
+                                                        '<img src="../imgs/h5/H_0'+(i+1)+'.png" class="H ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="0.5s">'+
+                                                        '<img src="../imgs/h5/t_0'+(i+1)+'.png" class="t ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="1s">'+
+                                                        '<p class="text ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][2] +'" swiper-animate-duration="2s" swiper-animate-delay="1.2s">'+ order.wishPics[i].fileDesc +'</p>'+
+                                                    '</div>'+
+                                                '</section>'
+                            }
 
-                        var slideHtml = '';
-                        var slideDirection = [['Down','Right','Up'],['Right','Down','Up'],['Left','Left','Down']]
-                        for(var i=0; i<order.wishPics.length; i++){
-                            slideHtml +=    '<section class="swiper-slide slide_0'+ (i+1) +'">'+
-                                                '<div class="pic ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][0] +'" swiper-animate-duration="1s" swiper-animate-delay="0s" style="background:url('+ 
-                                                    order.wishPics[i].filePath +') center center no-repeat;background-size:cover;-webkit-background-size:cover;"></div>'+
-                                                '<div class="els_wrapper">'+
-                                                    '<div class="frame ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="0.2s">'+
-                                                        '<img class="frame_cut_01" src="../imgs/h5/frame_0'+(i+1)+'_01.png">'+
-                                                        '<img class="frame_cut_03" src="../imgs/h5/frame_0'+(i+1)+'_03.png">'+
-                                                    '<div>'+
-                                                    '<img src="../imgs/h5/H_0'+(i+1)+'.png" class="H ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="0.5s">'+
-                                                    '<img src="../imgs/h5/t_0'+(i+1)+'.png" class="t ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][1] +'" swiper-animate-duration="2s" swiper-animate-delay="1s">'+
-                                                    '<p class="text ani resize" swiper-animate-effect="fadeIn'+ slideDirection[i][2] +'" swiper-animate-duration="2s" swiper-animate-delay="1.2s">'+ order.wishPics[i].fileDesc +'</p>'+
-                                                '</div>'+
-                                            '</section>'
+                            $('.slide_pages_box').prepend(slideHtml);
+
+                            mySwiper = new Swiper('.swiper-container-outer', {
+                                direction: 'vertical',
+                                pagination: '.swiper-pagination',
+                                mousewheelControl: true,
+                                onInit: function (swiper) {
+                                    swiperAnimateCache(swiper);
+                                    swiperAnimate(swiper);
+                                },
+                                onSlideChangeStart: function(swiper){
+                                    if(swiper.activeIndex == order.wishPics.length){
+                                        $('.swiper-container-outer').fadeOut();
+                                        $('#order').fadeIn();
+                                    }
+                                },
+                                onSlideChangeEnd: function (swiper) {
+                                    swiperAnimate(swiper);
+                                }
+                            })
+                        }else {
+                            $('.swiper-container-outer').fadeOut();
+                            $('#order').fadeIn();
                         }
-
-                        $('.slide_pages_box').prepend(slideHtml);
-
-                        var mySwiper = new Swiper ('.swiper-container-outer', {
-                            direction : 'vertical',
-                            pagination: '.swiper-pagination',
-                            mousewheelControl : true,
-                            onInit: function(swiper){
-                                swiperAnimateCache(swiper);
-                                swiperAnimate(swiper);
-                            },
-                            onSlideChangeEnd: function(swiper){
-                                swiperAnimate(swiper);
-                            }	  
-                        })
-
-                        var mySwiperNested = new Swiper('#order', {
-                            direction: 'vertical',
-                            nested:true,
-                            slidesPerView: 'auto',
-                            freeMode: true,
-                            mousewheel: true,
-                        });
-
-
 
                         $('.order_price').html('￥'+order.totalMoney);
                         $('.left_price').html('￥'+order.realMoney);
@@ -227,21 +217,31 @@
                         $('.process_bar .fill').html(process.toFixed(2)+'%');
                         $('.process_bar .base').width((process>100 ? 100 : process)+'%');
                         $('.declaration .content').html(order.content ? order.content : '无');
+                        
 
                         console.log(order);
                         var ordersListHtml = "";
-                        // var isSuccessful = (order.orderStatus.toString() !== '2') && (order.orderStatus.toString() !== '4');
+                        var stateIcon = '';
+                        if(order.wishStatus.toString() === '1'){
+                            stateIcon = '';
+                        }else if(order.wishStatus.toString() === '3'){
+                            stateIcon = 'delete';
+                        }else if(order.wishStatus.toString() === '2' 
+                            || order.wishStatus.toString() === '4' 
+                            || order.wishStatus.toString() === '5'){
+                            stateIcon = 'cancel';
+                        }
                         ordersListHtml +=   '<div class="singleOrder reward_order clearfix">'+
                                                 '<div class="order_head">'+
-                                                    '<span class="nickname" style="color:#ee383c">'+ order.userName +'</span>在许愿树许了一个愿望'+
+                                                    '<span class="nickname" style="color:#ee383c">'+ order.userName +'</span>在许愿树下许了一个愿望，你愿意打赏助TA实现吗？'+
                                                 '</div>'+
-                                                // ( isSuccessful ? ('<span class="crowd_status"></span>') : '')+
+                                                '<span class="crowd_status '+ stateIcon +'"></span>' +
                                                 '<div class="goods_detail">'+
                                                     '<div class="order_detail clearfix">'+
                                                         '<div class="product_pic" style="background: url(../imgs/type_0'+ order.wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
                                                         '<div class="product_desc">'+
-                                                            '<p class="name">'+ order.title +'</p>'+
-                                                            '<p class="parameter">'+ (!!order.endDate ? order.endDate : '长期有效') +'</p>'+
+                                                            '<p class="name" style="height: 0.99rem;-webkit-line-clamp:3;">'+ order.title +'</p>'+
+                                                            '<p class="parameter">截止时间'+ (!!order.endDate ? order.endDate : '长期有效') +'</p>'+
                                                         '</div>'+
                                                         '<div class="price">'+
                                                             '<span class="price_now">￥'+ order.totalMoney.toFixed(2) + '</span><br>'+
@@ -252,6 +252,7 @@
                                             '</div>'
 
                         $('.orders_list').append(ordersListHtml);
+
                     }else {
                         //没有数据
                     }
@@ -275,6 +276,7 @@
 
     //加载下一页
     $(document).scroll(function(){
+        console.log($('.loading').offset().top);
         if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop()){
             $pageNum ++;
             console.log("第"+$pageNum+"页");
@@ -283,10 +285,8 @@
             bindRewarderList($pageNum,$wishId);
 //            },1000)
         }
+        
     })
-
-    
-
 
 
     $('.orders_list').on('click', '.singleOrder .order_head', function(){
@@ -362,7 +362,7 @@
                     $('.list_wrap').append(rewarderListHtml);
 
                     if(rewarders.length < $pageSize){
-                        finishLoading =true
+                        finishLoading =true;
                         $('.loading').hide();
                     }else {
                         $('.loading').show();
@@ -396,6 +396,7 @@
             $msgUnfold = false;
             $('.reward_list h6 .right').html('查看留言');
         }
+
     })
 
 </script>

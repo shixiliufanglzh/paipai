@@ -85,7 +85,7 @@
     <section id="about">
         <div class="nav">
             <div class="tab tab_good_detail current">商品详情</div>
-            <div class="tab tab_deal_record">成交记录</div>
+            <!-- <div class="tab tab_deal_record">成交记录</div> -->
             <div class="tab tab_evaluate_list">用户评价</div>
         </div>
         <div class="about_sorts">
@@ -136,7 +136,7 @@
 
         <div class="parameters">
             <div class="sorts_para">
-                <h6>请选择参数</h6>
+                <h6>请选择商品型号规格</h6>
 
             </div>
 
@@ -172,6 +172,8 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
+
+<div id="detailPic"></div>
 
 </body>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
@@ -397,7 +399,27 @@
                     $('#sortsList .start_price span').html('￥' + goodsPara.salePrice.toFixed(2));
                     $('#sortsList .left_price span').html(goodsPara.stockNum + '件');
                 }
-                if(reloadMsg){
+                if(!!reloadMsg){
+                    // if (reloadMsg.nowPrice <= commonCompt.randomNum(reloadMsg.limitPrice,reloadMsg.salePrice)) {
+                    //     $.ajax({
+                    //         url: REFRESHGOODS,
+                    //         type: 'GET',
+                    //         dataType: 'json',
+                    //         cache: false,
+                    //         data: {goodsId: $goodId, goodsIssueno: goodsPara.goodsIssueno},
+                    //         async: false,
+                    //         success: function (data) {
+                    //             apiResponse(data.responseCode, data.responseDesc, data.data);
+                    //             if (data.responseCode == 2000) {
+                    //                 location.reload(true);
+                    //             }
+                    //         },
+                    //         error: function (err) {
+                    //             console.log(err);
+                    //         }
+                    //     });
+                    // }
+
                     reloadMsg.nowPrice = commonCompt.accSub(reloadMsg.nowPrice, goodsPara.reducePrice*subTime/1000);
                     if(reloadMsg.nowPrice <= 0){
                         reloadMsg.nowPrice = 0;
@@ -475,7 +497,7 @@
         console.log(userSel);
     })
 
-    //选择参数
+    //选择商品型号规格
     $('#sortsList .sorts_para').on('click', 'span',function(){
         var $curClickParent = $(this).parents('.single_para_container');
         var skuIndex = $curClickParent.index() - 1;
@@ -539,6 +561,7 @@
                     apiResponse(data.responseCode,data.responseDesc,data.data);
                     if(data.responseCode == 2000) {
                         reloadMsg = data.data;
+                        // goodsPara = reloadMsg;
                         userSel.mixId = reloadMsg.mixId
 
                         //价格、库存等信息展示
@@ -549,6 +572,13 @@
                                 '-webkit-background-size': 'cover'
                             })
                         }
+
+                        // $('#summary .desc').html(goodsPara.goodsDesc);
+                        // $('#summary .primary_range').html('￥' + goodsPara.salePrice.toFixed(2));
+                        // $('#summary .market_range').html('￥' + goodsPara.marketPrice.toFixed(2));
+                        // $('#summary .sold_count').html(goodsPara.saleNum + '件');
+                        // $('#summary .cur_price').html('当前价：￥' + goodsPara.nowPrice.toFixed(2));
+                        
                         // alert('nowPrice:'+reloadMsg.nowPrice+' salePrice:'+reloadMsg.salePrice);
                         $('#sortsList .cur_price span').html('￥' + reloadMsg.nowPrice.toFixed(2));
                         $('#sortsList .start_price span').html('￥' + reloadMsg.salePrice.toFixed(2));
@@ -766,7 +796,7 @@
                 commonCompt.popPrompt('请选择数量');
             }
         }else {
-            commonCompt.popPrompt('请选择参数');
+            commonCompt.popPrompt('请选择商品型号规格');
         }
     })
 
@@ -837,13 +867,27 @@
                     commonCompt.popPrompt('请选择数量');
                 }
             } else {
-                commonCompt.popPrompt('请选择参数');
+                commonCompt.popPrompt('请选择商品型号规格');
             }
         }
     })
 
     $('.action_wrap .chat').click(function(){
         window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
+    })
+
+    //查看具体规格图片
+    $('.sorts_wrap .good_img').click(function(){
+        console.log(goodsPara.goodsPic);
+        $('#detailPic').css({
+            'background': 'rgba(0,0,0,0.8) url('+ (reloadMsg && reloadMsg.goodsPic ? reloadMsg.goodsPic : goodsPara.goodsPic) +') center center no-repeat',
+            'background-size': 'contain',
+            '-webkit-background-size': 'contain'
+        })
+        $('#detailPic').fadeIn();
+    })
+    $('#detailPic').click(function(){
+        $(this).fadeOut();
     })
 
     //检查库存的方法

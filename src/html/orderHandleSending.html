@@ -150,7 +150,7 @@
 
                     $('.count_detail.primary').html("￥"+ $primaryPriceSum.toFixed(2));
                     $('.count_detail.now').html("￥"+ $dealPriceSum.toFixed(2));
-                    $('.price_total .fee').html("￥"+ orderMsg.leftPrice.toFixed(2));
+                    $('.price_total .fee').html("￥"+ orderMsg.payMoney.toFixed(2));
                     $('.price_total .count').html(totalCount);
                     $('.count_detail.save').html("￥"+ commonCompt.accSub($primaryPriceSum,$dealPriceSum).toFixed(2));
                     $('.count_detail.freight').html("￥"+ orderMsg.freight.toFixed(2));

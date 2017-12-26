@@ -31,13 +31,15 @@
     <div id="rewardPay">
         <div class="user_msg">
             <span class="avatar"></span>
-            <p>赞助给<span class="name"></span></p>
+            <p>打赏给<span class="name"></span></p>
         </div>
 
         <div class="reward_count">
             <div class="count_input clearfix">
-                <span class="label">赞助金额</span>
-                <input type="number" placeholder="输入赞助金额">
+                <span class="label">打赏金额</span>
+                <input type="number" class="reward_num" placeholder="输入打赏金额">
+                <input class="real_name" style="float:right" maxlength="10" type="text" placeholder="输入昵称（选填）"></span>
+                <span class="label" style="float:right">打赏昵称</span>
                 <!-- <span class="most">全部金额</span> -->
             </div>
             <div class="options_wrap">
@@ -54,12 +56,12 @@
         <div class="leave_msg">
             <div class="head">
                 <span class="title">添加留言(140字以内)</span>
-                <span class="mode"><input class="anonymous_check" maxlength="10" type="checkbox" style="margin-bottom: 0.04rem">匿名赞助</span>
-                <!-- <span class="mode"><input class="real_name" type="text" placeholder="自定义赞助昵称"></span> -->
+                <span class="mode"><input class="anonymous_check" maxlength="10" type="checkbox" style="margin-bottom: 0.04rem">匿名打赏</span>
+                <!-- <span class="mode"><input class="real_name" type="text" placeholder="自定义打赏昵称"></span> -->
             </div>
             <textarea name="" id="" maxlength="140"></textarea>
-            <button class="commit">确认赞助</button>
-            <p class="prompt">新用户需授权登录并注册,否则众赏订单失败后将无法退款到您的支付账户。如需重新授权,请刷新页面。</p>
+            <button class="commit">确认打赏</button>
+            <p class="prompt">新用户需授权登录并注册,否则许愿订单失败后将无法退款到您的支付账户。如需重新授权,请刷新页面。</p>
         </div>
     </div>
 
@@ -74,7 +76,7 @@
 <script>
     var $wishId = commonCompt.GetUrlPara('wish_id');
     var $sign = commonCompt.GetUrlPara('sign');
-    var countOptions = ['5.20','11.11','25.8','88.21','157.3','666','1314','7758'];
+    var countOptions = ['1.18','5.20','9.99','25.8','88.88','131.4','157.3','666'];
     var currentPayType = 0; //1微信，2支付宝
     var isAnonymous = 1; //1实名，2匿名
     var wxPayPara = {};
@@ -121,7 +123,7 @@
                 if(data.responseCode == 2000){
                     
                     // if(!data.data.userTel){
-                    //     commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单众赏失败后，赞助金额将原路径退回）',true);
+                    //     commonCompt.registerPhone(60,"为确保账号安全，请手机号注册",false,3,"注册成功",null,'（注册账号后，发起人订单许愿失败后，打赏金额将原路径退回）',true);
                     // }
                     if(data.data.id){
                         sessionStorage.setItem('userId', data.data.id);
@@ -136,7 +138,7 @@
     })
 
     $('.options_wrap').on('click', '.valid', function(){
-        $('.reward_count input').val(countOptions[$(this).index()]);
+        $('.reward_count .reward_num').val(countOptions[$(this).index()]);
     })
 
     $('.pay_type div').click(function(){
@@ -160,16 +162,16 @@
         }
     })
 
-    $('.reward_count input').blur(function(){
-        var moneyCount = Number($('.reward_count input').val()).toFixed(2);
+    $('.reward_count .reward_num').blur(function(){
+        var moneyCount = Number($('.reward_count .reward_num').val()).toFixed(2);
         $(this).val(moneyCount);
     })
 
     $('.commit').click(function(){
         // alert($curOrderId);
-        var moneyCount = Number($('.reward_count input').val()).toFixed(2);
+        var moneyCount = Number($('.reward_count .reward_num').val()).toFixed(2);
         if(moneyCount.length <= 0){
-            commonCompt.popPrompt('请输入赞助金额');
+            commonCompt.popPrompt('请输入打赏金额');
         }else if(moneyCount < 0.01){
             commonCompt.popPrompt('最低金额不得小于0.01');
         }else if(currentPayType === 0){
@@ -193,7 +195,7 @@
                         payMoney: moneyCount,
                         crownType: isAnonymous,
                         sign: $sign,
-                        // realName: ,
+                        realName: $('.real_name').val(),
                         leaveMsg: $('textarea').val()
                     },
                     success: function (data) {

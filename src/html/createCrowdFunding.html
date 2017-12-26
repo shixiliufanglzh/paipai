@@ -235,7 +235,7 @@
                 data: {
                     payType: 3,
                     orderId: $curOrderId,
-                    userMsg: $userDeclaration
+                    userMsg: $userDeclaration.replace(/\n|\r\n/g,"<br>")
                 },
                 success: function (data) {
                     apiResponse(data.responseCode,data.responseDesc,data.data);

@@ -181,13 +181,25 @@
                     console.log(order);
                     var ordersListHtml = "";
                     var $amount = 0;
-                    var isSuccessful = (order.orderStatus.toString() !== '2') && (order.orderStatus.toString() !== '4');
+                    if(order.orderStatus.toString() !== '2'){
+                        $('.interaction').hide();
+                    }
+                    var stateIcon = '';
+                    if(order.orderStatus.toString() === '2'){
+                        stateIcon = '';
+                    }else if(order.orderStatus.toString() === '3'){
+                        stateIcon = 'delete';
+                    }else if(order.orderStatus.toString() === '4'){
+                        stateIcon = 'cancel';
+                    }else {
+                        stateIcon = 'complete';
+                    }
                     ordersListHtml +=   '<div class="singleOrder reward_order clearfix" data-order-id="'+ order.orderId +'">'+
                                             '<div class="order_head">'+
                                                 '<span class="nickname" style="color:#ee383c">'+ $userName +'</span>发起了众赏购物，订单共计'+
                                                 '<span class="amount"></span>件商品<i class="more"></i>'+
                                             '</div>'+
-                                            ( isSuccessful ? ('<span class="crowd_status"></span>') : '')+
+                                            '<span class="crowd_status '+ stateIcon +'"></span>' +
                                             '<div class="goods_detail">'
 
                     for(var j=0; j<order.goods.length; j++){

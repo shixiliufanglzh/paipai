@@ -41,9 +41,9 @@
                 </div>
             </div>
             <div class="count_wrap">
-                <div class="count">期望金额<br><span class="order_price">￥0.00</span></div>
+                <div class="count">许愿金额<br><span class="order_price">￥0.00</span></div>
                 <div class="count">收到金额<br><span class="left_price">￥0.00</span></div>
-                <div class="count">赞助人次<br><span class="rewarder_num" style="margin-top:0.06rem;display:inline-block">0</span></div>
+                <div class="count">打赏人次<br><span class="rewarder_num" style="margin-top:0.06rem;display:inline-block">0</span></div>
                 <span class="divide"></span>
             </div>
             <div class="declaration clearfix">
@@ -180,17 +180,29 @@
 
                     console.log(order);
                     var ordersListHtml = "";
-                    // var isSuccessful = (order.orderStatus.toString() !== '2') && (order.orderStatus.toString() !== '4');
+                    if(order.wishStatus.toString() !== '1'){
+                        $('.interaction').hide();
+                    }
+                    var stateIcon = '';
+                    if (order.wishStatus.toString() === '1') {
+                        stateIcon = '';
+                    } else if (order.wishStatus.toString() === '3') {
+                        stateIcon = 'delete';
+                    } else if (order.wishStatus.toString() === '2'
+                        || order.wishStatus.toString() === '4'
+                        || order.wishStatus.toString() === '5') {
+                        stateIcon = 'cancel';
+                    }
                     ordersListHtml +=   '<div class="singleOrder reward_order clearfix">'+
                                             '<div class="order_head">'+
-                                                '<span class="nickname" style="color:#ee383c">'+ $userName +'</span>在许愿树许了一个愿望'+
+                                                '<span class="nickname" style="color:#ee383c">'+ $userName +'</span>在许愿树下许了一个愿望，你愿意打赏助TA实现吗？'+
                                             '</div>'+
-                                            // ( isSuccessful ? ('<span class="crowd_status"></span>') : '')+
+                                            '<span class="crowd_status '+ stateIcon +'"></span>' +
                                             '<div class="goods_detail">'+
                                                 '<div class="order_detail clearfix">'+
                                                     '<div class="product_pic" style="background: url(../imgs/type_0'+ order.wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
                                                     '<div class="product_desc">'+
-                                                        '<p class="name">'+ order.title +'</p>'+
+                                                        '<p class="name" style="height: 0.99rem;-webkit-line-clamp:3;">'+ order.title +'</p>'+
                                                         '<p class="parameter">'+ (!!order.endDate ? order.endDate : '长期有效') +'</p>'+
                                                     '</div>'+
                                                     '<div class="price">'+
@@ -198,7 +210,7 @@
                                                     '</div>'+
                                                 '</div>'+
                                             '</div>' +
-                                            '<div class="bottom"></div>'
+                                            '<div class="bottom"></div>'+
                                         '</div>'
 
                     $('.orders_list').append(ordersListHtml);
@@ -213,7 +225,7 @@
 
         //没有订单时的显示
         if($('.single_rewarder').length <= 0){
-            $('.list_wrap').html('<p style="text-align:center;font-size:0.24rem">暂无赞助</p>');
+            $('.list_wrap').html('<p style="text-align:center;font-size:0.24rem">暂无打赏</p>');
             finishLoading =true
             $('.loading').hide();
         }
@@ -343,7 +355,7 @@
                             // alert('$userName'+$userName+'$userDeclaration'+$userDeclaration+'crowdShareUrl'+crowdShareUrl+'$shareImg'+$shareImg)
                             // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
                             wx.onMenuShareAppMessage({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                                 imgUrl: $shareImg, // 分享图标
@@ -358,7 +370,7 @@
                             });
 
                             wx.onMenuShareTimeline({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 link: crowdShareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                                 imgUrl: $shareImg, // 分享图标
                                 success: function () {
@@ -370,7 +382,7 @@
                             });
 
                             wx.onMenuShareQQ({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: crowdShareUrl, // 分享链接
                                 imgUrl: $shareImg, // 分享图标
@@ -383,7 +395,7 @@
                             });
 
                             wx.onMenuShareWeibo({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: crowdShareUrl, // 分享链接
                                 imgUrl: $shareImg, // 分享图标
@@ -396,7 +408,7 @@
                             });
 
                             wx.onMenuShareQZone({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: crowdShareUrl, // 分享链接
                                 imgUrl: $shareImg, // 分享图标

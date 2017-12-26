@@ -33,6 +33,7 @@
         <div class="nav_wrap">
             <div class="tab tab_underway current"><a>许愿中</a></div>
             <div class="tab tab_complete"><a>许愿结束</a></div>
+            <div class="tab tab_my_crowd"><a>我的打赏</a></div>
         </div>
     </div>
     <div class="orders_list">
@@ -90,6 +91,8 @@
             $wishStatus = 1;
         }else if($(this).hasClass('tab_complete')){
             $wishStatus = 2;
+        }else if($(this).hasClass('tab_my_crowd')){
+            $wishStatus = 3;
         }
         bindRewardList($pageNum,$wishStatus);
 
@@ -116,7 +119,30 @@
     $('.orders_list').on('click', '.singleOrder .order_head,.singleOrder .goods_detail,.singleOrder .total', 
     function(){
         var $wishId = $(this).parents('.singleOrder').attr('data-wish-id');
-        window.location.href = 'wishingTreeDetail.html?wish_id='+ $wishId;
+        if($wishStatus !== 3){
+            window.location.href = 'wishingTreeDetail.html?wish_id='+ $wishId;
+        }else {
+            $.ajax({
+                url: GET_WISH_SHARE_URL,
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    wishId: $wishId
+                },
+                success: function (data) {
+                    apiResponse(data.responseCode, data.responseDesc, data.data);
+                    if (data.responseCode == 2000) {
+                        window.location.href = data.data;
+                        
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+
+            })
+        }
+        
     })
 
 
@@ -250,47 +276,57 @@
         var $curOrder = $(this).parents('.singleOrder');
         commonCompt.Confirm({
             hasTitle: true,
-            showInput: true,
-            title: "提现到【我的钱包】",
-            contentText: "",
-            cancleText: "取消",
-            certainText: "确认",
-            inputPlace: "输入提现金额",
-            inputType: 'number',
-            rightBtnClick: function(val){
-                var inputCount = Number(val).toFixed(2);
-                if( val !== 0 && !val){
-                    commonCompt.popPrompt("不能为空");
-                }else if(inputCount > mostCount || inputCount <= 0){
-                    commonCompt.popPrompt('金额超出提现范围');
-                    $(this).val('');
-                }else {
-                    console.log(mostCount,inputCount);
-                    $.ajax({
-                        url: WITH_DRAW,
-                        type: 'POST',
-                        dataType: 'json',
-                        data: {
-                            id: $curOrder.attr('data-wish-id'),
-                            withdrawMoney: inputCount
-                        },
-                        success: function (data) {
-                            apiResponse(data.responseCode,data.responseDesc,data.data);
-                            if(data.responseCode == 2000){
-                                commonCompt.popPrompt('成功提现￥'+ inputCount +'至钱包');
-                                setTimeout(function(){
-                                    location.reload();
-                                },1500)
+            title: "重要提示",
+            contentText: "金额提现后将无法进行打赏金额退款，谨慎操作！<br/>你可以先【关闭许愿】，然后再选择【金额提现】或者【打赏退款】",
+            cancleText: "暂不提现",
+            certainText: "确认提现",
+            rightBtnClick: function(){},
+            leftBtnClick: function(){}
+        },function(){
+            commonCompt.Confirm({
+                hasTitle: true,
+                showInput: true,
+                title: "提现到【我的钱包】",
+                contentText: "",
+                cancleText: "取消",
+                certainText: "确认",
+                inputPlace: "输入提现金额",
+                inputType: 'number',
+                rightBtnClick: function(val){
+                    var inputCount = Number(val).toFixed(2);
+                    if( val !== 0 && !val){
+                        commonCompt.popPrompt("不能为空");
+                    }else if(inputCount > mostCount || inputCount <= 0){
+                        commonCompt.popPrompt('金额超出提现范围');
+                        $(this).val('');
+                    }else {
+                        console.log(mostCount,inputCount);
+                        $.ajax({
+                            url: WITH_DRAW,
+                            type: 'POST',
+                            dataType: 'json',
+                            data: {
+                                id: $curOrder.attr('data-wish-id'),
+                                withdrawMoney: inputCount
+                            },
+                            success: function (data) {
+                                apiResponse(data.responseCode,data.responseDesc,data.data);
+                                if(data.responseCode == 2000){
+                                    commonCompt.popPrompt('成功提现￥'+ inputCount +'至钱包');
+                                    setTimeout(function(){
+                                        location.reload();
+                                    },1500)
+                                }
+                            },
+                            error: function (err) {
+                                console.log(err);
                             }
-                        },
-                        error: function (err) {
-                            console.log(err);
-                        }
-                    })
+                        })
+                    }
+                },
+                leftBtnClick: function(){
                 }
-            },
-            leftBtnClick: function(){
-            }
+            })
         })
     })
 
@@ -301,8 +337,8 @@
         commonCompt.Confirm({
             hasTitle: true,
             showInput: false,
-            title: "余额提现",
-            contentText: "是否将余额￥"+ mostCount +"提现到【我的钱包】",
+            title: "金额提现",
+            contentText: "是否将金额￥"+ mostCount +"提现到【我的钱包】",
             cancleText: "取消",
             certainText: "确认",
             rightBtnClick: function(){
@@ -372,10 +408,12 @@
                     
                     for(var i=0; i<orders.length; i++){
                         var endTime = (!orders[i].endDate || orders[i].endDate.toString() === '0') ? '长期有效' : orders[i].endDate;
-                        var leftMoney = commonCompt.accSub(Number(orders[i].totalMoney),Number(orders[i].realMoney)).toFixed(2);
+                        // var leftMoney = commonCompt.accSub(Number(orders[i].totalMoney),Number(orders[i].realMoney)).toFixed(2);
                         var mostMoney = commonCompt.accSub(Number(orders[i].realMoney),Number(orders[i].withdrawMoney)).toFixed(2);
                         ordersListHtml +=   '<div class="singleOrder clearfix" data-wish-id="'+ orders[i].id +'">'+
-                                                '<div class="order_head">截止时间：<span class="order_number">'+ endTime +'</span></div>'+
+                                                '<div class="order_head">'+
+                                                    (wishStatus === 3 ? ('许愿发起人：<span class="order_number">'+ orders[i].userName +' </span>&nbsp;&nbsp;&nbsp;&nbsp;') : '')+
+                                                    '截止时间：<span class="order_number">'+ endTime +'</span></div>'+
                                                 '<div class="goods_detail">'+
                                                     '<div class="order_detail clearfix">'+
                                                         '<div class="product_pic" style="background: url(../imgs/type_0'+ orders[i].wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
@@ -389,24 +427,27 @@
                                                     '</div>'+
                                                 '</div>' +
                                                 '<p class="total" style="text-align:left">已筹划'+
-                                                    '<span class="deal_price">￥'+ Number(orders[i].realMoney).toFixed(2) +'</span>&nbsp;&nbsp;还差'+
-                                                    '<span class="deal_price">￥'+ leftMoney +'</span>&nbsp;&nbsp;已提现'+
+                                                    '<span class="deal_price">￥'+ Number(orders[i].realMoney).toFixed(2) +'</span>&nbsp;&nbsp;已提现'+
                                                     '<span class="deal_price">￥'+ Number(orders[i].withdrawMoney).toFixed(2) +'</span>'+
                                                 '</p>'
 
-
-                        if(orders[i].wishStatus.toString() === '1') {
-                            ordersListHtml +=   '<button class="order_edit close">关闭许愿</button>' +
-                                                '<button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' +
-                                            '</div>'
-                        }else if(orders[i].wishStatus.toString() === '2') {
-                            ordersListHtml +=   (orders[i].refundStatus.toString()==='1'?('<button class="order_edit return">退还账户</button>') : '') +
-                                                '<button class="order_edit red withdraw_all" data-left-money="'+mostMoney+'">余额提现</button>' +
-                                            '</div>'
-                        }else if(orders[i].wishStatus.toString() === '4' || orders[i].wishStatus.toString() === '5') {
-                            ordersListHtml +=   '<button class="order_edit delete">删除许愿</button>' +
-                                            '</div>'
+                        if(wishStatus !== 3){
+                            if(orders[i].wishStatus.toString() === '1') {
+                                ordersListHtml +=   '<button class="order_edit close">关闭许愿</button>' +
+                                                    '<button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' +
+                                                '</div>'
+                            }else if(orders[i].wishStatus.toString() === '2') {
+                                ordersListHtml +=   (orders[i].refundStatus.toString()==='1'?('<button class="order_edit return">打赏退款</button>') : '') +
+                                                    '<button class="order_edit red withdraw_all" data-left-money="'+mostMoney+'">金额提现</button>' +
+                                                '</div>'
+                            }else if(orders[i].wishStatus.toString() === '4' || orders[i].wishStatus.toString() === '5') {
+                                ordersListHtml +=   '<button class="order_edit delete">删除许愿</button>' +
+                                                '</div>'
+                            }
+                        }else {
+                            ordersListHtml +=   '</div>'
                         }
+                        
 
                     }
 

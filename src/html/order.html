@@ -370,6 +370,7 @@
                 apiResponse(data.responseCode,data.responseDesc,data.data);
                 if(data.responseCode == 2000){
                     var orders = data.data;
+                    console.log(orders)
                     if(orders.length > 0){
                         $('#blank').hide();
                         $('body').css('background-color','#f0f0f0');
@@ -426,7 +427,7 @@
                         }
 
                         ordersListHtml +=       '</div>' +
-                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>支付金额：</span><span class="deal_price">￥'+ orders[i].leftPrice.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
+                                                '<p class="total">共'+ $amount +'件商品&nbsp;&nbsp;&nbsp;&nbsp;<span>支付金额：</span><span class="deal_price">￥'+ orders[i].payMoney.toFixed(2) +'</span>（含运费<span class="postage">￥'+ orders[i].freight.toFixed(2) +'</span>）</p>'+
                                                 '<span style="margin-top: 0.1rem;margin-left: 0.24rem;float:left;font-size:0.24rem;color:#858585">创建时间：'+ orders[i].createDate +'</span>'
 
 

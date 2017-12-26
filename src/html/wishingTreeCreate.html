@@ -33,7 +33,7 @@
     <div class="block">
         <div class="single_option clearfix">
             <span class="left">许愿标题</span>
-            <input type="text" maxlength="20" id="title" class="right" placeholder="请输入许愿标题(20字以内)" />
+            <input type="text" maxlength="40" id="title" class="right" placeholder="请输入许愿标题(40字以内)" />
         </div>
     </div>
     <div class="block">
@@ -53,7 +53,7 @@
 
     <div id="declaration">
         <h3>许愿宣言：</h3>
-        <textarea maxlength="100" placeholder="输入你的宣言&#10;举例1：许愿成功，打赏榜第一名可以相约同行&#10;举例2：聚会时间2018.8.8晚上6点，地点待定，参加活动的打赏100元，不参加活动的随意打赏以作活动经费，8人成席不封顶，有钱的捧个钱场，没钱的捧个人场"></textarea>
+        <textarea maxlength="100" placeholder="输入你的宣言（限100字以内）&#10;举例1：许愿成功，打赏榜第一名可以相约同行&#10;举例2：聚会时间2018.8.8晚上6点，地点待定，参加活动的打赏100元，不参加活动的随意打赏以作活动经费，8人成席不封顶，有钱的捧个钱场，没钱的捧个人场"></textarea>
     </div>
 
     <div id="wishIntroduction" class="clearfix">
@@ -239,7 +239,7 @@
                 fileDesc: imgDescList[i]
             })
         }
-        var $title = $('#title').val();
+        $title = $('#title').val();
         var $content = $('#declaration textarea').val();
         var $totalMoney = $('#count').val();
 
@@ -265,7 +265,7 @@
                 data: {
                     wishType: $typeId,
                     title: $title,
-                    content: $content,
+                    content: $content.replace(/\n|\r\n/g,"<br>"),
                     totalMoney: $totalMoney,
                     endDate: $endTime,
                     files: JSON.stringify(files)
@@ -296,7 +296,7 @@
 
                         if (isWeiBo()) {
                             var $src = $('iframe').attr('src').replace('xxxxxxx', encodeURIComponent(shareUrl))
-                                .replace('zzzzzzz', encodeURI('【' + $userName + '】在许愿树发起许愿'));
+                                .replace('zzzzzzz', encodeURI('【' + $userName + '】许愿树下发起许愿'));
                                     // alert(2+' '+$('iframe').attr('src'));
                             $('iframe').attr('src', $src);
                         } else {
@@ -351,7 +351,7 @@
                             // alert('$userName'+$userName+'$userDeclaration'+$userDeclaration+'shareUrl'+shareUrl+''http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png''+'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png')
                             // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
                             wx.onMenuShareAppMessage({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                                 imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
@@ -366,7 +366,7 @@
                             });
 
                             wx.onMenuShareTimeline({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 link: shareUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
                                 imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
                                 success: function () {
@@ -378,7 +378,7 @@
                             });
 
                             wx.onMenuShareQQ({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: shareUrl, // 分享链接
                                 imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
@@ -391,7 +391,7 @@
                             });
 
                             wx.onMenuShareWeibo({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: shareUrl, // 分享链接
                                 imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标
@@ -404,7 +404,7 @@
                             });
 
                             wx.onMenuShareQZone({
-                                title: '【' + $userName + '】在许愿树发起了许愿 ', // 分享标题
+                                title: '【' + $userName + '】许愿树下发起许愿 ', // 分享标题
                                 desc: $userDeclaration, // 分享描述
                                 link: shareUrl, // 分享链接
                                 imgUrl: 'http://www.jianbid.com/public/imgs/type_0'+ $typeId +'.png', // 分享图标

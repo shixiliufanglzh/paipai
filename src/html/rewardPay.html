@@ -42,8 +42,10 @@
         <div class="reward_count">
             <div class="count_input clearfix">
                 <span class="label">打赏金额</span>
-                <input type="number" placeholder="自定义金额最多为">
-                <span class="most">全部金额</span>
+                <input type="number" class="input_num" placeholder="输入最多">
+                <input class="real_name" style="float:right" maxlength="10" type="text" placeholder="输入昵称（选填）"></span>
+                <span class="label" style="float:right">打赏昵称</span>
+                <!-- <span class="most">全部金额</span> -->
             </div>
             <div class="options_wrap">
                 <!-- <span class="valid">5.20<s>元</s></span>
@@ -79,8 +81,8 @@
 <script>
     var $curOrderId = commonCompt.GetUrlPara('order_id');
     var $sign = commonCompt.GetUrlPara('sign');
-    var $leftPrice;
-    var countOptions = ['5.20','11.11','25.8','88.21','157.3','666','1314','7758'];
+    var $leftPrice = 0;
+    var countOptions = ['1.18','5.20','9.99','25.8','88.88','131.4','157.3','666'];
     var currentPayType = 0; //1微信，2支付宝
     var isAnonymous = 1; //1实名，2匿名
     var wxPayPara = {};
@@ -104,7 +106,7 @@
                         'background-size': 'cover',
                         '-webkit-background-size': 'cover'
                     });
-                    $leftPrice = data.data.leftPrice;
+                    $leftPrice = data.data.leftPrice ? data.data.leftPrice : 0;
                     $('.user_msg .name').html(data.data.nikeName);
                 }
             },
@@ -115,7 +117,7 @@
 
 
         $('.left_space .count').html('￥' + $leftPrice);
-        $('.reward_count input').attr('placeholder','自定义金额最多为￥' + $leftPrice);
+        $('.reward_count .input_num').attr('placeholder','输入最多￥' + $leftPrice);
 
         for(var i=0; i<countOptions.length; i++){
             $('.options_wrap').append('<span class="'+ (Number(countOptions[i])<=Number($leftPrice)?'valid':'') +'">'+ countOptions[i] +'<s>元</s></span>');
@@ -147,11 +149,11 @@
     })
 
     $('.reward_count .most').click(function(){
-        $('.reward_count input').val($leftPrice);
+        $('.reward_count .input_num').val($leftPrice);
     })
 
     $('.options_wrap').on('click', '.valid', function(){
-        $('.reward_count input').val(countOptions[$(this).index()]);
+        $('.reward_count .input_num').val(countOptions[$(this).index()]);
     })
 
     $('.pay_type div').click(function(){
@@ -175,14 +177,14 @@
         }
     })
 
-    $('.reward_count input').blur(function(){
-        var moneyCount = Number($('.reward_count input').val()).toFixed(2);
+    $('.reward_count .input_num').blur(function(){
+        var moneyCount = Number($('.reward_count .input_num').val()).toFixed(2);
         $(this).val(moneyCount);
     })
 
     $('.commit').click(function(){
         // alert($curOrderId);
-        var moneyCount = Number($('.reward_count input').val()).toFixed(2);
+        var moneyCount = Number($('.reward_count .input_num').val()).toFixed(2);
         if(moneyCount.length <= 0){
             commonCompt.popPrompt('请输入打赏金额');
         }else if(moneyCount < 0.01){
@@ -209,7 +211,7 @@
                         payMoney: moneyCount,
                         crownType: isAnonymous,
                         sign: $sign,
-                        // realName: $('.real_name').val(),
+                        realName: $('.real_name').val(),
                         leaveMsg: $('textarea').val()
                     },
                     success: function (data) {

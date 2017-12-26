@@ -52,8 +52,8 @@
             </div>
             <div class="interaction">
                 <div class="button_wrap clearfix">
-                    <button class="reward">我要打赏</button>
-                    <button class="join">我要参与</button>
+                    <button class="reward">打赏TA</button>
+                    <button class="join">发起众赏</button>
                 </div>
             </div>
         </section>
@@ -104,11 +104,11 @@
                 console.log(GET_RECORD_DETAIL,data);
                 if(data.responseCode == 2000){
                     var order = data.data;
-                    // alert(order);
-                    if(!order || order.orderStatus.toString() === '4'){
-                        window.location.href = 'rewardLost.html';
-                    }
-                    // alert(order.orderStatus+'-'+ $curOrderId);
+
+                    // if(!order || order.orderStatus.toString() === '4'){
+                    //     window.location.href = 'rewardLost.html';
+                    // }
+                    
                     if(order.orderStatus.toString() !== '2'){
                         $('.interaction .reward').attr('disabled','disabled');
                         $('.interaction .reward').css('background-color','#858585');
@@ -125,13 +125,22 @@
                         console.log(order);
                         var ordersListHtml = "";
                         var $amount = 0;
-                        var isSuccessful = (order.orderStatus.toString() !== '2') && (order.orderStatus.toString() !== '4');
+                        var stateIcon = '';
+                        if(order.orderStatus.toString() === '2'){
+                            stateIcon = '';
+                        }else if(order.orderStatus.toString() === '3'){
+                            stateIcon = 'delete';
+                        }else if(order.orderStatus.toString() === '4'){
+                            stateIcon = 'cancel';
+                        }else {
+                            stateIcon = 'complete';
+                        }
                         ordersListHtml +=   '<div class="singleOrder reward_order clearfix" data-order-id="'+ order.orderId +'">'+
                                                 '<div class="order_head">'+
                                                     '<span class="nickname" style="color:#ee383c">'+ order.nikeName +'</span>发起了众赏购物，订单共计'+
                                                     '<span class="amount"></span>件商品<i class="more"></i>'+
                                                 '</div>'+
-                                                (isSuccessful ? ('<span class="crowd_status"></span>') : '') +
+                                                '<span class="crowd_status '+ stateIcon +'"></span>' +
                                                 '<div class="goods_detail">'
 
                         for(var j=0; j<order.goods.length; j++){
