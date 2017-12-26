@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-// var apiHost = "http://47.96.186.64/app/";
-var apiHost = "http://www.jianbid.com/app/";
+var apiHost = "http://47.96.186.64/app/";
+// var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -82,6 +82,8 @@ var DEL_CARD = apiHost + "user/delCard.jhtml";  //删除提现账户
 var GET_CARD = apiHost + "user/getCard.jhtml";  //获取用户提现账户列表
 var GET_MONEY_RECORD = apiHost + "user/getMoneyRecord.jhtml";  //获取用户提现记录
 var CANCEL_REGISTER = apiHost + "login/cancelRegister.jhtml";  //取消注册
+
+var LUCKY_WHEEL = apiHost + "luckyDraw/wheel.jhtml";  //幸运转盘
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){

@@ -85,11 +85,21 @@
     <section id="about">
         <div class="nav">
             <div class="tab tab_good_detail current">商品详情</div>
-            <!-- <div class="tab tab_deal_record">成交记录</div> -->
             <div class="tab tab_evaluate_list">用户评价</div>
+            <!-- <div class="tab tab_deal_record">成交记录</div> -->
         </div>
         <div class="about_sorts">
             <div class="good_detail"></div>
+
+            <div class="evaluate_list" style="min-height:6rem">
+                <!--<div class="single_evaluate">-->
+                    <!--<div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
+                    <!--<p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>-->
+                    <!--&lt;!&ndash;<div class="imgs"><span></span><span></span><span></span><span></span></div>&ndash;&gt;-->
+                    <!--<p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>-->
+                <!--</div>-->
+
+            </div>
 
             <div class="deal_record" style="min-height:6rem">
                 <!--<div class="single_deal">-->
@@ -102,15 +112,7 @@
                 <!--</div>-->
             </div>
 
-            <div class="evaluate_list" style="min-height:6rem">
-                <!--<div class="single_evaluate">-->
-                    <!--<div class="evaluate_msg"><span class="name">136****5342</span><span class="time">2017-08-15 08:28</span></div>-->
-                    <!--<p class="evaluate_content">啊大煞风景哈斯看见的恢复开机开机速度封口机哈萨克交电话费客家话代课教师当时的解放军爱死基地</p>-->
-                    <!--&lt;!&ndash;<div class="imgs"><span></span><span></span><span></span><span></span></div>&ndash;&gt;-->
-                    <!--<p class="good_para">颜色分类：E90无花是实惠色 颜色分类：E90无花是实惠色</p>-->
-                <!--</div>-->
-
-            </div>
+            
             <div class="loading"><i></i><span>加载中...</span></div>
         </div>
     </section>
@@ -624,7 +626,6 @@
 
     //评论列表展示
     function showComments(pageNum){
-
         finishLoading = true;
         $('.loading').hide();
 
@@ -665,7 +666,6 @@
                         }
 
                         $('.evaluate_list').append(commentsHtml);
-
                         if (commentsList.length < $pageSize) {
                             finishLoading = true;
                             $('.loading').hide();
@@ -742,17 +742,16 @@
     }
 
     $(document).scroll(function(){
-
         //加载下一页
         if(!finishLoading && $(window).height() > $('.loading').offset().top - $(document).scrollTop() + $('#action').height()){
-            if($curAbout == 2 && $('.single_evaluate').length >0){
+            if($curAbout == 1 && $('.single_evaluate').length >0){
                 $pageNum ++;
                 console.log("评论记录","第"+$pageNum+"页");
                 finishLoading = true;
                 setTimeout(function(){
                     showComments($pageNum);
                 },1000);
-            }else if($curAbout == 1 && $('.single_deal').length >0){
+            }else if($curAbout == 2 && $('.single_deal').length >0){
                 $pageNum ++;
                 console.log("交易记录","第"+$pageNum+"页");
                 finishLoading = true;
