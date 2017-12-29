@@ -413,7 +413,9 @@
                         ordersListHtml +=   '<div class="singleOrder clearfix" data-wish-id="'+ orders[i].id +'">'+
                                                 '<div class="order_head">'+
                                                     (wishStatus === 3 ? ('许愿发起人：<span class="order_number">'+ orders[i].userName +' </span>&nbsp;&nbsp;&nbsp;&nbsp;') : '')+
-                                                    '截止时间：<span class="order_number">'+ endTime +'</span></div>'+
+                                                    '截止时间：<span class="order_number">'+ endTime +'</span>'+
+                                                    (orders[i].wishType.toString() === '7' ? '<span style="color:#e02532;font-size:0.24rem">（抽奖愿望）</span>' : '')+
+                                                '</div>'+
                                                 '<div class="goods_detail">'+
                                                     '<div class="order_detail clearfix">'+
                                                         '<div class="product_pic" style="background: url(../imgs/type_0'+ orders[i].wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
@@ -433,8 +435,9 @@
 
                         if(wishStatus !== 3){
                             if(orders[i].wishStatus.toString() === '1') {
-                                ordersListHtml +=   '<button class="order_edit close">关闭许愿</button>' +
-                                                    '<button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' +
+                                ordersListHtml +=   (orders[i].wishType.toString() !== '7' || (Number(orders[i].realMoney) >= Number(orders[i].totalMoney))
+                                                        ? '<button class="order_edit close">关闭许愿</button><button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' 
+                                                        : '<button class="order_edit close" style="color:#ccc;border-color:#ccc" disabled>关闭许愿</button><button class="order_edit red withdraw_part" style="color:#ccc;border-color:#ccc" disabled>提前提现</button>') +
                                                 '</div>'
                             }else if(orders[i].wishStatus.toString() === '2') {
                                 ordersListHtml +=   (orders[i].refundStatus.toString()==='1'?('<button class="order_edit return">打赏退款</button>') : '') +

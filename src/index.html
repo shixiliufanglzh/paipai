@@ -42,14 +42,28 @@
         </section>
 
         <section id="guide">
-            <ul class="clearfix">
+            <!-- <ul class="clearfix">
                 <li class="video"><i></i><span>视频教程</span></li>
-                <!-- <li class="like"><i></i><span>关注商城</span></li> -->
                 <li class="reward"><i></i><span>众赏购物</span></li>
                 <li class="wish"><i></i><span>许愿树</span></li>
                 <li class="global"><i></i><span>全球购</span></li>
                 <li class="money"><i></i><span>获取拍币</span></li>
-            </ul>
+            </ul> -->
+            <div class="swiper-container-nav">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide tab_lyp"><a href=""><i></i><span>0元拍</span></a></div>
+                    <div class="swiper-slide tab_jptj"><a href=""><i></i><span>精品推荐</span></a></div>
+                    <div class="swiper-slide tab_dzp"><a href="html/luckyOfWheel.html"><i></i><span>大转盘</span></a></div>
+                    <div class="swiper-slide tab_xpbk"><a href=""><i></i><span>新品必看</span></a></div>
+                    <div class="swiper-slide tab_zsgw"><a href="http://mp.weixin.qq.com/s/24fe_7n78S1li8WbDY9zRA"><i></i><span>众赏购物</span></a></div>
+                    <div class="swiper-slide tab_ppzz"><a href=""><i></i><span>品牌制造</span></a></div>
+                    <div class="swiper-slide tab_xys"><a href="html/wishingTreeType.html"><i></i><span>许愿树</span></a></div>
+                    <div class="swiper-slide tab_qqg"><a href="html/globalShopping.html"><i></i><span>全球购</span></a></div>
+                    <div class="swiper-slide tab_xsjc"><a href="http://mp.weixin.qq.com/s/NmroHaz5e5F8rgLmUWOQ_g"><i></i><span>新手教程</span></a></div>
+                    <div class="swiper-slide tab_zljj"><a href=""><i></i><span>助力减价</span></a></div>
+                    <div class="swiper-slide tab_xsqp"><a href=""><i></i><span>限时抢拍</span></a></div>
+                </div>
+            </div>
         </section>
 
         <section id="special"></section>
@@ -287,6 +301,13 @@
             autoplay: 3000,
             pagination : '.swiper-pagination'
         })
+
+        var navSwiper = new Swiper('.swiper-container-nav', {
+            slidesPerView: 5,
+            slidesPerColumn: 2,
+            paginationClickable: true,
+            spaceBetween: 0
+        });
 
         timer = setInterval(function(){
             var currentTime = new Date().getTime();
@@ -632,26 +653,6 @@
         }else if($(this).attr('class') == 'personal'){
             window.location.href = 'html/personal.html'
         }
-    })
-
-    $('#guide .video').click(function(){
-        window.location.href = "http://mp.weixin.qq.com/s/NmroHaz5e5F8rgLmUWOQ_g";
-    })
-
-    $('#guide .wish').click(function(){
-        window.location.href = 'html/wishingTreeType.html';
-    })
-
-    $('#guide .global').click(function(){
-        window.location.href = 'html/globalShopping.html';
-    })
-
-    $('#guide .money').click(function(){
-        window.location.href = 'html/personalPurse.html';
-    })
-
-    $('#guide .reward').click(function(){
-        window.location.href = 'http://mp.weixin.qq.com/s/24fe_7n78S1li8WbDY9zRA';
     })
 
     commonCompt.screenVisibleChange();

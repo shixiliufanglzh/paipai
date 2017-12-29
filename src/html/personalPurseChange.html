@@ -110,10 +110,10 @@
                     var recordsListHtml = "";
                     for(var i=0; i<records.length; i++){
                         var changeNum = '', changeState = '';
-                        if(records[i].pointType == -1){
+                        if(records[i].getType == 2){
                             changeNum = '-' + records[i].pointAmount;
                             changeState = '';
-                        }else if(records[i].pointType == 2 || records[i].pointType == 3){
+                        }else if(records[i].getType == 1){
                             changeNum = '+' + records[i].pointAmount;
                             changeState = 'plus';
                         }

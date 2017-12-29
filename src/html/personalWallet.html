@@ -249,12 +249,37 @@
 
     //提现
     $('.withdraw').click(function(){
-        if(currentAccount.length > 0){
-            $('#withdrawSubmit').fadeIn();
-        }else {
-            commonCompt.popPrompt('请选择提现账户');
-        }
+        $.ajax({
+            url: IS_REGISTER,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.responseCode == 4011) {
+                    commonCompt.popPrompt('您尚未设置密码，请先设置密码');
+                    setTimeout(function(){
+                        window.location.href = 'personalInfo.html'
+                    },2000)
+                }else if (data.responseCode == 4012) {
+                    commonCompt.popPrompt('您尚未绑定手机，请先完善信息');
+                    setTimeout(function(){
+                        window.location.href = 'personalInfo.html'
+                    },2000)
+                }else if (data.responseCode == 2000) {
+                    if(currentAccount.length > 0){
+                        $('#withdrawSubmit').fadeIn();
+                    }else {
+                        commonCompt.popPrompt('请选择提现账户');
+                    }
+                }else {
+                    apiResponse(data.responseCode, data.responseDesc, data.data);
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
     })
+
     $('.withdraw_count').blur(function(){
         var inputCountStr = $('.withdraw_count').val();
         var withdrawCount = Number(inputCountStr).toFixed(2);
@@ -298,7 +323,9 @@
                         console.log(err);
                     }
                 })
+                $('#mask').hide();
             }else {
+                $('#mask').hide();
                 commonCompt.popPrompt('请输入商城账号的密码');
             }
         }

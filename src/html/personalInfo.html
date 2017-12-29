@@ -37,6 +37,9 @@
         <span class="left">手机</span>
         <span class="right">未绑定</span>
     </div>
+    <div class="single_option clearfix" id="changPwd">
+        <span class="left">设置/修改密码</span>
+    </div>
     <div class="single_option clearfix" id="name">
         <span class="left">姓名</span>
         <span class="right">未填写</span>
@@ -76,6 +79,7 @@
 <script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
 
 <script>
+    var $hasPhone = false;
 
     $(function(){
         $.ajax({
@@ -94,6 +98,7 @@
                         $('#name .right').html(data.data.userName);
                     }
                     if(data.data.userTel){
+                        $hasPhone = true;
                         $('#phone .right').html(data.data.userTel);
                     }
                     if(data.data.birthday){
@@ -144,6 +149,15 @@
         commonCompt.verifyPhone(60,"更改绑定的手机号",true,1,"修改成功",function(phoneNum){
             $('#phone .right').html(phoneNum.substr(0,3) + "****" + (phoneNum.substr(7,4)));
         });
+    })
+
+    $('#changPwd').click(function(){
+        if($hasPhone){
+            commonCompt.changePwd(60,"设置/修改密码",true,"修改成功");
+        }else {
+            commonCompt.popPrompt('请先绑定手机号');
+        }
+        
     })
 
     $('#nickname').click(function(){

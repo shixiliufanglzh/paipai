@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-var apiHost = "http://47.96.186.64/app/";
-// var apiHost = "http://www.jianbid.com/app/";
+// var apiHost = "http://47.96.186.64/app/";
+var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -84,6 +84,8 @@ var GET_MONEY_RECORD = apiHost + "user/getMoneyRecord.jhtml";  //获取用户提
 var CANCEL_REGISTER = apiHost + "login/cancelRegister.jhtml";  //取消注册
 
 var LUCKY_WHEEL = apiHost + "luckyDraw/wheel.jhtml";  //幸运转盘
+var ADD_ORDER_ADDR = apiHost + "luckyDraw/addOrderAddress.jhtml";  //抽奖订单添加地址
+var IS_REGISTER = apiHost + "user/isRigister.jhtml";  //判断用户是否注册手机号且设置密码
 
 //接口返回状态响应
 function apiResponse(responseCode,responseDesc,redirectUrl){
@@ -95,23 +97,39 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
         case "4000":
             //commonCompt.popPrompt("请先登录");
             if(redirectUrl){
-                // window.location.href = redirectUrl;
+                window.location.href = redirectUrl;
             }
             break;
         case "4001":
-            commonCompt.popPrompt(responseDesc);
+            if(window.location.href.indexOf('wishPay.html') != -1){
+                commonCompt.Confirm({
+                    hasTitle: true,
+                    title: "提示",
+                    contentText: responseDesc,
+                    cancleText: "取消",
+                    certainText: "确认",
+                    rightBtnClick: function(){
+                        history.go(-1);
+                    },
+                    leftBtnClick: function(){
+                        history.go(-1);
+                    }
+                });
+            }else {
+                commonCompt.popPrompt(responseDesc);
+            }
             break;
         case "4002":
-            commonCompt.popPrompt("微信授权登录失败");
+            commonCompt.popPrompt(responseDesc);
             break;
         case "4003":
-            commonCompt.popPrompt("用户已存在");
+            commonCompt.popPrompt(responseDesc);
             break;
         case "4004":
-            commonCompt.popPrompt("未找到资源");
+            commonCompt.popPrompt(responseDesc);
             break;
         case "4005":
-            commonCompt.popPrompt("未关注平台公众号");
+            commonCompt.popPrompt(responseDesc);
             break;
         case "4006":
             commonCompt.Confirm({
@@ -132,7 +150,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             commonCompt.popPrompt("拍币不足,获得拍币联系在线客服");
             break;
         case "4008":
-            commonCompt.popPrompt("需特殊处理，第三方浏览器登录，弹出登录遮罩");
+            commonCompt.popPrompt(responseDesc); //需特殊处理，第三方浏览器登录，弹出登录遮罩
             break;
         case "4009":
             if(window.location.href.indexOf('rewardPay') != -1 || window.location.href.indexOf('wishPay') != -1){
@@ -142,10 +160,10 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             }
             break;
         case "5000":
-            commonCompt.popPrompt("服务器出错");
+            commonCompt.popPrompt(responseDesc);
             break;
         case "5001":
-            commonCompt.popPrompt("找不到可使用的公众号");
+            commonCompt.popPrompt(responseDesc);
             break;
         default:
             commonCompt.popPrompt("未知错误");
@@ -982,6 +1000,115 @@ var commonCompt = {
                         console.log(err);
                     }
                 })
+                $('body').css("overflow", "auto");
+                $('#registerWrap').fadeOut(300,function(){
+                    $('#registerWrap').remove();
+                });
+            })
+
+            return bool_result;
+        }
+    },
+
+    //设置/修改密码
+    changePwd: function(remainTime,title,hasCloseBtn,submitPrompt){
+        // alert($('#registerWrap').length);
+        if($('#registerWrap').length <= 0){
+            $('body').css("overflow", "hidden")
+            var bool_result = false;
+            var html =  '<div id="registerWrap">'+
+                            '<div class="register">'+
+                                '<i class="verify_close"></i>'+
+                                '<h3>' + title + '</h3>'+
+                                '<input type="number" placeholder="请填写您的手机号码" id="phoneNum">'+
+                                '<div class="verify">'+
+                                    '<input type="number" placeholder="请填写验证码" id="code">'+
+                                    '<button>获取验证码</button>'+
+                                '</div>'+
+                                '<input type="password" placeholder="请填写您的密码" maxLength="16" id="password">'+
+                                '<button id="regSubmit">提交</button>'+
+                            '</div>'+
+                        '</div>';
+            $('body').append(html);
+            $('#registerWrap').fadeIn(300);
+
+            if(hasCloseBtn){
+                $('.verify_close').show();
+            }
+
+            var _that = this;
+            $('.verify button').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else {
+                    $.ajax({
+                        url: GETCODE,
+                        data: {
+                            phone: $phoneNum,
+                            type: 4
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.timeCount(remainTime,$('.verify button'));
+                                _that.popPrompt("验证码已发送");
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+
+            $('#regSubmit, .regSubmit').on('click', function(){
+                var $phoneNum = $('#phoneNum').val();
+                var $password = $('#password').val();
+                if(!$phoneNum){
+                    _that.popPrompt("手机号不能为空");
+                }else if(!_that.checkPhone($phoneNum)){
+                    _that.popPrompt("错误的手机号码");
+                }else if(!$password){
+                    _that.popPrompt("密码不能为空");
+                }else if($password.length < 6){
+                    _that.popPrompt("密码长度不能小于6位数");
+                }else {
+                    $.ajax({
+                        url: FORGET_PWD,
+                        data: {
+                            userTel: $phoneNum,
+                            userPsw: $password,
+                            checkCode: $('#code').val()
+                        },
+                        type:'POST',
+                        dataType:'json',
+                        //async:false,
+                        success:function(data){
+                            apiResponse(data.responseCode,data.responseDesc);
+                            if(data.responseCode == 2000){
+                                _that.popPrompt(submitPrompt);
+                                $('body').css("overflow", "auto");
+                                $('#registerWrap').fadeOut(300,function(){
+                                    $('#registerWrap').remove();
+                                });
+
+                                bool_result = true;
+                            }
+                        },
+                        error: function(err){
+                            console.log(err);
+                        }
+                    })
+                }
+            })
+
+            $('.verify_close').on('click',function(){
                 $('body').css("overflow", "auto");
                 $('#registerWrap').fadeOut(300,function(){
                     $('#registerWrap').remove();

@@ -23,6 +23,21 @@
             doc.addEventListener('DOMContentLoaded', recalc, false);
         })(document, window);
     </script>
+    <script type='text/javascript'>
+        (function(m, ei, q, i, a, j, s) {
+            m[i] = m[i] || function() {
+                (m[i].a = m[i].a || []).push(arguments)
+            };
+            j = ei.createElement(q),
+                s = ei.getElementsByTagName(q)[0];
+            j.async = true;
+            j.charset = 'UTF-8';
+            j.src = 'https://static.meiqia.com/dist/meiqia.js?_=t';
+            s.parentNode.insertBefore(j, s);
+        })(window, document, 'script', '_MEIQIA');
+        _MEIQIA('entId', 82155);
+        _MEIQIA('withoutBtn');
+    </script>
     <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>        
     <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
     <link rel="stylesheet" href="../style/detail.css">
@@ -820,7 +835,8 @@
                         goodsId: $goodId,
                         mixId: userSel.mixId,
                         goodsAmount: userSel.count,
-                        goodsIssueno: goodsPara.goodsIssueno
+                        goodsIssueno: goodsPara.goodsIssueno,
+                        buyType: 1
                     }
                     commonCompt.addMask('抢拍中...');
                     $.ajax({
@@ -872,7 +888,8 @@
     })
 
     $('.action_wrap .chat').click(function(){
-        window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
+        // window.location.href = 'https://static.meiqia.com/dist/standalone.html?_=t&eid=82155'
+        _MEIQIA('showPanel');
     })
 
     //查看具体规格图片

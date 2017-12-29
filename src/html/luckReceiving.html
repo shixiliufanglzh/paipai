@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:wb="http://open.weibo.com/wb">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>领奖信息</title>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                    recalc = function () {
+                        var clientWidth = docEl.clientWidth;
+                        if (!clientWidth) return;
+                        if(clientWidth>=640){
+                            docEl.style.fontSize = '100px';
+                        }else{
+                            docEl.style.fontSize = 100 * (clientWidth / 750) + 'px';
+                        }
+                    };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+    </script>
+    <script src="http://tjs.sjs.sinajs.cn/open/api/js/wb.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="../../bower_components/swiper/dist/css/swiper.min.css">
+    <link rel="stylesheet" href="../style/paying.css">
+</head>
+<body>
+<div id="paying">
+    <section id="addrMsg">
+        <div class="addressee">
+            <div class="has_addr">
+                <p><span class="name">姓名</span><span class="phone">手机号码</span></p>
+                <p class="address">详细地址</p>
+                <i></i>
+            </div>
+            <div class="no_addr">
+                <h4>添加地址</h4>
+            </div>
+        </div>
+        <div class="bottom_img"></div>
+    </section>
+
+    <section id="orderDetail">
+        <div class="grab_list"></div>
+
+        <div class="fee">
+            <div class="fee_detail">
+                <p>商品价格 <span class="primary_price_sum">￥0.00</span></p>
+                <p>抽奖节省 <span class="save_fee">￥0.00</span></p>
+                <p>运费 <span class="freight">￥0.00</span></p>
+            </div>
+        </div>
+        <p class="fee_result">需要支付（含运费）<span>￥0.02</span></p>
+
+    </section>
+
+    <div>
+        <button id="submitBtn">提交领奖信息</button>
+    </div>
+</div>
+
+<div id="blank">
+    <div class="img">
+        <img src="../imgs/blank_grab.png" alt="">
+    </div>
+    <h6>暂无相关记录</h6>
+</div>
+
+
+</body>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../../bower_components/swiper/dist/js/swiper.jquery.min.js"></script>
+<script src="../script/paipaiCompnt.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script src="http://tjs.sjs.sinajs.cn/open/thirdpart/js/jsapi/mobile.js" charset="utf-8"></script>
+
+<script>
+    var $hasAddress = false;
+    var $orderId = commonCompt.GetUrlPara('orderId');
+    var $goodId = commonCompt.GetUrlPara('goodId');
+
+    var $addrId = window.localStorage.getItem("addrId");
+    var $selAddrId;
+
+    $(function(){
+
+        hasRegister = shouldRegister();
+
+        //地址信息
+        // console.log($addrId);
+        $.ajax({
+            url: GETUSERADDRESS,
+            type:'GET',
+            dataType:'json',
+            async: false,
+            success: function(data){
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    var address = data.data;
+                    var $index = 0;
+                    if(address.length > 0){
+
+                        $('.no_addr').hide();
+                        $('.has_addr').show();
+
+                        $hasAddress = true;
+                        for(var i=0; i<address.length; i++){
+                            if(address[i].id == $addrId){
+                                $index = i;
+                            }
+                        }
+                        $selAddrId = address[$index].id;
+                        $('#addrMsg .addressee .name').html(address[$index].name);
+                        $('#addrMsg .addressee .phone').html(address[$index].tel);
+                        $('#addrMsg .addressee .address').html(address[$index].area.split(',').join('') + address[$index].address);
+                    }else {
+                        $hasAddress = false;
+                        $('.no_addr').show();
+                        $('.has_addr').hide();
+                    }
+
+                }
+
+            },
+            error: function(err){
+                console.log(err);
+            }
+        });
+
+        //商品信息
+        if(!!$goodId) { 
+            $('#blank').hide();
+            $('#paying').show();
+
+            $.ajax({
+                url: GETGODDSDETAIL,
+                type:'GET',
+                dataType:'json',
+                data: {goodsId: $goodId},
+                async: false,
+                success: function(data){
+                    console.log(data);
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
+                    if(data.responseCode == 2000) {
+                        var good = data.data;
+                        $('.primary_price_sum').html('￥' + good.salePrice.toFixed(2));
+                        $('.save_fee').html('￥' + (commonCompt.accSub(Number(good.salePrice),0.02)).toFixed(2));
+                        var goodsHtml = '<div class="single_good selected" data-good-id="' + good.goodsId + '">' +
+                                            '<div class="good_detail">' +
+                                                '<div class="img" style="background: url(' + good.goodsPic + ') center center no-repeat;background-size: cover;-webkit-background-size: cover"></div>' +
+                                                '<p class="product">' + good.goodsName + '</p>' +
+                                                // '<p class="parameter">' + good.goodsSpu + '</p>' +
+                                                '<p class="price_start">商品价格：<span class="price">￥' + good.salePrice.toFixed(2) + '</span></p>' +
+                                                '<p class="price_now">规格参数：系统随机分配<span class="count">×1</span></p>' +
+                                            '</div>' +
+                                        '</div>'
+
+                        $('.grab_list').append(goodsHtml);
+                        
+                    }
+                },
+                error: function(err){}
+            })
+        }
+
+        if(!$hasAddress){
+            $('.no_addr').show();
+            $('.has_addr').hide();
+        }
+
+        if($('.single_good').length <= 0){
+            $('#blank').show();
+            $('#paying').hide();
+            $('#paying').hide()
+        }
+    })
+
+    //查看商品详情
+    // $('.grab_list').on('click','.single_good .good_detail',function(){
+    //     window.location.href = 'detail.html?good_id='+$(this).parents('.single_good').attr('data-good-id');
+    // })
+
+    //选择地址
+    $('#addrMsg').click(function(){
+        if($hasAddress){
+            window.location.href = 'address.html?from=1';
+        }else {
+            window.location.href = 'addressAdd.html';
+        }
+    })
+
+    //提交订单
+    $('#submitBtn').click(function(){
+        if($hasAddress){
+            commonCompt.addMask('提交中...')
+            $.ajax({
+                url: ADD_ORDER_ADDR,
+                type:'POST',
+                dataType:'json',
+                data: {
+                    orderId: $orderId,
+                    addressId: $selAddrId
+                },
+                success: function(data){
+                    $('#mask').fadeOut();
+                    apiResponse(data.responseCode,data.responseDesc,data.data);
+                    if(data.responseCode == 2000){
+                        window.location.href = 'createCrowdFunding.html?order_id='+$orderId;
+                    }
+
+                },
+                error: function(err){
+                    $('#mask').fadeOut();
+                    console.log(err);
+                }
+            });
+        }else {
+            commonCompt.popPrompt('请选择收货地址');
+        }
+    })
+
+</script>
+<script src="../script/wx_browser_api.js"></script>
+</html>

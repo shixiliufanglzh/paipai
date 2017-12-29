@@ -382,13 +382,16 @@
                         if(orders[i].orderStatus == 1){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeSend" data-order-id="'+ orders[i].orderId +'">'+
                                                     '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
-                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏）':'') +
+                                                        (orders[i].orderType.toString() === '4' ? '（抽奖）' : '')+
                                                         '</span><span class="orde_status">待发货</span></div>'
                         }else if(orders[i].orderStatus == 2){
                             if(orders[i].payType.toString()==='3'){
                                 ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
-                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
-                                        '</span><span style="color:#e02532">（众赏订单）</span><span class="orde_status">待支付</span></div>'
+                                    '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum + '</span>'+
+                                        '<span style="color:#e02532">（众赏）'+
+                                            (orders[i].orderType.toString() === '4' ? '（抽奖）' : '')+
+                                        '</span><span class="orde_status">待支付</span></div>'
                             }else {
                                 ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforePaid" data-order-id="'+ orders[i].orderId +'">'+
                                                         '<div class="order_head"><i class="clock"></i>距订单关闭剩余：<span class="time_left">0天0小时0分0秒</span><span class="orde_status">待支付</span></div>'
@@ -397,17 +400,20 @@
                         }else if(orders[i].orderStatus == 4){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="close" data-order-id="'+ orders[i].orderId +'">'+
                                                     '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
-                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏）':'') +
+                                                        (orders[i].orderType.toString() === '4' ? '（抽奖）' : '')+
                                                         '</span><span class="orde_status">交易关闭</span></div>'
                         }else if(orders[i].orderStatus == 5){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="beforeReceived" data-order-id="'+ orders[i].orderId +'">'+
                                                     '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
-                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏）':'') +
+                                                        (orders[i].orderType.toString() === '4' ? '（抽奖）' : '')+
                                                         '</span><span class="orde_status">待收货</span></div>'
                         }else if(orders[i].orderStatus == 6){
                             ordersListHtml +=   '<div class="singleOrder clearfix" data-order-type="complete" data-order-id="'+ orders[i].orderId +'">'+
                                                     '<div class="order_head">订单号：<span class="order_number">'+ orders[i].orderNum +
-                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏订单）':'') +
+                                                        '</span><span style="color:#e02532">'+ (orders[i].payType.toString()==='3'?'（众赏）':'') +
+                                                        (orders[i].orderType.toString() === '4' ? '（抽奖）' : '')+
                                                         '</span><span class="orde_status">交易成功</span></div>'
                         }
 
@@ -435,7 +441,7 @@
                             ordersListHtml +=   '<button class="order_edit red before_send">催一下</button>' +
                                             '</div>'
                         }else if(orders[i].orderStatus == 2) {
-                            ordersListHtml +=   '<button class="order_edit red pay">付款</button>'+
+                            ordersListHtml +=   (orders[i].orderType.toString() !== '4' ? '<button class="order_edit red pay">付款</button>' : '') +
                                                 '<button class="order_edit cancel">取消订单</button>' +
                                             '</div>'
                         }else if(orders[i].orderStatus == 4) {

@@ -106,7 +106,10 @@
     }
 
     $(function(){
-        
+        if(document.referrer.indexOf('luckyOfWheel') != -1){
+            //抽奖后的提示
+        };
+
         shouldRegister();
 
         //获取商品列表
@@ -203,7 +206,7 @@
                                                     '<div class="product_pic" style="background: url(../imgs/type_0'+ order.wishType +'.png) center center no-repeat;-webkit-background-size: cover;background-size: cover;"></div>'+
                                                     '<div class="product_desc">'+
                                                         '<p class="name" style="height: 0.99rem;-webkit-line-clamp:3;">'+ order.title +'</p>'+
-                                                        '<p class="parameter">'+ (!!order.endDate ? order.endDate : '长期有效') +'</p>'+
+                                                        '<p class="parameter">'+ (!!order.endDate && order.endDate !== '0' ? order.endDate : '长期有效') +'</p>'+
                                                     '</div>'+
                                                     '<div class="price">'+
                                                         '<span class="price_now">￥'+ order.totalMoney.toFixed(2) + '</span><br>'+
@@ -459,17 +462,16 @@
             $msgUnfold = false;
             $('.reward_list h6 .right').html('查看留言');
         }
-        
     })
 
     $('#sharePrompt').click(function (){
         $('#sharePrompt').fadeOut();
     });
 
-    $('.orders_list').on('click','.order_detail',function(){
-        var goodId = $(this).attr('data-good-id') || $(this).parents('.order_detail').attr('data-good-id');
-        window.location.href = 'detail.html?good_id='+goodId;
-    })
+    // $('.orders_list').on('click','.order_detail',function(){
+    //     var goodId = $(this).attr('data-good-id') || $(this).parents('.order_detail').attr('data-good-id');
+    //     window.location.href = 'detail.html?good_id='+goodId;
+    // })
 
 </script>
 <!-- <script src="../script/wx_browser_api.js"></script> -->
