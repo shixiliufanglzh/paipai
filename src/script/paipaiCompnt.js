@@ -2,8 +2,8 @@
  * Created by 是昔流芳 on 2017/9/19.
  */
 
-// var apiHost = "http://47.96.186.64/app/";
-var apiHost = "http://www.jianbid.com/app/";
+var apiHost = "http://47.96.186.64/app/";
+// var apiHost = "http://www.jianbid.com/app/";
 
 var GETLABELS = apiHost + "goods/getLabelOne.jhtml";  //获取首页商品标签列表
 var GET_GOOD_SHOW = apiHost + "goods/getGoodsShow.jhtml";  //获取大图展示商品
@@ -150,7 +150,7 @@ function apiResponse(responseCode,responseDesc,redirectUrl){
             commonCompt.popPrompt("拍币不足,获得拍币联系在线客服");
             break;
         case "4008":
-            commonCompt.popPrompt(responseDesc); //需特殊处理，第三方浏览器登录，弹出登录遮罩
+            commonCompt.popPrompt(responseDesc); //                                                                                                                                                                        需特殊处理，第三方浏览器登录，弹出登录遮罩
             break;
         case "4009":
             if(window.location.href.indexOf('rewardPay') != -1 || window.location.href.indexOf('wishPay') != -1){

@@ -435,9 +435,10 @@
 
                         if(wishStatus !== 3){
                             if(orders[i].wishStatus.toString() === '1') {
-                                ordersListHtml +=   (orders[i].wishType.toString() !== '7' || (Number(orders[i].realMoney) >= Number(orders[i].totalMoney))
-                                                        ? '<button class="order_edit close">关闭许愿</button><button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' 
-                                                        : '<button class="order_edit close" style="color:#ccc;border-color:#ccc" disabled>关闭许愿</button><button class="order_edit red withdraw_part" style="color:#ccc;border-color:#ccc" disabled>提前提现</button>') +
+                                ordersListHtml +=   
+                                                    // (orders[i].wishType.toString() !== '7' || (Number(orders[i].realMoney) >= Number(orders[i].totalMoney)) ? 
+                                                    '<button class="order_edit close">关闭许愿</button><button class="order_edit red withdraw_part" data-left-money="'+mostMoney+'">提前提现</button>' +
+                                                        // : '<button class="order_edit close" style="color:#ccc;border-color:#ccc" disabled>关闭许愿</button><button class="order_edit red withdraw_part" style="color:#ccc;border-color:#ccc" disabled>提前提现</button>') +
                                                 '</div>'
                             }else if(orders[i].wishStatus.toString() === '2') {
                                 ordersListHtml +=   (orders[i].refundStatus.toString()==='1'?('<button class="order_edit return">打赏退款</button>') : '') +

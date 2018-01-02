@@ -45,6 +45,7 @@
     <section id="payingPath">
         <div class="alipay"><i class="icon_pay"></i><span>支付宝支付</span><i class="arrow"></i></div>
         <div class="wechat"><i class="icon_pay"></i><span>微信支付</span><i class="arrow"></i></div>
+        <div class="wallet"><i class="icon_pay"></i><span>余额免密支付</span><i class="arrow"></i></div>
         <div class="zhongshang"><i class="icon_pay"></i><span type="color:#e02532">众赏支付（推荐）</span><i class="arrow"></i></div>
     </section>
 
@@ -113,6 +114,32 @@
 
     $('.zhongshang').click(function(){
         window.location.href = 'createCrowdFunding.html?order_id='+ $curOrderId;
+    })
+
+    $('.wallet').click(function(){
+        commonCompt.addMask('支付中...');
+        $.ajax({
+            url: ORDERPAY,
+            type: 'GET',
+            dataType: 'json',
+            data: {
+                payType: 4,
+                orderId: $curOrderId
+            },
+            success: function (data) {
+                $('#mask').remove();
+                apiResponse(data.responseCode,data.responseDesc,data.data);
+                if(data.responseCode == 2000){
+                    commonCompt.popPrompt('支付成功');
+                    setTimeout(function (){
+                        window.location.href = 'order.html';
+                    },2000)
+                }
+            },
+            error: function(err){
+                $('#mask').remove();
+            }
+        })
     })
 
 

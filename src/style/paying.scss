@@ -289,6 +289,13 @@
         margin-right: 0.3rem;
       }
     }
+    .wallet {
+      .icon_pay {
+        @include smallIcon(0.6rem,0.6rem,url("../imgs/wallet_pay.png"));
+        vertical-align: middle;
+        margin-right: 0.3rem;
+      }
+    }
     .zhongshang {
       display: none;
       .icon_pay {
